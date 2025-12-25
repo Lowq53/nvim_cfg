@@ -1,6 +1,15 @@
 -- c:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\config\settings.lua
--- ===== CORE OPTIONS =====
+local opt = vim.opt
 
+-- ===== Podstawowe zawijanie ===== 
+opt.wrap = true                -- Włącz zawijanie wierszy
+opt.linebreak = true           -- Nie łam słów w połowie (zawijaj na spacjach/znakach interpunkcyjnych)
+opt.breakindent = true         -- Zawinięte linie zachowują to samo wcięcie co linia bazowa
+opt.copyindent = true          -- Kopiuj strukturę wcięć przy nowej linii
+-- 2. Estetyka zawijania (Protip: dodanie symbolu na początku zawiniętej linii)
+opt.showbreak = "↪ "           -- Znak wyświetlany na początku zawiniętej części wiersza
+
+-- ===== CORE OPTIONS =====
 vim.opt.number = true
 vim.opt.relativenumber = true
 

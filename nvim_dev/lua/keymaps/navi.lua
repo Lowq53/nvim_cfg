@@ -26,8 +26,8 @@ vim.keymap.set('n', '<C-k>', '<C-w>k', { desc = 'Przejdź do okna górnego' })
 vim.keymap.set('n', '<C-l>', '<C-w>l', { desc = 'Przejdź do okna prawego' })
 
 -- bufors changing
-vim.keymap.set('n', '<c-j>', ':bprevious<CR>', { desc = 'Poprzedni bufor' })
-vim.keymap.set('n', '<c-k>', ':bnext<CR>', { desc = 'Następny bufor' })
+vim.keymap.set('n', '<A-j>', ':bprevious<CR>', { desc = 'Poprzedni bufor' })
+vim.keymap.set('n', '<A-k>', ':bnext<CR>', { desc = 'Następny bufor' })
 -- site scroling
 vim.keymap.set('n', '<C-d>', '<C-d>zz', { desc = 'Pół strony w dół z wyśrodkowaniem' })
 vim.keymap.set('n', '<C-u>', '<C-u>zz', { desc = 'Pół strony w górę z wyśrodkowaniem' })

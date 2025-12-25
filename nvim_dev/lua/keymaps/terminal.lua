@@ -21,4 +21,4 @@ vim.api.nvim_create_autocmd('TermOpen', {
 })
 
 -- Opcjonalnie: Mapowanie ESC do wyjścia z trybu terminala
-vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = truE })

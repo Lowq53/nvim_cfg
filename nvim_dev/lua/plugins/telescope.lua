@@ -113,17 +113,17 @@ return {
       -- ═══════════════════════════════════════════════════════════════
       -- GREP IN DIRECTORIES - grep w katalogach
       -- ═══════════════════════════════════════════════════════════════
-      vim.keymap.set("n", "<leader>sb", function()
+      vim.keymap.set("n", "<leader>gb", function()
         builtin.live_grep({
           search_dirs = { "E:/Tools/BPY_Scripts/" },
         })
       end, { desc = "[S]earch in [B]PY scripts" })
 
-      vim.keymap.set("n", "<leader>sc", function()
+      vim.keymap.set("n", "<leader>gd", function()
         builtin.live_grep({
           search_dirs = { "C:/code_data/" },
         })
-      end, { desc = "[S]earch in [C]ode_data" })
+      end, { desc = "[S]earch in code_[D]ata" })
 
       -- ═══════════════════════════════════════════════════════════════
       -- BUFFER & FUZZY SEARCH - wyszukiwanie w buforach
