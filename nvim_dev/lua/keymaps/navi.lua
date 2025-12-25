@@ -1,15 +1,4 @@
-require('nvim-tree').setup({
-  view = {
-    mappings = {
-      list = {
-        { key = 'h', action = 'close_node' },
-        { key = 'l', action = 'edit' },
-        { key = 'H', action = 'collapse_all' },
-        { key = 'L', action = 'expand_all' },
-      },
-    },
-  },
-})
+-- AppData\Local\nvim_cfg\nvim_dev\lua\keymaps\navi.lua
 --lsp diagnostic
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Poprzednia diagnoza' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Następna diagnoza' })

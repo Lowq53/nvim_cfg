@@ -1,3 +1,4 @@
+-- C:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\init.luy
 -- ~/.config/nvim/init.lua
 -- only require here pls
 -- relative numbers
