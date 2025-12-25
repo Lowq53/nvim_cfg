@@ -23,3 +23,11 @@ vim.keymap.set('v', '<space>x', ':source<CR>', { desc = 'Source selection' })
 
 -- printing :messages
 vim.keymap.set('n', '<space>m', '<cmd>:messages<CR>', { desc = ':messages' })
+
+--  trybie normalnym: zaznacz cały bufor i przejdź do visual mode
+vim.keymap.set('n', '<space>sa', 'ggVG', {
+    desc = 'Select All (zaznacz cały tekst w buforze)',
+    noremap = true,
+    silent = true
+})
+-- vim.api.nvim_create_user_command('n', )

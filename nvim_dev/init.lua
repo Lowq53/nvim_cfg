@@ -11,7 +11,7 @@ vim.g.maplocalleader = "\\"
 -- Załaduj konfigurację LazyVim z osobnego pliku
 
 require("config.settings")
-require("config.keymaps")
---require("config.terminal")
 require("config.lazy")
+require("keymaps")
+--require("config.terminal")
 require("config.ui").setup()

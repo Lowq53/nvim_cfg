@@ -1,5 +1,6 @@
 -- Mapowanie <space>t do otwierania terminala po lewej stronie
-vim.api.nvim_set_keymap('n', '<leader>t', '<cmd>vsplit | terminal<CR>', {desc = ':term' noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>t', '<cmd>vsplit | term pwsh <CR>', {desc = ':term pwsh',
+noremap = true, silent = true })
 
 -- Automatyczne wyrównanie okien po otwarciu terminala
 vim.api.nvim_create_autocmd('TermOpen', {

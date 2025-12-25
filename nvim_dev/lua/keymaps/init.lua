@@ -1,3 +1,4 @@
+-- C:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\keymaps\init.lua
 -- Załaduj wszystkie moduły klawiszy
 require("keymaps.core")
 require("keymaps.dir_navi")

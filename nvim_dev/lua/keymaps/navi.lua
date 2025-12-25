@@ -1,16 +1,3 @@
-local actions = require('telescope.actions')
-require('telescope').setup({
-  defaults = {
-    mappings = {
-      i = {
-        ['<C-j>'] = actions.move_selection_next,
-        ['<C-k>'] = actions.move_selection_previous,
-        ['<C-h>'] = actions.preview_scrolling_up,
-        ['<C-l>'] = actions.preview_scrolling_down,
-      },
-    },
-  },
-})
 require('nvim-tree').setup({
   view = {
     mappings = {
@@ -35,6 +22,8 @@ vim.keymap.set('n', '*', '*zzzv', { desc = 'Wyszukaj słowo z wyśrodkowaniem' }
 vim.keymap.set('n', '#', '#zzzv', { desc = 'Wyszukaj słowo wstecz z wyśrodkowaniem' })
 
 --quick fix navigation
+vim.keymap.set('i', 'jk', '<Esc>', { desc = 'Exit terminal mode'})
+-- vim.keymap.set('t', '<Esc>', [[<C-\><C-n]], { desc = 'Exit terminal mode'})
 vim.keymap.set('n', '<C-q>j', ':cnext<CR>', { desc = 'Następny quickfix' })
 vim.keymap.set('n', '<C-q>k', ':cprev<CR>', { desc = 'Poprzedni quickfix' })
 vim.keymap.set('n', '<C-q>h', ':colder<CR>', { desc = 'Starsza lista quickfix' })
