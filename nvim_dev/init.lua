@@ -12,15 +12,15 @@ require("config.ui").setup()
 
 vim.opt.clipboard = "unnamedplus"
 
-vim.g.clipboard = {
-  name = "windows-clipboard",
-  copy = {
-    ["+"] = "clip.exe",
-    ["*"] = "clip.exe",
-  },
-  paste = {
-    ["+"] = "powershell.exe -NoProfile -Command Get-Clipboard",
-    ["*"] = "powershell.exe -NoProfile -Command Get-Clipboard",
-  },
-  cache_enabled = 0,
-}
+-- vim.g.clipboard = {
+--   name = "windows-clipboard",
+--   copy = {
+--     ["+"] = "clip.exe",
+--     ["*"] = "clip.exe",
+--   },
+--   paste = {
+--     ["+"] = "powershell.exe -NoProfile -Command Get-Clipboard -Raw",
+--     ["*"] = "powershell.exe -NoProfile -Command Get-Clipboard -Raw",
+--   },
+--   cache_enabled = 0,
+-- }

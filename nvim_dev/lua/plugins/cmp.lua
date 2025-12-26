@@ -1,68 +1,147 @@
-return {
-  -- https://github.com/rafamadriz/friendly-snippets
-  {
-    "L3MON4D3/LuaSnip",
-    version = "2.*",
-    -- build = "make install_jsregexp", -- dla Windows usuä t© lini©
-    dependencies = {
-      "rafamadriz/friendly-snippets", -- gotowe snippety
-    },
-    config = function()
-      local ls = require("luasnip")
-
-      -- vscode (friendly-snippets)
-      require("luasnip.loaders.from_vscode").lazy_load()
-
-      -- own snippets
-      require("luasnip.loaders.from_lua").load({
-        paths = { vim.fn.stdpath("config") .. "/lua/snippets" },
-      })
-
-      -- keymaps
-      vim.keymap.set({ "i", "s" }, "<C-k>", function()
-        if ls.expand_or_jumpable() then
-          ls.expand_or_jump()
-        end
-      end, { silent = true })
-
-      vim.keymap.set({ "i", "s" }, "<C-j>", function()
-        if ls.jumpable(-1) then
-          ls.jump(-1)
-        end
-      end, { silent = true })
-
-      vim.keymap.set({ "i", "s" }, "<C-l>", function()
-        if ls.choice_active() then
-          ls.change_choice(1)
-        end
-      end, { silent = true })
-    end,
-  },
-
-  {
-    -- fast engine for autocomplete written in Rust
-    "saghen/blink.cmp",
-    version = "1.*",
-    event = "InsertEnter",
-    dependencies = {
-      "L3MON4D3/LuaSnip",
-      "windwp/nvim-autopairs",
-      "rafamadriz/friendly-snippets",
-    },
-    opts = {
-      keymap = {
-        preset = "default",
-      },
-      snippets = {
-        preset = "luasnip", -- MAE LITERY
-      },
-      sources = {
-        default = { "lsp", "path", "snippets", "buffer" },
-      },
-      fuzzy = {
-        implementation = "lua",
-      },
-    },
-  },
-}
-
+-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
+-- SENIORSKI SETUP: NVIM 0.11 NATIVE SNIPPETS + LUASNIP FALLBACK
+-- Plik: C:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\plugins\snippets.lua
+-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
+
+return {
+  -- ========== PLUGIN 1: LUASNIP (silnik dla custom snippet¢w) ==========
+{
+    "L3MON4D3/LuaSnip",
+    version = "2.*",
+    dependencies = { "rafamadriz/friendly-snippets" },
+    config = function()
+      local ls = require("luasnip")
+
+      -- ========== CONFIG ENGINE ==========
+      ls.config.set_config({
+        history = true, -- pami¿taj ostatni snippet w sesji
+        updateevents = "TextChanged,TextChangedI", -- live update snippetów
+        enable_autosnippets = false, -- wy¿¿cz auto-expansion (bezpiecze¿stwo)
+      })
+
+      -- ========== EXTEND FILETYPES (all.lua dzia¿a wsz¿dzie) ==========
+      -- ¿ SAFE: sprawd¿ czy modu¿ extras.filetype_functions istnieje
+      local has_ft_funcs, ft_funcs = pcall(require, "luasnip.extras.filetype_functions")
+      if has_ft_funcs then
+        ls.config.set_config({
+          load_ft_func = ft_funcs.extend_load_ft({
+            ["_"] = { "all" }, -- "_" = ka¿dy filetype dostaje "all"
+          }),
+        })
+      else
+        -- Fallback: r¿czne rozszerzenie (starsze wersje LuaSnip)
+        ls.filetype_extend("_", { "all" })
+      end
+
+      -- ========== LOADERS ==========
+      -- 1. Friendly-snippets (VSCode format) - lazy load
+      require("luasnip.loaders.from_vscode").lazy_load()
+
+      -- 2. W¿asne snippety (Lua format) - lazy load
+      require("luasnip.loaders.from_lua").lazy_load({
+        paths = { vim.fn.stdpath("config") .. "\\lua\\snippets" },
+      })
+
+      -- ========== KEYMAPS ==========
+      vim.keymap.set({ "i", "s" }, "<C-k>", function()
+        if ls.expand_or_jumpable() then
+          ls.expand_or_jump()
+        end
+      end, { silent = true, desc = "LuaSnip: Expand/Jump Forward" })
+
+      vim.keymap.set({ "i", "s" }, "<C-j>", function()
+        if ls.jumpable(-1) then
+          ls.jump(-1)
+        end
+      end, { silent = true, desc = "LuaSnip: Jump Backward" })
+
+      vim.keymap.set({ "i", "s" }, "<C-l>", function()
+        if ls.choice_active() then
+          ls.change_choice(1)
+        end
+      end, { silent = true, desc = "LuaSnip: Cycle Choices" })
+    end,
+  },
+  -- ========== PLUGIN 2: BLINK.CMP (autocomplete engine) ==========
+  -- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
+
+  {
+    "saghen/blink.cmp",
+    version = "1.*",
+    event = "InsertEnter",
+    dependencies = {
+      "L3MON4D3/LuaSnip",
+      "rafamadriz/friendly-snippets",
+      "windwp/nvim-autopairs", -- auto-parowanie nawias¢w
+    },
+    opts = {
+      keymap = {
+        preset = "default",
+
+        -- ? PRO KEYMAPS
+        ["<C-space>"] = { "show", "hide" },           -- toggle menu
+        ["<C-e>"] = { "hide" },                       -- zamknij menu
+        ["<C-y>"] = { "select_and_accept" },          -- zaakceptuj
+        ["<CR>"] = { "accept", "fallback" },          -- Enter = zaakceptuj
+        ["<Tab>"] = { "snippet_forward", "fallback" }, -- Tab = skok w snippecie
+        ["<S-Tab>"] = { "snippet_backward", "fallback" }, -- Shift+Tab = skok wstecz
+        ["<C-n>"] = { "select_next", "fallback" },    -- nast©pny
+        ["<C-p>"] = { "select_prev", "fallback" },    -- poprzedni
+        ["<C-u>"] = { "scroll_documentation_up", "fallback" },
+        ["<C-d>"] = { "scroll_documentation_down", "fallback" },
+      },
+
+      -- ========== KLUCZOWE: Blink u¾ywa LuaSnip jako silnika ==========
+      snippets = {
+        preset = "luasnip", -- ? Blink czyta snippety przez LuaSnip API
+      },
+
+      sources = {
+        default = { "lsp", "path", "snippets", "buffer" },
+        providers = {
+          snippets = {
+            name = "Snippets",
+            module = "blink.cmp.sources.snippets",
+            score_offset = 80, -- priorytet wy¾szy ni¾ buffer
+          },
+        },
+      },
+
+      fuzzy = {
+        implementation = "lua", -- zmieä na "fzf" je˜li masz fzf zainstalowane
+      },
+    },
+  },
+
+  -- ========== PLUGIN 3: NATYWNE SNIPPETY (vim.snippet - Nvim 0.10+) ==========
+  -- U¾ywamy <Tab> do skok¢w w snippetach od LSP
+  -- {
+  --   "garymjr/nvim-snippets", -- adapter dla friendly-snippets -> vim.snippet
+  --   event = "InsertEnter",
+  --   dependencies = { "rafamadriz/friendly-snippets" },
+  --   opts = {
+  --     friendly_snippets = true, -- ? ˆaduj friendly-snippets
+  --     search_paths = { vim.fn.stdpath("config") .. "/snippets" }, -- wˆasne VSCode snippety
+  --   },
+  --   config = function(_, opts)
+  --     require("snippets").setup(opts)
+  --
+  --     -- ========== KEYMAPS: NATYWNE SKOKI (vim.snippet) ==========
+  --     vim.keymap.set({ "i", "s" }, "<Tab>", function()
+  --       if vim.snippet.active({ direction = 1 }) then
+  --         return "<Cmd>lua vim.snippet.jump(1)<CR>"
+  --       else
+  --         return "<Tab>"
+  --       end
+  --     end, { expr = true, silent = true, desc = "Snippet: Jump Forward" })
+  --
+  --     vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
+  --       if vim.snippet.active({ direction = -1 }) then
+  --         return "<Cmd>lua vim.snippet.jump(-1)<CR>"
+  --       else
+  --         return "<S-Tab>"
+  --       end
+  --     end, { expr = true, silent = true, desc = "Snippet: Jump Backward" })
+  --   end,
+  -- },
+}
