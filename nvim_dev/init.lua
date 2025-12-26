@@ -17,3 +17,18 @@ require("keymaps")
 require("config.lazy")
 --require("config.terminal")
 require("config.ui").setup()
+
+vim.opt.clipboard = "unnamedplus"
+
+vim.g.clipboard = {
+  name = "windows-clipboard",
+  copy = {
+    ["+"] = "clip.exe",
+    ["*"] = "clip.exe",
+  },
+  paste = {
+    ["+"] = 'powershell.exe -NoProfile -Command Get-Clipboard',
+    ["*"] = 'powershell.exe -NoProfile -Command Get-Clipboard',
+  },
+  cache_enabled = 0,
+}

@@ -41,7 +41,7 @@ return {
           },
         },
         extensions = {
-          ["ui-select"] = {
+          ["ui-sel:te:ct"] = {
             require("telescope.themes").get_dropdown(),
           },
         },
