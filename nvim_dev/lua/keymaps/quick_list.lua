@@ -31,3 +31,10 @@ map('n', '<leader>qh', function()
     -- Ta komenda pokaże w linii komend indeksy i rozmiary list w historii
     vim.cmd('chistory')
 end, { desc = 'Quickfix: Pokaż historię list' })
+
+-- aliasy dla quicklist
+-- :co    " Alias for :copen (open)
+-- :ccl   " Alias for :cclose (close)
+-- :cn    " Jump to next item
+-- :cp    " Jump to previous item
+

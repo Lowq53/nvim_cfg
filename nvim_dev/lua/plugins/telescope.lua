@@ -18,6 +18,8 @@ return {
         defaults = {
           -- Ignorowane pliki i foldery
           file_ignore_patterns = {
+            -- specyfic -files
+            "lazy-lock.json",
             "^.git/",
             "^node_modules/",
             "^.venv/",

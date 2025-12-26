@@ -1,129 +1,77 @@
 return {
   -- ======================== LSP & MASON ========================
-  {
+  
+{
+  "neovim/nvim-lspconfig",
+  event = "BufReadPre",
+  dependencies = {
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
+    "saghen/blink.cmp",
+    "j-hui/fidget.nvim",
+  },
+
+  config = function()
+    local mason_lsp = require("mason-lspconfig")
+
+    -- capabilities z blink.cmp (LuaSnip + completion)
+    local capabilities = require("blink.cmp").get_lsp_capabilities()
+
+    -- keymapy po attach
+    vim.api.nvim_create_autocmd("LspAttach", {
+      callback = function(event)
+        local map = function(keys, func, desc)
+          vim.keymap.set("n", keys, func, {
+            buffer = event.buf,
+            desc = "LSP: " .. desc,
+          })
+        end
+
+        map("gd", vim.lsp.buf.definition, "Goto Definition")
+        map("gR", vim.lsp.buf.references, "References")
+        map("K", vim.lsp.buf.hover, "Hover")
+        map("<leader>rn", vim.lsp.buf.rename, "Rename")
+        map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
+      end,
+    })
+
+    -- definicje serwer¢w
+    local servers = {
+      lua_ls = {
+        settings = {
+          Lua = {
+            runtime = { version = "LuaJIT" },
+            diagnostics = { globals = { "vim" } },
+            workspace = {
+              library = vim.api.nvim_get_runtime_file("", true),
+              checkThirdParty = false,
+            },
+            telemetry = { enable = false },
+          },
+        },
+      },
+
+      pyright = {},
+      ts_ls = {},
+      html = {},
+      cssls = {},
+      powershell_es = {},
+    }
+
+    -- Mason: instalacja
+    mason_lsp.setup({
+      ensure_installed = vim.tbl_keys(servers),
+    })
+
+    -- NOWE API: vim.lsp.config
+    for server, opts in pairs(servers) do
+      vim.lsp.config(server, vim.tbl_deep_extend("force", {
+        capabilities = capabilities,
+      }, opts))
+    end
+  end,
+},
 
-    "neovim/nvim-lspconfig",
-
-    event = "BufReadPre",
-
-    dependencies = {
-
-      "williamboman/mason.nvim",
-
-      "williamboman/mason-lspconfig.nvim",
-
-      "saghen/blink.cmp",
-
-      "j-hui/fidget.nvim",
-
-    },
-
-    formatters_by_ft = {
-
-      lua = { "stylua" }, -- senior-style formatter
-
-    },
-
-    config = function()
-      local lspconfig = require("lspconfig")
-
-      local mason_lsp = require("mason-lspconfig")
-
-      local capabilities = require("blink.cmp").get_lsp_capabilities()
-
-
-
-      -- keymapy po attach
-
-      vim.api.nvim_create_autocmd("LspAttach", {
-
-        callback = function(event)
-          local map = function(keys, func, desc)
-            vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
-          end
-
-
-
-          map("gd", vim.lsp.buf.definition, "Goto Definition")
-
-          map("gR", vim.lsp.buf.references, "References") -- zmiana ¾eby unikn¥† overlap z gr + grr
-
-          map("K", vim.lsp.buf.hover, "Hover")
-
-          map("<leader>rn", vim.lsp.buf.rename, "Rename")
-
-          map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
-        end,
-
-      })
-
-
-
-      -- lista serwer¢w + ich opcje
-
-      local servers = {
-
-        lua_ls = {
-
-          settings = {
-
-            Lua = {
-
-              runtime = { version = "LuaJIT" },
-
-              diagnostics = { globals = { "vim" } },
-
-              workspace = {
-
-                library = vim.api.nvim_get_runtime_file("", true),
-
-                checkThirdParty = false,
-
-              },
-
-              telemetry = { enable = false },
-
-            },
-
-          },
-
-        },
-
-        pyright = {},
-
-        ts_ls = {},
-
-        html = {},
-
-        cssls = {},
-
-        powershell_es = {},
-
-      }
-
-
-      -- automatyczna instalacja przez Mason
-
-      mason_lsp.setup({
-
-        ensure_installed = vim.tbl_keys(servers),
-
-      })
-
-
-
-      -- setup LSP dla ka¾dego serwera
-
-      for server, config in pairs(servers) do
-        lspconfig[server].setup(vim.tbl_deep_extend("force", {
-
-          capabilities = capabilities,
-
-        }, config))
-      end
-    end,
-
-  },
 
 
   {
@@ -214,11 +162,6 @@ return {
   },
 
   {
-    "L3MON4D3/LuaSnip",
-    version = "2.*",
-  },
-
-  {
     "pocco81/auto-save.nvim",
     event = { "InsertLeave", "TextChanged" },
     opts = {
@@ -231,4 +174,3 @@ return {
   },
 
 }
-

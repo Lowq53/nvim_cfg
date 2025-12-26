@@ -1,13 +1,29 @@
 -- c:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\config\settings.lua
 local opt = vim.opt
 
--- ===== Podstawowe zawijanie ===== 
-opt.wrap = true                -- Włącz zawijanie wierszy
-opt.linebreak = true           -- Nie łam słów w połowie (zawijaj na spacjach/znakach interpunkcyjnych)
-opt.breakindent = true         -- Zawinięte linie zachowują to samo wcięcie co linia bazowa
-opt.copyindent = true          -- Kopiuj strukturę wcięć przy nowej linii
+-- Force UTF-8 encoding and Unix line endings
+vim.opt.encoding = "utf-8"
+vim.opt.fileencoding = "utf-8"
+vim.opt.fileformat = "unix" -- Fixes ^M issues
+
+-- relative numbers
+vim.opt.number = true
+vim.opt.rnu = true
+vim.g.mapleader = "\\"
+vim.g.maplocalleader = "\\"
+-- chunk-level tylko w tym pliku
+-- local vks = vim.keympap.set
+-- PWSH
+-- ... inne ustawienia Vima (vim.opt)
+-- Za┼éaduj konfiguracj─Ö LazyVim z osobnego pliku
+
+-- ===== Podstawowe zawijanie =====
+opt.wrap = true -- Włącz zawijanie wierszy
+opt.linebreak = true -- Nie łam słów w połowie (zawijaj na spacjach/znakach interpunkcyjnych)
+opt.breakindent = true -- Zawinięte linie zachowują to samo wcięcie co linia bazowa
+opt.copyindent = true -- Kopiuj strukturę wcięć przy nowej linii
 -- 2. Estetyka zawijania (Protip: dodanie symbolu na początku zawiniętej linii)
-opt.showbreak = "↪ "           -- Znak wyświetlany na początku zawiniętej części wiersza
+opt.showbreak = "↪ " -- Znak wyświetlany na początku zawiniętej części wiersza
 
 -- ===== CORE OPTIONS =====
 vim.opt.number = true
