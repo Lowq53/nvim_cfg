@@ -5,7 +5,7 @@
 
 return {
   -- ========== PLUGIN 1: LUASNIP (silnik dla custom snippet¢w) ==========
-{
+  {
     "L3MON4D3/LuaSnip",
     version = "2.*",
     dependencies = { "rafamadriz/friendly-snippets" },
@@ -14,9 +14,9 @@ return {
 
       -- ========== CONFIG ENGINE ==========
       ls.config.set_config({
-        history = true, -- pami¿taj ostatni snippet w sesji
+        history = true,                        -- pami¿taj ostatni snippet w sesji
         updateevents = "TextChanged,TextChangedI", -- live update snippetów
-        enable_autosnippets = false, -- wy¿¿cz auto-expansion (bezpiecze¿stwo)
+        enable_autosnippets = false,           -- wy¿¿cz auto-expansion (bezpiecze¿stwo)
       })
 
       -- ========== EXTEND FILETYPES (all.lua dzia¿a wsz¿dzie) ==========
@@ -77,20 +77,61 @@ return {
     opts = {
       keymap = {
         preset = "default",
+        ["<C-space>"] = { "show", "hide" },
+        ["<C-e>"] = { "hide" },
+        ["<C-y>"] = { "select_and_accept" },
 
-        -- ? PRO KEYMAPS
-        ["<C-space>"] = { "show", "hide" },           -- toggle menu
-        ["<C-e>"] = { "hide" },                       -- zamknij menu
-        ["<C-y>"] = { "select_and_accept" },          -- zaakceptuj
-        ["<CR>"] = { "accept", "fallback" },          -- Enter = zaakceptuj
-        ["<Tab>"] = { "snippet_forward", "fallback" }, -- Tab = skok w snippecie
-        ["<S-Tab>"] = { "snippet_backward", "fallback" }, -- Shift+Tab = skok wstecz
-        ["<C-n>"] = { "select_next", "fallback" },    -- nast©pny
-        ["<C-p>"] = { "select_prev", "fallback" },    -- poprzedni
+        ["<C-l>"] = { "accept", "fallback" },
+        ["<CR>"] = { "accept", "fallback" },
+        ["<Tab>"] = { "snippet_forward", "fallback" },
+        ["<S-Tab>"] = { "snippet_backward", "fallback" },
+
+        -- ¿ KLUCZ: conditional mapping dla C-n/C-p
+        ["<C-n>"] = {
+          function(cmp)
+            local ls = require("luasnip")
+            if ls.choice_active() then
+              ls.change_choice(1)
+            else
+              return cmp.select_next()
+            end
+          end,
+          "fallback",
+        },
+        ["<C-p>"] = {
+          function(cmp)
+            local ls = require("luasnip")
+            if ls.choice_active() then
+              ls.change_choice(-1)
+            else
+              return cmp.select_prev()
+            end
+          end,
+          "fallback",
+        },
+
         ["<C-u>"] = { "scroll_documentation_up", "fallback" },
         ["<C-d>"] = { "scroll_documentation_down", "fallback" },
       },
+      -- ¿ W¿¿CZ DOKUMENTACJ¿/PREVIEW
 
+      completion = {
+        documentation = {
+          auto_show = true,    -- poka¿ automatycznie
+          auto_show_delay_ms = 200, -- opó¿nienie 200ms
+          window = {
+            border = "rounded", -- zaokr¿glone rogi
+            max_width = 60,    -- mniejsza szeroko¿¿ (domy¿lnie 80)
+            max_height = 20,   -- mniejsza wysoko¿¿ (domy¿lnie 30)
+          },
+        },
+        menu = {
+          border = "rounded",
+          draw = {
+            columns = { { "label", "label_description", gap = 1 }, { "kind_icon", "kind" } },
+          },
+        },
+      },
       -- ========== KLUCZOWE: Blink u¾ywa LuaSnip jako silnika ==========
       snippets = {
         preset = "luasnip", -- ? Blink czyta snippety przez LuaSnip API
