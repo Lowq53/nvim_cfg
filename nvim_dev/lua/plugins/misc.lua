@@ -5,7 +5,13 @@ return {
 		config = function()
 			require("auto-save").setup({
 				enabled = false, -- włączony
-				execution_message = false, -- nie pokazuj komunikatu
+				execution_message = {
+					message = function() -- message to print on save
+						return ("AutoSave: saved at " .. vim.fn.strftime("%H:%M:%S"))
+					end,
+					dim = 0.18, -- dim the color of `message`
+					cleaning_interval = 1250, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgArea
+				},
 				events = { "InsertLeave" }, -- lista eventów, przy których zapisuje
 				conditions = {
 					exists = true,
