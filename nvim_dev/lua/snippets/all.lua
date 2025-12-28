@@ -32,4 +32,9 @@ for _, v in ipairs(cfg.sep) do
 end
 table.insert(snips, s("sep", { c(1, choices) }, { desc = "Menu (C-n/p)" }))
 
+ls.add_snippets("markdown", {})
+
+ls.add_snippets("all", { -- dla wszystkich typów plików
+	s("todo", { t("- [] "), i(1) }),
+})
 return snips

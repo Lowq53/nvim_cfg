@@ -2,10 +2,10 @@
 -- ~/.config/nvim/init.lua
 -- only require here pls
 
-
-
 require("config.settings")
 require("keymaps")
+require("temp.temp")
+
 require("config.lazy")
 --require("config.terminal")
 require("config.ui").setup()

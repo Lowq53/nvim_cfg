@@ -1,14 +1,15 @@
 -- AppData\Local\nvim_cfg\nvim_dev\lua\config\lazy.lua
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
--- 2. Mechanizm Auto-Bootstrap: Sprawd� czy lazy istnieje, je�li nie - sklonuj go
+-- 2. Mechanizm Auto-Bootstrap: Sprawd� czy lazy istnieje, je�li nie - sklonuj go
+
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
   local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-      { out, "WarningMsg" },
+      { out,                            "WarningMsg" },
       { "\nPress any key to exit..." },
     }, true, {})
     vim.fn.getchar()
@@ -38,7 +39,7 @@ require("lazy").setup({
   },
 
   -- todo -- rozkminic luarocks
-    -- ⛔ WYŁĄCZ LUAROCKS / HEREROCKS (nie używasz)
+  -- ⛔ WYŁĄCZ LUAROCKS / HEREROCKS (nie używasz)
   rocks = {
     enabled = false,
   },
@@ -54,8 +55,8 @@ require("lazy").setup({
 -- Jeśli chcesz dokładnie zachowanie z kickstart (otwarcie okna po instalacji):
 
 
--- TO DO 
--- - sprawdzic jak powinno sie uruchamiac lazy ja otwieram nvim 
+-- TO DO
+-- - sprawdzic jak powinno sie uruchamiac lazy ja otwieram nvim
 -- - jeseli bez pliku to sie pokazuje a jak plik to sie pokazuje plik nie lazy
 
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -73,7 +74,8 @@ vim.api.nvim_create_autocmd("VimEnter", {
       require("lazy").show()
     end
   end,
-})
+})
+
 -- Esc/Ctrl-C do zamykania okna lazy przez FileType autocmd
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "lazy",
@@ -81,16 +83,14 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", "<Esc>", function()
       vim.api.nvim_win_close(0, false)
     end, { buffer = event.buf, nowait = true, silent = true })
-    
+
     vim.keymap.set("n", "<C-c>", function()
       vim.api.nvim_win_close(0, false)
     end, { buffer = event.buf, nowait = true, silent = true })
   end,
 })
-
--- Globalny skrót <space>l do otwierania Lazy
-vim.keymap.set("n", "<space>l", function()
-  require("lazy").show()
-end)
-
-
+-- to jes pod \lc
+-- -- Globalny skrót <space>l do otwierania Lazy
+-- vim.keymap.set("n", "<space>l", function()
+--   require("lazy").show()
+-- end)
