@@ -17,7 +17,17 @@ local cfg = {
 	},
 }
 
-local snips = {}
+local snips = {
+	s("ht", {
+		-- Time, Date (YY) and separator
+		f(function()
+			return os.date("%H:%M %d %m %y / ")
+		end),
+		i(1, "Block 1"),
+		t({ "", string.rep("▰", 72), "" }),
+		i(0), -- Final jump here (below the line)
+	}),
+}
 
 -- Bezpośrednie snippety
 for _, v in ipairs(cfg.sep) do

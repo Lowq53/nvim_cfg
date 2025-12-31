@@ -56,10 +56,12 @@ return {
 			-- ═══════════════════════════════════════════════════════════════
 			-- CORE NAVIGATION - podstawowe skróty
 			-- ═══════════════════════════════════════════════════════════════
+			-- najpierw serch grep i search files
 			vim.keymap.set("n", "sf", builtin.find_files, { desc = "[S]earch [F]iles" })
 			vim.keymap.set("n", "sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
 			vim.keymap.set("n", "so.", builtin.oldfiles, { desc = "[S]earch [O]ld files" })
-			vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find buffers" })
+			-- switching file
+			vim.keymap.set("n", "<leader>f<leader>", builtin.buffers, { desc = "[ ] Find buffers" })
 
 			-- ═══════════════════════════════════════════════════════════════
 			-- SEARCH HELPERS - pomoc w wyszukiwaniu

@@ -10,7 +10,7 @@ end, { desc = "Open pwsh in vsplit and equalize" })
 local M = {}
 
 local SESSION_DIR = "C:/code_data/tmp/"
-local SHADA_DIR = "C:/code_data/tmp/shada/"
+local SHADA_DIR = "C:/code_data/tmp/"
 
 -- Upewnij się że foldery istnieją
 vim.fn.mkdir(SESSION_DIR, "p")
@@ -110,11 +110,11 @@ vim.keymap.set("n", "<A-F6>", function()
 	M.restore_session("quick")
 end, { desc = "Quick restore session" })
 
--- AUTO-SAVE przy wyjściu
-vim.api.nvim_create_autocmd("VimLeavePre", {
-	callback = function()
-		M.save_session("auto")
-	end,
-})
+-- -- AUTO-SAVE przy wyjściu
+-- vim.api.nvim_create_autocmd("VimLeavePre", {
+-- 	callback = function()
+-- 		M.save_session("auto")
+-- 	end,
+-- })
 
 return M

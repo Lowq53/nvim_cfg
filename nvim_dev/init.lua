@@ -4,7 +4,7 @@
 
 require("config.settings")
 require("keymaps")
-require("temp.temp")
+require("temp.init")
 
 require("config.lazy")
 --require("config.terminal")
