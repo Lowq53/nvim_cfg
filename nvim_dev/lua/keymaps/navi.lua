@@ -24,6 +24,13 @@ vks("n", "<C-q>k", ":cprev<CR>", { desc = "Poprzedni quickfix" })
 vks("n", "<C-q>h", ":colder<CR>", { desc = "Starsza lista quickfix" })
 vks("n", "<C-q>l", ":cnewer<CR>", { desc = "Nowsza lista quickfix" })
 
+-- Pro Tip: Visual Wrap (Nawigacja)
+-- ────────────────────────────────────────────────────────────────────────
+-- Standardowo 'j' i 'k' skaczą po liniach logicznych (numerach).
+-- Poniższe mapowania sprawiają, że poruszasz się po liniach widocznych (zawiniętych).
+vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+
 -- W init.lua lub pliku konfiguracyjnym
 --────────────────────────────────────────────────────────────────────────
 vks("n", "<C-h>", "<C-w>h", { desc = "Przejdź do okna lewego" })

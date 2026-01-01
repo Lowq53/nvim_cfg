@@ -61,7 +61,8 @@ return {
 			vim.keymap.set("n", "sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
 			vim.keymap.set("n", "so.", builtin.oldfiles, { desc = "[S]earch [O]ld files" })
 			-- switching file
-			vim.keymap.set("n", "<leader>f<leader>", builtin.buffers, { desc = "[ ] Find buffers" })
+			-- / \f\ /
+			vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find buffers" })
 
 			-- ═══════════════════════════════════════════════════════════════
 			-- SEARCH HELPERS - pomoc w wyszukiwaniu

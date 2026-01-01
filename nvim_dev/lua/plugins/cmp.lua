@@ -1,4 +1,5 @@
 -- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
+-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 -- SENIORSKI SETUP: NVIM 0.11 NATIVE SNIPPETS + LUASNIP FALLBACK
 -- Plik: C:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\plugins\snippets.lua
 -- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
@@ -26,7 +27,7 @@ return {
 			local f = ls.function_node
 			local c = ls.choice_node
 			local d = ls.dynamic_node
-
+			-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 			-- ========== CONFIG ENGINE ==========
 			-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 			ls.config.set_config({
@@ -40,7 +41,7 @@ return {
 			-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 			-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 			-- ========== EXTEND FILETYPES (all.lua dzia¿a wsz¿dzie) ==========
-			-- ¿ SAFE: sprawd¿ czy modu¿ extras.filetype_functions istnieje
+			-- SAFE: sprawd¿ czy modu¿ extras.filetype_functions istnieje
 			local has_ft_funcs, ft_funcs = pcall(require, "luasnip.extras.filetype_functions")
 			if has_ft_funcs then
 				ls.config.set_config({
@@ -63,6 +64,20 @@ return {
 			})
 
 			-- ========== KEYMAPS ==========
+			-- ¿ LUASNIP keymaps (C-n/C-p dla choice, osobno od blink)
+			vim.keymap.set({ "i", "s" }, "<C-n>", function()
+				if ls.choice_active() then
+					ls.change_choice(1)
+				end
+			end, { silent = true, desc = "LuaSnip: Next Choice" })
+
+			vim.keymap.set({ "i", "s" }, "<C-p>", function()
+				if ls.choice_active() then
+					ls.change_choice(-1)
+				end
+			end, { silent = true, desc = "LuaSnip: Prev Choice" })
+			-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
+
 			vim.keymap.set({ "i", "s" }, "<C-k>", function()
 				if ls.expand_or_jumpable() then
 					ls.expand_or_jump()
@@ -99,41 +114,37 @@ return {
 				preset = "default",
 				["<C-space>"] = { "show", "hide" },
 				["<C-e>"] = { "hide" },
+
+				-- ¿ ZATWIERDZANIE
+				["<CR>"] = { "accept", "fallback" },
+				["<C-l>"] = { "accept", "fallback" },
 				["<C-y>"] = { "select_and_accept" },
 
-				["<C-l>"] = { "accept", "fallback" },
-				["<CR>"] = { "accept", "fallback" },
+				-- ¿ NAWIGACJA (tylko stringi, NIE funkcje!)
+				["<C-n>"] = { "show_and_insert_or_accept_single", "select_next", "fallback" },
+				["<C-p>"] = { "show_and_insert_or_accept_single", "select_prev", "fallback" },
 				["<Tab>"] = { "snippet_forward", "fallback" },
 				["<S-Tab>"] = { "snippet_backward", "fallback" },
 
-				-- ¿ KLUCZ: conditional mapping dla C-n/C-p
-				["<C-n>"] = {
-					function(cmp)
-						local ls = require("luasnip")
-						if ls.choice_active() then
-							ls.change_choice(1)
-						else
-							return cmp.select_next()
-						end
-					end,
-					"fallback",
-				},
-				["<C-p>"] = {
-					function(cmp)
-						local ls = require("luasnip")
-						if ls.choice_active() then
-							ls.change_choice(-1)
-						else
-							return cmp.select_prev()
-						end
-					end,
-					"fallback",
-				},
-
+				-- SCROLL DOC
 				["<C-u>"] = { "scroll_documentation_up", "fallback" },
 				["<C-d>"] = { "scroll_documentation_down", "fallback" },
 			},
-			-- ¿ W¿¿CZ DOKUMENTACJ¿/PREVIEW
+			cmdline = {
+				enabled = true,
+				keymap = {
+					preset = "cmdline",
+					-- ¿ TYLKO STRINGI (NIE funkcje!)
+					["<C-n>"] = { "show_and_insert_or_accept_single", "select_next", "fallback" },
+					["<C-p>"] = { "show_and_insert_or_accept_single", "select_prev", "fallback" },
+					["<Tab>"] = { "show_and_insert_or_accept_single", "select_next", "fallback" },
+					["<S-Tab>"] = { "show_and_insert_or_accept_single", "select_prev", "fallback" },
+					["<CR>"] = { "accept", "fallback" },
+					["<C-l>"] = { "accept", "fallback" },
+					["<C-y>"] = { "select_and_accept" },
+				},
+			},
+			-- W¿¿CZ DOKUMENTACJ¿/PREVIEW
 
 			completion = {
 				documentation = {

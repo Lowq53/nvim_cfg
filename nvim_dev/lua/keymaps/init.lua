@@ -6,4 +6,5 @@ require("keymaps.extra")
 require("keymaps.navi")
 require("keymaps.space")
 require("keymaps.terminal")
-
+--
+require("keymaps.help_search")

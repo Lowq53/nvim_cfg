@@ -13,10 +13,27 @@ return {
 	config = function()
 		require("oil").setup({
 			default_file_explorer = true,
+			delete_to_trash = true,
+
 			-- Wizualne aspekty
 			columns = { "icon" },
 			view_options = {
-				show_hidden = true, -- Seniorzy zawsze patrzą na pliki ukryte (.git, .env)
+				-- Pokaż ukryte pliki (kropka na początku)
+				show_hidden = true,
+				-- Funkcja sprawdzająca, czy plik ma być ukryty
+				is_hidden_file = function(name, bufnr)
+					return vim.startswith(name, ".") and name ~= ".."
+				end,
+				-- Funkcja sprawdzająca, czy plik jest ignorowany przez git
+				is_always_hidden = function(name, bufnr)
+					return false
+				end,
+			},
+			float = {
+				padding = 2,
+				max_width = 100,
+				max_height = 20,
+				border = "rounded", -- Seniorzy kochają estetykę 'rounded'
 			},
 			-- KONFIGURACJA KLUCZY WEWNĄTRZ OIL
 			keymaps = {
@@ -32,6 +49,7 @@ return {
 				["gs"] = "actions.change_sort",
 				["gx"] = "actions.open_external",
 				["g."] = "actions.toggle_hidden",
+				["gh"] = "actions.toggle_hidden", -- Toggle ukrytych plików
 
 				-- TWOJE NIESTANDARDOWE MAPOWANIA:
 				["q"] = "actions.close", -- Zamykanie pod 'q'
@@ -39,7 +57,7 @@ return {
 
 				-- KOPIOWANIE ŚCIEŻKI (\pa)
 				-- Tworzymy własną funkcję w Lua dla Oil
-				["\\pa"] = {
+				["yp"] = {
 					callback = function()
 						local oil = require("oil")
 						local entry = oil.get_cursor_entry()
@@ -52,11 +70,35 @@ return {
 					end,
 					desc = "Copy full path to clipboard",
 				},
+				-- SENIOR WORKFLOW: Szybkie porównanie pliku pod kursorem z bieżącym buforem
+				["<leader>dp"] = {
+					desc = "Diff: Compare file under cursor with last buffer",
+					callback = function()
+						local oil = require("oil")
+						local entry = oil.get_cursor_entry()
+						if not entry then
+							return
+						end
+
+						-- Pobieramy pełną ścieżkę do pliku pod kursorem
+						local dir = oil.get_current_dir()
+						local fileName = entry.name
+						local fullPath = dir .. fileName
+
+						-- Zamykamy Oil, otwieramy plik w splicie i odpalamy diff
+						oil.close()
+						vim.cmd("vertical diffsplit " .. vim.fn.fnameescape(fullPath))
+					end,
+				},
 			},
 		})
 	end,
 	keys = {
+		-- it need to be here to open oil from any buffor
 		{ "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
+		-- Mapowanie otwierające Oil w oknie pływającym
+		vim.keymap.set("n", "<leader>fo", function()
+			require("oil").toggle_float()
+		end, { desc = "Oil: Toggle Floating" }),
 	},
 }
-

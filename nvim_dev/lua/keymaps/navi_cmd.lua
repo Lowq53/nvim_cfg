@@ -1,0 +1,2 @@
+-- navigacja dla cmp w <cmd> mode
+--
