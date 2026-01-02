@@ -8,3 +8,4 @@ require("keymaps.space")
 require("keymaps.terminal")
 --
 require("keymaps.help_search")
+require("keymaps.quickfix")

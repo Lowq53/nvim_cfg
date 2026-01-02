@@ -1,12 +1,19 @@
 -- Senior Quickfix Navigation
-local map = vim.keymap.set
+local vks = vim.keymap.set
 local cmd = vim.api.nvim_create_user_command
 -- Nawigacja bez otwierania okna listy
-map("n", "q]", "<cmd>cnext<cr>zz", { desc = "Quickfix: Next" })
-map("n", "q[", "<cmd>cprev<cr>zz", { desc = "Quickfix: Previous" })
+vks("n", "q]", "<cmd>cnext<cr>zz", { desc = "Quickfix: Next" })
+vks("n", "q[", "<cmd>cprev<cr>zz", { desc = "Quickfix: Previous" })
+-- Następny/poprzedni PLIK wewnątrz listy Quickfix
+vim.keymap.set("n", "]Q", "<cmd>cnf<CR>", opts)
+vim.keymap.set("n", "[Q", "<cmd>cpf<CR>", opts)
+
+-- Przeskok do pierwszego i ostatniego wpisu całej listy
+--vim.keymap.set("n", "<leader>qf", "<cmd>cfirst<CR>", opts)
+--vim.keymap.set("n", "<leader>ql", "<cmd>clast<CR>", opts)
 
 -- Toggle okna Quickfix (używając funkcji Lua dla inteligencji)
-map("n", "<leader>qo", function()
+vks("n", "<C-q>o", function()
 	local qf_exists = false
 	for _, win in pairs(vim.fn.getwininfo()) do
 		if win["quickfix"] == 1 then
@@ -27,14 +34,14 @@ vim.keymap.set("n", "<C-q>h", ":colder<CR>", { desc = "Starsza lista quickfix" }
 vim.keymap.set("n", "<C-q>l", ":cnewer<CR>", { desc = "Nowsza lista quickfix" })
 
 -- Bonus: Czyszczenie listy
-map("n", "<leader>qc", "<cmd>cexpr []<cr>", { desc = "Quickfix: Clear List" })
+vks("n", "<leader>qc", "<cmd>cexpr []<cr>", { desc = "Quickfix: Clear List" })
 
 -- Skakanie po historiach list (Older / Newer)
-map("n", "<leader>qo", "<cmd>colder<cr>", { desc = "Quickfix: Poprzednia lista (History)" })
-map("n", "<leader>qn", "<cmd>cnewer<cr>", { desc = "Quickfix: Następna lista (History)" })
+vks("n", "<leader>qo", "<cmd>colder<cr>", { desc = "Quickfix: Poprzednia lista (History)" })
+vks("n", "<leader>qn", "<cmd>cnewer<cr>", { desc = "Quickfix: Następna lista (History)" })
 
 -- Bonus: Wyświetl wszystkie dostępne listy w historii
-map("n", "<leader>qh", function()
+vks("n", "<leader>qh", function()
 	-- Ta komenda pokaże w linii komend indeksy i rozmiary list w historii
 	vim.cmd("chistory")
 end, { desc = "Quickfix: Pokaż historię list" })

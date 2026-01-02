@@ -12,12 +12,13 @@ return {
 					dim = 0.18, -- dim the color of `message`
 					cleaning_interval = 1250, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgArea
 				},
-				events = { "InsertLeave" }, -- lista eventów, przy których zapisuje
+				events = { "BufLeave", "FocusLost" }, -- OK
 				conditions = {
 					exists = true,
 					filetype_is_not = {},
 					-- file_path_is_not = { "lua/plugins/*", "lua/config/*" },:w -- wykluczone
 				},
+				debounce_delay = 1000,
 				write_all_buffers = false, -- zapisuje tylko aktualny buffer
 				trigger_events = { -- możesz dodać dodatkowe eventy
 					--"InsertLeave", -- wychodzisz z trybu insert

@@ -1,11 +1,10 @@
 -- ~/.config/nvim/luasnippets/all.lua
 local ls = require("luasnip")
-local fmt = require("luasnip.extras.fmt).fmt
+local fmt = require("luasnip.extras.fmt").fmt
 local i, f = ls.insert_node, ls.function_node
 local s, t, c, sn = ls.snippet, ls.text_node, ls.choice_node, ls.snippet_node
 
 local cfg = {
-	w = 72,
 	sep = {
 		{ k = "h1", ch = "▰", n = "Block 1" },
 		{ k = "h2", ch = "∎", n = "Square" },
@@ -47,13 +46,43 @@ table.insert(snips, s("sep", { c(1, choices) }, { desc = "Menu (C-n/p)" }))
 ls.add_snippets("markdown", {})
 
 ls.add_snippets("all", { -- dla wszystkich typów plików
-  s("to", fmt([[
+	s("todo", { t("- [] "), i(1) }),
+	s(
+		"to",
+		fmt(
+			[[
     - [ ] {task}
       - ( ) {sub}
-    ]], {
-        task = i(1, "Task"),
-        sub = i(2, "Subtask")
-    })),
-	s("todo", { t("- [] "), i(1) }),
+    ]],
+			{
+				task = i(1, "Task"),
+				sub = i(2, "Subtask"),
+			}
+		)
+	),
+
+	-- HEADER: Sztywna szerokość 72 znaki
+	-- to
+	s(
+		"header",
+		fmt(
+			[[
+  {sep}
+  -- TITLE: {title}
+  -- DATE:  {date}
+  {sep}
+  ]],
+			{
+				sep = f(function()
+					return string.rep("-", 72)
+				end),
+				title = i(1, "NAGŁÓWEK"),
+				date = f(function()
+					return os.date("%Y-%m-%d")
+				end),
+			}
+		)
+	),
 })
+
 return snips

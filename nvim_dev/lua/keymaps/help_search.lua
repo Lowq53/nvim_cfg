@@ -1,7 +1,8 @@
-local M = {}
-
 -- Zaawansowane mapowania do nawigacji po dokumentacji i kodzie
-M.setup_navigation = function()
+-- ────────────────────────────────────────────────────────────────────────
+local H = {}
+
+H.setup_navigation = function()
 	local set = vim.keymap.set
 
 	-- Szybki help pod kursorem (inteligentny jump)
@@ -28,6 +29,6 @@ M.setup_navigation = function()
 	end, { desc = "Search in Neovim Plugins/Runtime" })
 end
 
-M.setup_navigation()
+H.setup_navigation()
 
-return M
+return H
