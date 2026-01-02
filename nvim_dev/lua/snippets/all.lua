@@ -1,5 +1,7 @@
 -- ~/.config/nvim/luasnippets/all.lua
 local ls = require("luasnip")
+local fmt = require("luasnip.extras.fmt).fmt
+local i, f = ls.insert_node, ls.function_node
 local s, t, c, sn = ls.snippet, ls.text_node, ls.choice_node, ls.snippet_node
 
 local cfg = {
@@ -45,6 +47,13 @@ table.insert(snips, s("sep", { c(1, choices) }, { desc = "Menu (C-n/p)" }))
 ls.add_snippets("markdown", {})
 
 ls.add_snippets("all", { -- dla wszystkich typów plików
+  s("to", fmt([[
+    - [ ] {task}
+      - ( ) {sub}
+    ]], {
+        task = i(1, "Task"),
+        sub = i(2, "Subtask")
+    })),
 	s("todo", { t("- [] "), i(1) }),
 })
 return snips
