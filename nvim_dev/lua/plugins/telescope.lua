@@ -1,11 +1,13 @@
 return {
 	{
 		"nvim-telescope/telescope.nvim",
+		cmd = "Telescope",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-telescope/telescope-fzf-native.nvim",
 			"nvim-telescope/telescope-ui-select.nvim",
 		},
+		lazy = true,
 		config = function()
 			local telescope = require("telescope")
 			local builtin = require("telescope.builtin")
@@ -39,6 +41,13 @@ return {
 							["<C-k>"] = actions.move_selection_previous,
 							["<C-h>"] = actions.preview_scrolling_up,
 							["<C-l>"] = actions.preview_scrolling_down,
+							-- OLD: ["<C-q>"] = actions.send_to_qflist + actions.open_qflist
+							-- NEW: Mapowanie pod <C-a> (append)
+							["<C-a>"] = actions.add_to_qflist + actions.open_qflist,
+							["<M-a>"] = actions.add_selected_to_qflist + actions.open_qflist,
+						},
+						n = {
+							["<C-a>"] = actions.add_to_qflist + actions.open_qflist,
 						},
 					},
 				},

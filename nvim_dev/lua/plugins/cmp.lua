@@ -13,6 +13,8 @@ return {
 		version = "2.*", -- najnowsza stabilna (2025 ¿ v2.3+)
 		-- build = "make install_jsregexp", -- wymagane dla zaawansowanych regex w snippetach
 
+		event = "InsertEnter",
+
 		dependencies = {
 			"rafamadriz/friendly-snippets",
 			-- "nvim-snippets/nvim-snippets", -- Twój aktualny, ale skonfigurujemy go lepiej
@@ -117,6 +119,8 @@ return {
 
 				-- ¿ ZATWIERDZANIE
 				["<CR>"] = { "accept", "fallback" },
+				-- Rozwi¿/Schowaj doc
+				["<C-k>"] = { "show_documentation", "hide_documentation", "fallback" },
 				["<C-l>"] = { "accept", "fallback" },
 				["<C-y>"] = { "select_and_accept" },
 
@@ -140,16 +144,16 @@ return {
 					["<Tab>"] = { "show_and_insert_or_accept_single", "select_next", "fallback" },
 					["<S-Tab>"] = { "show_and_insert_or_accept_single", "select_prev", "fallback" },
 					["<CR>"] = { "accept", "fallback" },
+					["<C-k>"] = { "show_documentation", "hide_documentation", "fallback" },
 					["<C-l>"] = { "accept", "fallback" },
 					["<C-y>"] = { "select_and_accept" },
 				},
 			},
 			-- W¿¿CZ DOKUMENTACJ¿/PREVIEW
-
 			completion = {
 				documentation = {
 					auto_show = true, -- poka¿ automatycznie
-					auto_show_delay_ms = 200, -- opó¿nienie 200ms
+					auto_show_delay_ms = 120, -- opó¿nienie 200ms
 					window = {
 						border = "rounded", -- zaokr¿glone rogi
 						max_width = 60, -- mniejsza szeroko¿¿ (domy¿lnie 80)

@@ -2,6 +2,8 @@ return {
 	-- 1. MASON - instalator LSP/formatters/linters
 	{
 		"williamboman/mason.nvim",
+		cmd = "Mason",
+		event = "VeryLazy", -- NEW: load after UI to keep startup snappy
 		opts = {
 			ui = {
 				border = "rounded",
@@ -13,9 +15,11 @@ return {
 			},
 		},
 	},
+
 	-- 2. MASON-LSPCONFIG - mostek między Mason a LSP
 	{
 		"williamboman/mason-lspconfig.nvim",
+		event = { "BufReadPre", "BufNewFile" }, -- NEW: load only when a file is opened
 		dependencies = { "williamboman/mason.nvim" },
 		opts = {
 			ensure_installed = {
@@ -29,10 +33,11 @@ return {
 		},
 	},
 
-	"neovim/nvim-lspconfig",
+	{ "neovim/nvim-lspconfig", lazy = true },
 
 	{
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
+		event = "VeryLazy",
 		opts = {
 			ensure_installed = {
 				"lua-language-server",
@@ -52,6 +57,11 @@ return {
 			},
 		},
 	},
-	"numToStr/Comment.nvim",
-	-- "Darazaki/guess-indent.nvim",
+
+	-- 6. COMMENT: Ładuj przy pierwszej próbie użycia lub VeryLazy
+	{
+		"numToStr/Comment.nvim",
+		event = "VeryLazy", -- NEW: non-critical UI plugin
+		config = true, -- OLD: required "require('Comment').setup()" | NEW: automatic
+	},
 }

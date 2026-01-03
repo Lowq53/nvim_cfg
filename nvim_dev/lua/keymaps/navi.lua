@@ -13,16 +13,9 @@ vks("n", "N", "Nzzzv", { desc = "Poprzednie wystąpienie z wyśrodkowaniem" })
 vks("n", "*", "*zzzv", { desc = "Wyszukaj słowo z wyśrodkowaniem" })
 vks("n", "#", "#zzzv", { desc = "Wyszukaj słowo wstecz z wyśrodkowaniem" })
 
---quick fix navigation
---────────────────────────────────────────────────────────────────────────
-vks({ "i", "v" }, "kj", "<Esc>", { desc = "Exit mode" })
-
 -- vks('t', '<Esc>', [[<C-\><C-n]], { desc = 'Exit terminal mode'})
 --────────────────────────────────────────────────────────────────────────
-vks("n", "<C-q>j", ":cnext<CR>", { desc = "Następny quickfix" })
-vks("n", "<C-q>k", ":cprev<CR>", { desc = "Poprzedni quickfix" })
-vks("n", "<C-q>h", ":colder<CR>", { desc = "Starsza lista quickfix" })
-vks("n", "<C-q>l", ":cnewer<CR>", { desc = "Nowsza lista quickfix" })
+vks({ "i", "v" }, "kj", "<Esc>", { desc = "Exit mode" })
 
 -- Pro Tip: Visual Wrap (Nawigacja)
 -- ────────────────────────────────────────────────────────────────────────

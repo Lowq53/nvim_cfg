@@ -10,24 +10,3 @@
 
 vim.keymap.set("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
 vim.keymap.set("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
-
--- Toggle Quickfix list (Senior approach)
-local function toggle_qf()
-	local qf_exists = false
-	for _, win in pairs(vim.fn.getwininfo()) do
-		if win["quickfix"] == 1
-			qf_exists = true
-			break
-		end
-	end
-	if qf_exists then
-		vim.cmd("cclose")
-	else
-		vim.cmd("copen")
-	end
-end
-vim.keymap.set('n', '<space>q', toggle_qf, { desc = "Toggle Quickfix" })
-
-
-
-

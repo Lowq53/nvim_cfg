@@ -4,8 +4,8 @@ return {
 		event = { "BufReadPre", "BufNewFile" },
 		opts = {
 			signs = {
-				add = { text = "+" },
-				change = { text = "~" },
+				add = { text = "+M" },
+				change = { text = "~M" },
 				delete = { text = "_" },
 				topdelete = { text = "‾" },
 				changedelete = { text = "~" },
@@ -15,13 +15,18 @@ return {
 				delay = 300,
 			},
 		},
+		config = function()
+			require("gitsigns").setup()
+		end,
 	},
+
 	{
 		"sindrets/diffview.nvim",
 		cmd = { "DiffviewOpen", "DiffviewFileHistory" },
 		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {},
 	},
+
 	{
 		"NeogitOrg/neogit",
 		dependencies = {
