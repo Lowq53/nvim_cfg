@@ -36,8 +36,8 @@ return {
 		},
 		config = true,
 		keys = {
-			{ "<leader>gs", "<cmd>Neogit<cr>", desc = "Neogit Status" },
-			{ "<leader>gc", "<cmd>Neogit commit<cr>", desc = "Neogit Commit" },
+			{ "<space>gs", "<cmd>Neogit<cr>", desc = "Neogit Status" },
+			{ "<space>gc", "<cmd>Neogit commit<cr>", desc = "Neogit Commit" },
 		},
 	},
 }
