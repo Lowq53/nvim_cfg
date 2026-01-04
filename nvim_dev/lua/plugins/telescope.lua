@@ -116,49 +116,46 @@ return {
 			})
 
 			local t = require("telescope.builtin")
-			-- Load extensions
-			pcall(telescope.load_extension, "fzf")
-			pcall(telescope.load_extension, "ui-select")
 
-			-- ═══════════════════════════════════════════════════════════════
-			-- CORE NAVIGATION - podstawowe skróty
-			-- ═══════════════════════════════════════════════════════════════
-			-- najpierw serch grep i search files
-			vim.keymap.set("n", "sf", builtin.find_files, { desc = "[S]earch [F]iles" })
-			vim.keymap.set("n", "sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
-			vim.keymap.set("n", "so.", builtin.oldfiles, { desc = "[S]earch [O]ld files" })
-			vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find buffers" })
-			-- switching filewhere.
-			-- /
-
-			-- ═══════════════════════════════════════════════════════════════
-			-- SEARCH HELPERS - pomoc w wyszukiwaniu
-			-- ═══════════════════════════════════════════════════════════════
-			vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
-			vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
-			vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
-			vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
-			vim.keymap.set("n", "<leader>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
-			vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
-
-			-- ═══════════════════════════════════════════════════════════════
-			-- NVIM CONFIG - przeszukiwanie konfiguracji Neovim
-			-- ═══════════════════════════════════════════════════════════════
-			-- Find files w config
-			vim.keymap.set("n", "<leader>fc", function()
-				builtin.find_files({
-					cwd = vim.fn.stdpath("config"),
-					hidden = true,
-				})
-			end, { desc = "[F]ind in nvim [C]onfig" })
-
-			-- Grep w config
-			vim.keymap.set("n", "<leader>gc", function()
-				builtin.live_grep({
-					search_dirs = { vim.fn.stdpath("config") },
-				})
-			end, { desc = "[G]rep nvim [C]onfig" })
-
+			-- -- ═══════════════════════════════════════════════════════════════
+			-- -- CORE NAVIGATION - podstawowe skróty
+			-- -- ═══════════════════════════════════════════════════════════════
+			-- -- najpierw serch grep i search files
+			-- vim.keymap.set("n", "sf", builtin.find_files, { desc = "[S]earch [F]iles" })
+			-- vim.keymap.set("n", "sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
+			-- vim.keymap.set("n", "so.", builtin.oldfiles, { desc = "[S]earch [O]ld files" })
+			-- vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find buffers" })
+			-- -- switching filewhere.
+			-- -- /
+			--
+			-- -- ═══════════════════════════════════════════════════════════════
+			-- -- SEARCH HELPERS - pomoc w wyszukiwaniu
+			-- -- ═══════════════════════════════════════════════════════════════
+			-- vim.keymap.set("n", "<leader>sh", builtin.help_tags, { desc = "[S]earch [H]elp" })
+			-- vim.keymap.set("n", "<leader>sk", builtin.keymaps, { desc = "[S]earch [K]eymaps" })
+			-- vim.keymap.set("n", "<leader>ss", builtin.builtin, { desc = "[S]earch [S]elect Telescope" })
+			-- vim.keymap.set("n", "<leader>sw", builtin.grep_string, { desc = "[S]earch current [W]ord" })
+			-- vim.keymap.set("n", "<leader>sd", builtin.diagnostics, { desc = "[S]earch [D]iagnostics" })
+			-- vim.keymap.set("n", "<leader>sr", builtin.resume, { desc = "[S]earch [R]esume" })
+			--
+			-- -- ═══════════════════════════════════════════════════════════════
+			-- -- NVIM CONFIG - przeszukiwanie konfiguracji Neovim
+			-- -- ═══════════════════════════════════════════════════════════════
+			-- -- Find files w config
+			-- vim.keymap.set("n", "<leader>fc", function()
+			-- 	builtin.find_files({
+			-- 		cwd = vim.fn.stdpath("config"),
+			-- 		hidden = true,
+			-- 	})
+			-- end, { desc = "[F]ind in nvim [C]onfig" })
+			--
+			-- -- Grep w config
+			-- vim.keymap.set("n", "<leader>gc", function()
+			-- 	builtin.live_grep({
+			-- 		search_dirs = { vim.fn.stdpath("config") },
+			-- 	})
+			-- end, { desc = "[G]rep nvim [C]onfig" })
+			--
 			-- ═══════════════════════════════════════════════════════════════
 			-- PROJECT DIRECTORIES - twoje katalogi robocze
 			-- ═══════════════════════════════════════════════════════════════
@@ -250,6 +247,10 @@ return {
 			-- vim.keymap.set("n", "<leader>sn", function()
 			--   builtin.find_files({ cwd = vim.fn.stdpath("config") })
 			-- end, { desc = "[S]earch [N]eovim files" })
+
+			-- Load extensions
+			pcall(telescope.load_extension, "fzf")
+			pcall(telescope.load_extension, "ui-select")
 		end,
 	},
 	{
