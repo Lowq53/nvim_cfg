@@ -7,6 +7,63 @@ return {
 			"nvim-telescope/telescope-fzf-native.nvim",
 			"nvim-telescope/telescope-ui-select.nvim",
 		},
+
+		-- 🔑 JEDYNY trigger do łądowania telescope
+		keys = function()
+			local function tb(fn, opts)
+				return function()
+					require("telescope.builtin")[fn](opts)
+				end
+			end
+			return {
+				-- CORE
+				{ "sf", tb("find_files"), desc = "[S]earch [F]iles" },
+				{ "sg", tb("live_grep"), desc = "[S]earch by [G]rep" },
+				{ "so.", tb("oldfiles"), desc = "[S]earch [O]ld files" },
+				{ "<leader><leader>", tb("buffers"), desc = "Buffers" },
+
+				-- HELPERS
+				{ "<leader>sh", tb("help_tags"), desc = "Help" },
+				{ "<leader>sk", tb("keymaps"), desc = "Keymaps" },
+				{ "<leader>ss", tb("builtin"), desc = "Telescope pickers" },
+				{ "<leader>sw", tb("grep_string"), desc = "Word under cursor" },
+				{ "<leader>sd", tb("diagnostics"), desc = "Diagnostics" },
+				{ "<leader>sr", tb("resume"), desc = "Resume" },
+
+				-- NVIM CONFIG
+				{
+					"<leader>fc",
+					tb("find_files", { cwd = vim.fn.stdpath("config"), hidden = true }),
+					desc = "Find nvim config",
+				},
+				{
+					"<leader>gc",
+					tb("live_grep", { search_dirs = { vim.fn.stdpath("config") } }),
+					desc = "Grep nvim config",
+				},
+
+				-- BUFFERS
+				{
+					"<leader>/",
+					function()
+						require("telescope.builtin").current_buffer_fuzzy_find(
+							require("telescope.themes").get_dropdown({
+								winblend = 9,
+								previewer = false,
+							})
+						)
+					end,
+					desc = "Fuzzy in buffer",
+				},
+
+				-- GIT
+				{ ",gc", tb("git_commits"), desc = "Git commits" },
+				{ ",gb", tb("git_branches"), desc = "Git branches" },
+				{ ",gs", tb("git_status"), desc = "Git status" },
+				{ ",gf", tb("git_bcommits"), desc = "Git bcommits" },
+			}
+		end,
+
 		lazy = true,
 		config = function()
 			local telescope = require("telescope")
@@ -52,11 +109,12 @@ return {
 					},
 				},
 				extensions = {
-					["ui-sel:te:ct"] = {
+					["ui-select"] = {
 						require("telescope.themes").get_dropdown(),
 					},
 				},
 			})
+
 			local t = require("telescope.builtin")
 			-- Load extensions
 			pcall(telescope.load_extension, "fzf")
@@ -69,9 +127,9 @@ return {
 			vim.keymap.set("n", "sf", builtin.find_files, { desc = "[S]earch [F]iles" })
 			vim.keymap.set("n", "sg", builtin.live_grep, { desc = "[S]earch by [G]rep" })
 			vim.keymap.set("n", "so.", builtin.oldfiles, { desc = "[S]earch [O]ld files" })
-			-- switching file
-			-- / \f\ /
 			vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find buffers" })
+			-- switching filewhere.
+			-- /
 
 			-- ═══════════════════════════════════════════════════════════════
 			-- SEARCH HELPERS - pomoc w wyszukiwaniu
@@ -161,22 +219,25 @@ return {
 			-- ═══════════════════════════════════════════════════════════════
 			-- CUSTOM COMMANDS
 			-- ═══════════════════════════════════════════════════════════════
+
 			vim.api.nvim_create_user_command("BpyFiles", function()
 				builtin.find_files({
 					cwd = "E:/Tools/BPY_Scripts/",
 					hidden = true,
 				})
 			end, {})
+
 			-- ═══════════════════════════════════════════════════════════════
 			-- CORE GIT - Telescope git_...
 			-- ═══════════════════════════════════════════════════════════════
 			--
 			--
-			vim.keymap.set("n", ",gc", t.git_commits, { desc = "Git: search commits." })
-			vim.keymap.set("n", ",gb", t.git_branches, { desc = "Git: search branches." })
-			vim.keymap.set("n", ",gs", t.git_status, { desc = "Git: status." })
-			vim.keymap.set("n", ",gf", t.git_bcommits, { desc = "Git: bcommits." })
-			-- ═══════════════════════════════════════════════════════════════
+			-- vim.keymap.set("n", ",gc", t.git_commits, { desc = "Git: search commits." })
+			-- vim.keymap.set("n", ",gb", t.git_branches, { desc = "Git: search branches." })
+			-- vim.keymap.set("n", ",gs", t.git_status, { desc = "Git: status." })
+			-- vim.keymap.set("n", ",gf", t.git_bcommits, { desc = "Git: bcommits." })
+
+			-- -- ═══════════════════════════════════════════════════════════════
 			-- DUPLICATE KEYMAPS (wykomentowane - użyj powyższych zamiast tego)
 			-- ═══════════════════════════════════════════════════════════════
 			-- vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Tele✨: Find files" })

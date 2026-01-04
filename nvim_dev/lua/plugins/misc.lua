@@ -4,7 +4,8 @@ return {
 		event = "BufReadPost", -- ładuje się po otwarciu bufora
 		config = function()
 			require("auto-save").setup({
-				enabled = false, -- włączony
+				enabled = true, -- włączony
+
 				execution_message = {
 					message = function() -- message to print on save
 						return ("AutoSave: saved at " .. vim.fn.strftime("%H:%M:%S"))
@@ -12,19 +13,33 @@ return {
 					dim = 0.18, -- dim the color of `message`
 					cleaning_interval = 1250, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgArea
 				},
+
 				events = { "BufLeave", "FocusLost" }, -- OK
-				conditions = {
-					exists = true,
-					filetype_is_not = {},
-					-- file_path_is_not = { "lua/plugins/*", "lua/config/*" },:w -- wykluczone
-				},
-				debounce_delay = 1000,
-				write_all_buffers = false, -- zapisuje tylko aktualny buffer
+
+				-- file_path_is_not = { "lua/plugins/*", "lua/config/*" },:w -- wykluczone
+
 				trigger_events = { -- możesz dodać dodatkowe eventy
 					--"InsertLeave", -- wychodzisz z trybu insert
 					"BufLeave", -- zmiana bufora / panela
 					"FocusLost", -- kiedy tracisz fokus Neovim
 				},
+
+				-- Bardzo ważne dla zachownaia histrii Undo:
+				callbacks = {
+					before_save = function()
+						-- Undo dzialą popawnie grupujac zmiany
+						vim.opt.undofile = true
+					end,
+				},
+
+				conditions = {
+					exists = true,
+					filetype_is_not = { "gitcomit", "oil" },
+				},
+
+				debounce_delay = 3000,
+				write_all_buffers = false, -- zapisuje tylko aktualny buffer
+
 				timeout = 180000, -- ms, np. 3 min przy InsertLeave
 			})
 		end,
