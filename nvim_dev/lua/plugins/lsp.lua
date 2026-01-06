@@ -44,7 +44,6 @@ return {
 				tsserver = {},
 				html = {},
 				ts_ls = {},
-				powershell_es = {},
 				bashls = {},
 				vimls = {},
 				cssls = {
@@ -53,6 +52,30 @@ return {
 						less = { validate = true },
 						css = { validate = true },
 					},
+				},
+				powershell_es = {
+					cmd = {
+						"pwsh",
+						"-NoLogo",
+						"-NoProfile",
+						"-Command",
+						[[
+      & {
+        $ErrorActionPreference = 'Stop'
+        $PSESPath = "$env:LOCALAPPDATA\nvim-data\mason\packages\powershell-editor-services"
+        & "$PSESPath\PowerShellEditorServices\Start-EditorServices.ps1" `
+          -BundledModulesPath "$PSESPath" `
+          -LogPath "$env:TEMP\PSES.log" `
+          -SessionDetailsPath "$env:TEMP\PSES.session.json" `
+          -FeatureFlags @() `
+          -AdditionalModules @() `
+          -HostName "nvim" `
+          -HostProfileId "nvim" `
+          -HostVersion "1.0.0"
+      }
+    ]],
+					},
+					filetypes = { "ps1" },
 				},
 			}
 
