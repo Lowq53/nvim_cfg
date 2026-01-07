@@ -1,6 +1,6 @@
 return {
 	-- ======================== LSP & MASON ========================
-	-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
+	-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 
 	{
 		"neovim/nvim-lspconfig",
@@ -159,11 +159,18 @@ return {
 				ps1 = { "psscriptanalyzer" },
 			},
 
-			-- Formatowanie przy zapisie
-			format_on_save = {
-				timeout_ms = 2000,
-				lsp_format = "fallback", -- u¿yj LSP tylko je¿li brak formattera
-			},
+			-- Auto-format przy zapisie
+			format_on_save = function(bufnr)
+				-- ¿ WYJ¿TKI: oil.nvim, terminale, special buffers
+				local ft = vim.bo[bufnr].filetype
+				if ft == "oil" or ft == "terminal" then
+					return
+				end
+				return {
+					timeout_ms = 2000,
+					lsp_format = "fallback", -- u¿yj LSP tylko je¿li brak formattera
+				}
+			end,
 		},
 	},
 	{
