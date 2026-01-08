@@ -11,5 +11,4 @@ return {
     "j-hui/fidget.nvim",
     opts = {},
   },
-  "nvim-tree/nvim-web-devicons",
 }

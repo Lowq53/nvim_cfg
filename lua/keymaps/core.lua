@@ -4,7 +4,9 @@
 -- ═══════════════════════════════════════════════════════════════════════════
 
 local vim = vim
-local map = vim.api.nvim_set_keymap
+-- old wrapper
+-- local vks = vim.api.nvim_set_keymap
+local vks = vim.keymap.set
 local opts = { noremap = true, silent = true }
 
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -20,11 +22,11 @@ end, { desc = "Simulated comma leader" })
 -- ► AUTO-PAIRS (Insert Mode)
 -- ═══════════════════════════════════════════════════════════════════════════
 
-map("i", "(", "()<Left>", opts)
-map("i", "[", "[]<Left>", opts)
-map("i", "{", "{}<Left>", opts)
-map("i", '"', '""<Left>', opts)
-map("i", "'", "''<Left>", opts)
+vks("i", "(", "()<Left>", opts)
+vks("i", "[", "[]<Left>", opts)
+vks("i", "{", "{}<Left>", opts)
+vks("i", '"', '""<Left>', opts)
+vks("i", "'", "''<Left>", opts)
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- ► SMART BUFFER/WINDOW CLOSING
@@ -281,7 +283,7 @@ vim.keymap.set("n", "<F9>", reload_config, { desc = "Reload config (F9)" })
 -- require("gitsigns").setup({
 -- 	on_attach = function(bufnr)
 -- 		local gs = package.loaded.gitsigns
--- 		local function map(mode, l, r, opts)
+-- 		local function vks(mode, l, r, opts)
 -- 			opts = opts or {}
 -- 			opts.buffer = bufnr
 -- 			vim.keymap.set(mode, l, r, opts)
@@ -318,7 +320,7 @@ vim.keymap.set("n", "<F9>", reload_config, { desc = "Reload config (F9)" })
 -- 		prompt_title = "Search in multiple dirs",
 -- 		finder = finders.new_table({ results = files }),
 -- 		sorter = conf.file_sorter({}),
--- 		attach_mappings = function(prompt_bufnr, map)
+-- 		attach_mappings = function(prompt_bufnr, vks)
 -- 			actions.select_default:replace(function()
 -- 				local selection = action_state.get_selected_entry()
 -- 				actions.close(prompt_bufnr)

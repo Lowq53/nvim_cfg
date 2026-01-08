@@ -1,0 +1,3 @@
+-- navigacja dla cmp w <cmd> mode
+-- to do  zrobić fajne potwiedzanie
+-- w cmd i insert zeby nietrzeba było 2x klikac
