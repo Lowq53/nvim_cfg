@@ -26,10 +26,10 @@ vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 
 -- W init.lua lub pliku konfiguracyjnym
 --────────────────────────────────────────────────────────────────────────
-vks("n", "<C-h>", "<C-w>h", { desc = "Przejdź do okna lewego" })
-vks("n", "<C-j>", "<C-w>j", { desc = "Przejdź do okna dolnego" })
-vks("n", "<C-k>", "<C-w>k", { desc = "Przejdź do okna górnego" })
-vks("n", "<C-l>", "<C-w>l", { desc = "Przejdź do okna prawego" })
+vks("n", "<M-h>", "<C-w>h", { desc = "Przejdź do okna lewego" })
+vks("n", "<M-j>", "<C-w>j", { desc = "Przejdź do okna dolnego" })
+vks("n", "<M-k>", "<C-w>k", { desc = "Przejdź do okna górnego" })
+vks("n", "<M-l>", "<C-w>l", { desc = "Przejdź do okna prawego" })
 
 -- bufors changing
 --────────────────────────────────────────────────────────────────────────
@@ -54,7 +54,7 @@ vks("c", "<C-l>", "<Right>")
 
 -- insert mnode navi
 --────────────────────────────────────────────────────────────────────────
-vks("i", "<C-h>", "<Left>", { desc = "W lewo w insert mode" })
+vks("i", "<C-S-h>", "<Left>", { desc = "W lewo w insert mode" })
 vks("i", "<C-j>", "<Down>", { desc = "W dół w insert mode" })
 vks("i", "<C-k>", "<Up>", { desc = "W górę w insert mode" })
 vks("i", "<C-l>", "<Right>", { desc = "W prawo w insert modee" })
