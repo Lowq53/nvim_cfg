@@ -26,10 +26,10 @@ vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 
 -- W init.lua lub pliku konfiguracyjnym
 --────────────────────────────────────────────────────────────────────────
-vks("n", "<M-h>", "<C-w>h", { desc = "Przejdź do okna lewego" })
-vks("n", "<M-j>", "<C-w>j", { desc = "Przejdź do okna dolnego" })
-vks("n", "<M-k>", "<C-w>k", { desc = "Przejdź do okna górnego" })
-vks("n", "<M-l>", "<C-w>l", { desc = "Przejdź do okna prawego" })
+vks("n", "<C-h>", "<C-w>h", { desc = "Przejdź do okna lewego" })
+vks("n", "<C-j>", "<C-w>j", { desc = "Przejdź do okna dolnego" })
+vks("n", "<C-k>", "<C-w>k", { desc = "Przejdź do okna górnego" })
+vks("n", "<C-l>", "<C-w>l", { desc = "Przejdź do okna prawego" })
 
 -- bufors changing
 --────────────────────────────────────────────────────────────────────────
@@ -64,8 +64,8 @@ vks("i", "<C-l>", "<Right>", { desc = "W prawo w insert modee" })
 
 -- Szybkie przełączanie tabów wielkimi literami (częsty wzorzec seniora)
 -- ────────────────────────────────────────────────────────────────────────
-vks("n", "<A-h>", ":tabprevious<CR>", { desc = "Poprzedni tab" })
-vks("n", "<A-l>", ":tabnext<CR>", { desc = "Następny tab" })
+vks("n", "<A-p>", ":tabprevious<CR>", { desc = "Poprzedni tab" })
+vks("n", "<A-n>", ":tabnext<CR>", { desc = "Następny tab" })
 
 -- Opcjonalnie: szybkie tworzenie i zamykanie tabów
 -- ────────────────────────────────────────────────────────────────────────

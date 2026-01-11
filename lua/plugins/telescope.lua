@@ -70,26 +70,45 @@ return {
 			local builtin = require("telescope.builtin")
 			local actions = require("telescope.actions")
 
+			-- ripgrep args: agresywne, przewidywalne, cross-platform
+			local rg_args = {
+				"rg",
+				"--color=never",
+				"--no-heading",
+				"--with-filename",
+				"--line-number",
+				"--column",
+				"--smart-case",
+			}
+
 			-- ═══════════════════════════════════════════════════════════════
 			-- TELESCOPE SETUP
 			-- ═══════════════════════════════════════════════════════════════
 			telescope.setup({
 				defaults = {
-					-- Ignorowane pliki i foldery
+					prompt_prefix = " ",
+					selection_caret = "❯ ",
+					path_display = { "smart" },
+
+					vimgrep_arguments = vim.list_extend(vim.deepcopy(rg_args), {
+						"--hidden",
+						"--glob",
+						"!**/.git/*",
+					}),
+
 					file_ignore_patterns = {
-						-- specyfic -files
-						"lazy-lock.json",
-						"^.git/",
+						"%.git/",
 						"^node_modules/",
 						"^.venv/",
-						"^build/",
 						"^dist/",
-						"%.pyc$",
+						"^build/",
 						"%.o$",
 						"%.a$",
+						"%.pyc$",
 						"%.swp$",
 						"%.bak$",
-						"%.blend%.%d+$",
+						"%.blend%d*$",
+						"lazy%-lock%.json",
 					},
 					-- Mapowania nawigacyjne
 					mappings = {
@@ -108,7 +127,27 @@ return {
 						},
 					},
 				},
-				extensions = {
+				pickers = {
+					-- FAST: respektuje .gitignore
+					find_files = {
+						find_command = {
+							"rg",
+							"--files",
+						},
+					},
+
+					-- ALL: absolutnie wszystko
+					find_files_all = {
+						find_command = {
+							"rg",
+							"--files",
+							"--hidden",
+							"--no-ignore",
+							"--glob",
+							"!**/.git/*",
+						},
+					},
+					extensions = {},
 					["ui-select"] = {
 						require("telescope.themes").get_dropdown(),
 					},
@@ -166,7 +205,20 @@ return {
 
 			-- Code data (Windows)
 			vim.keymap.set("n", "<leader>fd", function()
-				builtin.find_files({ cwd = "C:/code_data/", hidden = true })
+				builtin.find_files({
+					cwd = "C:/code_data/",
+					hidden = true,
+					no_ignore = true,
+					follow = true,
+					find_command = {
+						"rg",
+						"--files",
+						"--hidden",
+						"--no-ignore",
+						"--glob",
+						"!**/.git/*",
+					},
+				})
 			end, { desc = "[F]ind code_[D]ata" })
 
 			-- Programming do
@@ -182,9 +234,9 @@ return {
 			-- ═══════════════════════════════════════════════════════════════
 			-- GREP IN DIRECTORIES - grep w katalogach
 			-- ═══════════════════════════════════════════════════════════════
-			vim.keymap.set("n", "<leader>gb", function()
+			vim.keymap.set("n", "<leader>ga", function()
 				builtin.live_grep({
-					search_dirs = { "E:/Tools/BPY_Scripts/" },
+					search_dirs = { "E:/Tools/BPY_Scripts/", vim.fn.getcwd(), vim.fn.stdpath("config") },
 				})
 			end, { desc = "[S]earch in [B]PY scripts" })
 
