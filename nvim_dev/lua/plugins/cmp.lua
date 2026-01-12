@@ -109,7 +109,6 @@ return {
 		dependencies = {
 			"L3MON4D3/LuaSnip",
 			"rafamadriz/friendly-snippets",
-			"windwp/nvim-autopairs", -- auto-parowanie nawias¢w
 		},
 		opts = {
 			keymap = {
