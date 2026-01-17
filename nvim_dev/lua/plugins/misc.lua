@@ -1,54 +1,59 @@
+--- @usage: Konfiguracja automatycznego zapisu plików.
+--- Głównym celem jest uniknięcie zaśmiecania "Undo Tree" poprzez:
+--- 1. Wyłączenie zapisu przy zdarzeniu TextChanged (zapis po każdej literze).
+--- 2. Użycie FocusLost i BufLeave (zapis tylko przy zmianie kontekstu).
+--- 3. Ustawienie długiego debounce_delay (3 sekundy), co grupuje zmiany.
+--- 4. Zapewnienie, że undofile jest zawsze aktywne.
 return {
 	{
 		"Pocco81/auto-save.nvim",
-		event = "BufReadPost", -- ładuje się po otwarciu bufora
+		event = "BufReadPost",
 		config = function()
 			require("auto-save").setup({
-				enabled = true, -- włączony
+				enabled = true,
 
 				execution_message = {
-					message = function() -- message to print on save
-						return ("AutoSave: saved at " .. vim.fn.strftime("%H:%M:%S"))
+					message = function()
+						return ("AutoSave: zapisano o " .. vim.fn.strftime("%H:%M:%S"))
 					end,
-					dim = 0.18, -- dim the color of `message`
-					cleaning_interval = 1250, -- (milliseconds) automatically clean MsgArea after displaying `message`. See :h MsgArea
+					dim = 0.18,
+					cleaning_interval = 1250,
 				},
 
-				events = { "BufLeave", "FocusLost" }, -- OK
-
-				-- file_path_is_not = { "lua/plugins/*", "lua/config/*" },:w -- wykluczone
-
-				trigger_events = { -- możesz dodać dodatkowe eventy
-					--"InsertLeave", -- wychodzisz z trybu insert
-					"BufLeave", -- zmiana bufora / panela
-					"FocusLost", -- kiedy tracisz fokus Neovim
+				-- Główne wyzwalacze zapisu
+				-- FocusLost: gdy klikasz poza terminal / zmieniasz okno w systemie
+				-- BufLeave: gdy przełączasz się między plikami wewnątrz Neovim
+				trigger_events = {
+					"BufLeave",
+					"FocusLost",
 				},
 
-				-- Bardzo ważne dla zachownaia histrii Undo:
-				callbacks = {
-					before_save = function()
-						-- Undo dzialą popawnie grupujac zmiany
-						vim.opt.undofile = true
-					end,
-				},
-
+				-- Warunki zapisu
 				conditions = {
 					exists = true,
-					filetype_is_not = { "gitcomit", "oil" },
+					filename_is_not = {},
+					filetype_is_not = { "gitcommit", "oil", "harpoon" },
+					-- Funkcja sprawdzająca, czy nie jesteśmy w trybie Insert
+					-- Zapobiega to przerwaniu pisania przez nagły zapis
+					not_in_modes = { "i" },
 				},
 
+				-- Kluczowe ustawienie dla UNDO:
+				-- Czeka 3 sekundy po ostatniej zmianie, zanim spróbuje zapisać.
+				-- Dzięki temu seria szybkich zmian zostanie potraktowana jako jeden blok.
 				debounce_delay = 3000,
-				write_all_buffers = false, -- zapisuje tylko aktualny buffer
 
-				timeout = 180000, -- ms, np. 3 min przy InsertLeave
+				write_all_buffers = false, -- Tylko aktywny plik
+
+				callbacks = {
+					-- Zapewnia, że historia undo jest zapisywana na dysku
+					before_save = function()
+						vim.opt.undofile = true
+					end,
+					-- Opcjonalnie: formatowanie przed zapisem (jeśli używasz)
+					-- after_save = nil,
+				},
 			})
 		end,
 	},
-
-	{
-		"iamcco/markdown-preview.nvim",
-		build = "cd app && npm install",
-		ft = { "markdown" },
-	},
-	"kkoomen/vim-doge",
 }

@@ -10,3 +10,20 @@
 
 vim.keymap.set("i", "<A-k>", "<Esc>:m .-2<CR>==gi", { desc = "Move line up" })
 vim.keymap.set("i", "<A-j>", "<Esc>:m .+1<CR>==gi", { desc = "Move line down" })
+vim.keymap.set("n", "gf", function()
+	-- Spróbuj LSP definition
+	vim.lsp.buf.definition()
+end, { desc = "Go to definition" })
+
+-- LUB lepsze rozwiązanie - gf dla ścieżek względnych:
+vim.keymap.set("n", "gf", function()
+	local file = vim.fn.expand("<cfile>")
+	local current_file = vim.fn.expand("%:p:h")
+	local full_path = vim.fn.resolve(current_file .. "/" .. file)
+
+	if vim.fn.filereadable(full_path) == 1 then
+		vim.cmd("edit " .. full_path)
+	else
+		vim.notify("Nie znaleziono: " .. file, vim.log.levels.ERROR)
+	end
+end)
