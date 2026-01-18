@@ -1,4 +1,5 @@
 nvim_dev-data/
+nvim_dev/lazy-lock.json
 nvim_0-data/
 nvim_neo/
 nvim_neo-data/
