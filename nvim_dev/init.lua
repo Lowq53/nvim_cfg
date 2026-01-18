@@ -9,8 +9,8 @@ require("tmp.init")
 -- lub jeśli używasz mingw32-make:
 require("config.lazy")
 --require("config.terminal")
-require("config.ui").setup()
 
+require("config.pwsh")
 vim.opt.clipboard = "unnamedplus"
 
 -- vim.g.clipboard = {

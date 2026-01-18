@@ -4,6 +4,7 @@
 --- 2. Użycie FocusLost i BufLeave (zapis tylko przy zmianie kontekstu).
 --- 3. Ustawienie długiego debounce_delay (3 sekundy), co grupuje zmiany.
 --- 4. Zapewnienie, że undofile jest zawsze aktywne.
+--- teraz
 return {
 	{
 		"Pocco81/auto-save.nvim",
