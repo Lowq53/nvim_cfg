@@ -99,7 +99,7 @@ return {
 			end, { silent = true, desc = "LuaSnip: Cycle Choices" })
 		end,
 	},
-	-- ========== PLUGIN 2: BLINK.CMP (autocomplete engine) ==========
+	-- ========== PLUGIN 2: BLINK.CMP (autocomplete engine faster thatn nvim-cmp) ==========
 	-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 
 	{
@@ -109,7 +109,6 @@ return {
 		dependencies = {
 			"L3MON4D3/LuaSnip",
 			"rafamadriz/friendly-snippets",
-			"windwp/nvim-autopairs", -- auto-parowanie nawias¢w
 		},
 		opts = {
 			keymap = {
@@ -149,8 +148,21 @@ return {
 					["<C-y>"] = { "select_and_accept" },
 				},
 			},
+			-- help and function parameters
+			signature = {
+				enabled = true,
+				window = { border = "rounded" },
+			},
 			-- W¿¿CZ DOKUMENTACJ¿/PREVIEW
 			completion = {
+				ghost_text = {
+					enabled = true, -- pokazuje snippet "na szaro" przed zatwierdzeniem
+				},
+				trigger = {
+					show_in_snippets = true, -- poka¿ podpowiedzi w snippetach
+					show_on_blocked_trigger_characters = { " ", "\n", "\t" },
+				},
+
 				documentation = {
 					auto_show = true, -- poka¿ automatycznie
 					auto_show_delay_ms = 120, -- opó¿nienie 200ms
@@ -175,11 +187,10 @@ return {
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer" },
 				providers = {
-					snippets = {
-						name = "Snippets",
-						module = "blink.cmp.sources.snippets",
-						score_offset = 80, -- priorytet wy¾szy ni¾ buffer
-					},
+					lsp = { score_offset = 100 }, -- najwy¿szy
+					snippets = { score_offset = 80 },
+					path = { score_offset = 50 },
+					buffer = { score_offset = 20 }, -- najni¿szy
 				},
 			},
 

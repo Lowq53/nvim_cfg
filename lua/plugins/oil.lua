@@ -45,15 +45,22 @@ return {
 				["<C-c>"] = "actions.close",
 				["<C-l>"] = "actions.refresh",
 				["-"] = "actions.parent",
+
 				["_"] = "actions.open_cwd",
 				["gs"] = "actions.change_sort",
 				["gx"] = "actions.open_external",
 				["g."] = "actions.toggle_hidden",
 				["gh"] = "actions.toggle_hidden", -- Toggle ukrytych plików
-
+				--["y"] = "actions.copy_to_clipboard",
+				-- ["d"] = "actions.delete",
+				-- ["r"] = "actions.rename",
+				-- ["a"] = "actions.create",
+				-- ["."] = "actions.set_current_filter",
+				--
 				-- TWOJE NIESTANDARDOWE MAPOWANIA:
 				["q"] = "actions.close", -- Zamykanie pod 'q'
 				["<ESC>"] = "actions.close", -- Zamykanie pod ESC
+				["<M-->"] = "actions.cd", -- Mapowanie Alt + - dla zmiany PWD
 
 				-- KOPIOWANIE ŚCIEŻKI (\pa)
 				-- Tworzymy własną funkcję w Lua dla Oil

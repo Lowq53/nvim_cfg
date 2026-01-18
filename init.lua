@@ -4,12 +4,13 @@
 
 require("config.settings")
 require("keymaps")
-require("temp.init")
+require("tmp.init")
 
+-- lub jeśli używasz mingw32-make:
 require("config.lazy")
 --require("config.terminal")
-require("config.ui").setup()
 
+require("config.pwsh")
 vim.opt.clipboard = "unnamedplus"
 
 -- vim.g.clipboard = {
@@ -24,3 +25,6 @@ vim.opt.clipboard = "unnamedplus"
 --   },
 --   cache_enabled = 0,
 -- }
+--
+--
+--

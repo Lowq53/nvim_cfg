@@ -26,4 +26,81 @@ return {
 			{ "<leader>sl", "<cmd>Sl<CR>", desc = "List Sessions" },
 		},
 	},
+	{
+		-- opts nadpisuje config
+		-- jedna sesja na katalog
+		-- -- persisted.nvim - Automatyczne zarządzanie sesjami Neovim
+		--
+		-- WAŻNE INFORMACJE:
+		-- • 1 sesja na katalog (lub 1 sesja na branch git jeśli use_git_branch = true)
+		-- • Automatyczne zapisywanie (autosave = true) przy wyjściu z nvim
+		-- • Automatyczne ładowanie (autoload = true) przy starcie w znanym katalogu
+		-- • Sesje NIE są zapisywane w katalogach z ignored_dirs
+		-- • Nazwa sesji = hash ze ścieżki katalogu (automatyczna)
+		--
+		-- KOMENDY:
+		-- :Persisted save          - Ręczne zapisanie bieżącej sesji
+		-- :Persisted load          - Załaduj sesję dla bieżącego katalogu (CWD)
+		-- :Persisted load_last     - Załaduj ostatnio używaną sesję
+		-- :Persisted select        - Picker do wyboru sesji (wbudowany)
+		-- :Persisted delete        - Usuń sesję z listy
+		-- :Persisted delete_current- Usuń bieżącą sesję
+		-- :Persisted toggle        - Włącz/wyłącz nagrywanie sesji
+		-- :Persisted start         - Rozpocznij nagrywanie (jeśli autosave = false)
+		-- :Persisted stop          - Zatrzymaj nagrywanie
+		--
+		-- TELESCOPE:
+		-- :Telescope persisted     - Przeglądaj sesje przez Telescope (jeśli załadowane)
+		--
+		-- LOKALIZACJA SESJI:
+		-- Linux:   ~/.local/share/nvim/persisted/
+		-- Windows: ~\AppData\Local\nvim-data\persisted\
+		--
+		"olimorris/persisted.nvim",
+		lazy = false,
+
+		config = function()
+			require("persisted").setup({
+				save_dir = vim.fn.stdpath("data") .. "/persisted/",
+				autoload = true,
+				autosave = true,
+				use_git_branch = true,
+				allowed_dirs = nil,
+				ignored_dirs = { "~", "~/Downloads", "/" },
+			})
+			-- bezpiecne ladowanie rozszerzenie persisted dla Telescope
+			pcall(function()
+				require("telescope").load_extension("persisted")
+
+				-- 1. Sprawdzenie bieżącego katalogu roboczego (PWD)
+				vim.keymap.set("n", "<space>sp", function()
+					print("Obecny katalog (PWD): " .. vim.fn.getcwd())
+				end, { desc = "Persistence: PDW" })
+
+				-- 2. Sprawdzenie statusu sesji
+				vim.keymap.set("n", "<space>se", function()
+					local persistence = require("persistence")
+					local session_file = persistence.current()
+
+					if vim.fn.filereadable(session_file) == 1 then
+						print("✅ Sesja zapisana w: " .. session_file)
+					else
+						print("❌ Brak zapisanej sesji dla tego katalogu.")
+					end
+				end, { desc = "Persistence: Exists" })
+			end)
+		end,
+
+		keys = {
+			{ "<space>ss", "<cmd>Persisted save<cr>", desc = "Zapisz sesję" },
+			{ "<space>sl", "<cmd>Persisted load<cr>", desc = "Załaduj dla CWD" },
+			{ "<space>sL", "<cmd>Persisted load_last<cr>", desc = "Załaduj ostatnią" },
+			{ "<space>sf", "<cmd>Persisted select<cr>", desc = "Wybierz sesję" },
+			{ "<space>sd", "<cmd>Persisted delete<cr>", desc = "Usuń sesję" },
+			{ "<space>sD", "<cmd>Persisted delete_current<cr>", desc = "Usuń bieżącą" },
+			{ "<space>st", "<cmd>Persisted toggle<cr>", desc = "Toggle sesji" },
+			{ "<space>sx", "<cmd>Persisted stop<cr>", desc = "Stop nagrywania" },
+			{ "<space>sS", "<cmd>Persisted start<cr>", desc = "Start nagrywania" },
+		},
+	},
 }
