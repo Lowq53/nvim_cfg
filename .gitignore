@@ -1,0 +1,16 @@
+nvim_dev-data/
+nvim_0-data/
+nvim_neo/
+nvim_neo-data/
+nvim-data/
+neov/
+neov-data/
+nvim/
+nvim-data/
+nvim-lowq53/
+nvim-lowq53-data/
+nvim_test/
+nvim_test-data/
+
+
+lazy-lock.json
