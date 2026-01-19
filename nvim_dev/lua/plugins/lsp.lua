@@ -128,34 +128,6 @@ return {
 		end,
 	},
 
-	-- ======================== TREESITTER ========================
-	-- Syntax highlighting + parsing kodu (lepsze ni¿ regex-based syntax)
-	{
-		"nvim-treesitter/nvim-treesitter",
-		build = ":TSUpdate",
-		opts = {
-			ensure_installed = {
-				"lua",
-				"python",
-				"javascript",
-				"typescript",
-				"tsx",
-				"html",
-				"css",
-				"scss",
-				"json",
-				"yaml",
-				"markdown",
-				"bash",
-				"vim",
-				"vimdoc",
-				-- "powershell", -- parser dla PowerShell (opcjonalnie)
-			},
-			highlight = { enable = true },
-			indent = { enable = true },
-		},
-	},
-
 	-- ======================== FORMATOWANIE ========================
 	-- Conform.nvim = mened¿er formatterów (zast¿puje null-ls)
 	-- U¿ywa zewn¿trznych narz¿dzi (prettier, black, itp.)

@@ -26,5 +26,18 @@ vim.opt.clipboard = "unnamedplus"
 --   cache_enabled = 0,
 -- }
 --
---
---
+-- need to check lualine evil_lualine is deleting by transparent backgorund in nvim dev
+-- Wymuszenie przezroczystości na samym końcu ładowania
+vim.api.nvim_create_autocmd("User", {
+	pattern = "VeryLazy", -- Czeka, aż wszystkie pluginy się załadują
+	callback = function()
+		require("tokyonight").setup({ transparent = true })
+		vim.cmd("colorscheme tokyonight")
+
+		-- Dodatkowe "ubezpieczenie" - czyści tło ręcznie, gdyby plugin zawiódł
+		local groups = { "Normal", "NormalFloat", "NormalNC", "SignColumn", "NvimTreeNormal" }
+		for _, group in ipairs(groups) do
+			vim.api.nvim_set_hl(0, group, { bg = "none" })
+		end
+	end,
+})
