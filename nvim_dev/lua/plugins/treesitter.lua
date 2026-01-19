@@ -19,7 +19,7 @@ return {
 					install.compilers = { "gcc" }
 					install.prefer_git = false
 				end
-				vim.notify("nvim-treesitter: używam uproszczonej konfiguracji", vim.log.levels.WARN)
+				-- vim.notify("nvim-treesitter: używam uproszczonej konfiguracji", vim.log.levels.WARN)
 				return
 			end
 

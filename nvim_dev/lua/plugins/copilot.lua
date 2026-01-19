@@ -8,6 +8,8 @@
 ---@description Konfiguracja CopilotChat dla Neovim
 ---Integruje GitHub Copilot z możliwością czatu, code review, fix, explain i innych funkcji AI
 ---@dependencies github/copilot.vim, nvim-lua/plenary.nvim
+---
+
 return {
 	"CopilotC-nvim/copilotchat.nvim",
 	dependencies = {
@@ -15,6 +17,44 @@ return {
 		{ "nvim-lua/plenary.nvim", branch = "master" },
 	},
 	-- build = "make tiktoken", -- only on macos or linux
+	-- normalny setup Copilota tutaj
+	-- require("copilot").setup({ ... })
+
+	-- Auto-close Copilot limit alert
+	-- config = function()
+	-- 	require("CopilotChat").setup({})
+	--
+	-- 	vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+	-- 		callback = function()
+	-- 			vim.defer_fn(function()
+	-- 				for _, win in ipairs(vim.api.nvim_list_wins()) do
+	-- 					local buf = vim.api.nvim_win_get_buf(win)
+	-- 					local ft = vim.bo[buf].filetype
+	-- 					local bt = vim.bo[buf].buftype
+	--
+	-- 					-- skip log windows and lazy
+	-- 					if ft == "lazy" or ft == "log" or bt == "quickfix" or bt == "help" then
+	-- 						goto continue
+	-- 					end
+	--
+	-- 					local ok, lines = pcall(vim.api.nvim_buf_get_lines, buf, 0, -1, false)
+	-- 					if ok then
+	-- 						for _, line in ipairs(lines) do
+	-- 							if
+	-- 								line:match("[Ll]imit") and (line:match("[Uu]pgrade") or line:match("[Dd]ismiss"))
+	-- 							then
+	-- 								pcall(vim.api.nvim_win_close, win, true)
+	-- 								return
+	-- 							end
+	-- 						end
+	-- 					end
+	--
+	-- 					::continue::
+	-- 				end
+	-- 			end, 300)
+	-- 		end,
+	-- 	})
+	-- end,
 	event = "VeryLazy",
 	--
 	-- init = function()
