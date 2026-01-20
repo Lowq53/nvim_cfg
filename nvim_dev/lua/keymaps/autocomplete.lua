@@ -21,4 +21,4 @@ vim.api.nvim_create_autocmd("FileType", {
 		-- Opcjonalnie: ustaw szerokość na 80 kolumn
 		vim.api.nvim_win_set_width(0, 80)
 	end,
-})
+})<F5>

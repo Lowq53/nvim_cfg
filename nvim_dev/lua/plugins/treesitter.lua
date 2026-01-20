@@ -1,129 +1,202 @@
 --[[
 ═══════════════════════════════════════════════════════════════════════
-                      NVIM-TREESITTER KONFIGURACJA
+              NVIM-TREESITTER - MAIN BRANCH (NVIM 0.11+)
 ═══════════════════════════════════════════════════════════════════════
 
-CO TO JEST TREESITTER?
-----------------------
-Treesitter = inteligentny parser składni, który:
-  ✓ Rozumie strukturę kodu (AST - Abstract Syntax Tree)
-  ✓ Koloruje składnię precyzyjniej niż regex
-  ✓ Umożliwia nawigację po kodzie
-  ✓ Wspiera auto-indent, fold, komentarze kontekstowe
+⚠️  MAIN BRANCH = CAŁKOWICIE NOWE API ⚠️
+----------------------------------------
+- NIE MA setup() z tabelą konfiguracji!
+- NIE MA ensure_installed, highlight.enable, indent.enable
+- Highlighting włączasz przez vim.treesitter.start()
+- Parsery instalujesz przez require('nvim-treesitter').install()
+
+CO ROBI TREESITTER?
+-------------------
+✓ Parser składni = rozumie AST kodu
+✓ Lepsze kolorowanie niż regex
+✓ Auto-indent, fold, nawigacja
 
 WYMAGANIA:
------------
-Windows: gcc/clang z MSYS2/MinGW lub Visual Studio (cl.exe)
-Linux:   gcc/clang (sudo apt install build-essential)
+----------
+- Neovim 0.11+ (masz 0.11.1 ✓)
+- tree-sitter CLI w PATH
+- Windows: gcc z MSYS2/MinGW LUB zig
+- Linux: gcc/clang
 
-INSTALACJA PARSERÓW:
---------------------
-:TSInstall <język>        - zainstaluj parser
-:TSUpdate                 - aktualizuj wszystkie parsery
-:TSInstallInfo            - lista dostępnych parserów
+KOMENDY:
+--------
+:TSInstall <język>   - zainstaluj parser
+:TSUpdate            - aktualizuj parsery
+:TSLog               - logi instalacji
+:checkhealth nvim-treesitter
 
-OFICJALNE REPO:
----------------
+REPO:
+-----
 https://github.com/nvim-treesitter/nvim-treesitter
 
 ═══════════════════════════════════════════════════════════════════════
 ]]
 
 return {
-	-- ======================== TREESITTER ========================
+	-- ======================== TREESITTER MAIN BRANCH ========================
 	{
 		"nvim-treesitter/nvim-treesitter",
+		branch = "main", -- KRYTYCZNE dla nvim 0.11+
+		lazy = false,
 		build = ":TSUpdate",
-		lazy = false, -- Nie lazy-loaduj tego pluginu
-		config = function()
-			-- ==================== WINDOWS FIX ====================
-			-- Dodaj MSYS2/MinGW do PATH (tylko na Windows)
+
+		-- INIT = konfiguracja kompilatora PRZED załadowaniem pluginu
+		init = function()
+			-- Windows: dodaj MSYS2 do PATH
 			if vim.fn.has("win32") == 1 then
 				vim.env.PATH = vim.env.PATH .. ";C:\\msys64\\mingw64\\bin;C:\\msys64\\usr\\bin"
 			end
 
-			-- Konfiguracja kompilatora
-			local install = require("nvim-treesitter.install")
-			install.prefer_git = false -- Używaj curl+tar (szybsze)
-			install.compilers = { "gcc", "clang", "cc" } -- Kolejność kompilatorów
+			-- Ustaw kompilator (głównie dla Windows)
+			require("nvim-treesitter.install").compilers = { "gcc", "clang", "zig", "cc" }
+		end,
 
-			-- ==================== GŁÓWNA KONFIGURACJA ====================
-			require("nvim-treesitter.configs").setup({
-				-- Lista języków do auto-instalacji
-				ensure_installed = {
-					-- Podstawowe
-					"lua",
-					"vim",
-					"vimdoc",
-					"query", -- Treesitter query language
+		-- CONFIG = główna konfiguracja PO załadowaniu pluginu
+		config = function()
+			-- ==================== SETUP (MINIMALNY) ====================
+			-- W main branch setup() NIE przyjmuje tabeli konfiguracji!
+			require("nvim-treesitter").setup({})
 
-					-- Web dev
-					"html",
-					"css",
-					"scss",
-					"javascript",
-					"typescript",
-					"tsx",
-					"json",
-					"yaml",
+			-- ==================== INSTALACJA PARSERÓW ====================
+			-- Lista języków do zainstalowania
+			local parsers = {
+				"lua",
+				"vim",
+				"vimdoc",
+				"query",
 
-					-- Backend/System
-					"python",
-					"go", -- Język Go
-					"bash",
-					"markdown",
-					"markdown_inline",
+				-- Web
+				"html",
+				"css",
+				"scss",
+				"javascript",
+				"typescript",
+				"tsx",
+				"json",
+				"yaml",
 
-					-- Opcjonalne (odkomentuj jeśli używasz):
-					-- "rust",
-					-- "c",
-					-- "cpp",
-					-- "java",
-					-- "php",
-				},
+				-- Backend/System
+				"python",
+				"go", -- Język Go
+				"bash",
+				"markdown",
+				"markdown_inline",
 
-				-- Instaluj wszystkie parsery synchronicznie? (false = szybsze)
-				sync_install = false,
+				-- Odkomentuj jeśli używasz:
+				-- "rust",
+				-- "c",
+				-- "cpp",
+				-- "java",
+				-- "php",
+			}
 
-				-- Auto-instaluj brakujące parsery przy otwarciu pliku
-				auto_install = true,
+			-- ==================== LISTA PODSTAWOWYCH PARSERÓW ====================
+			-- Te parsery zainstalują się przy starcie (tylko raz)
 
-				-- ==================== MODUŁY ====================
+			local ts = require("nvim-treesitter")
 
-				-- Syntax highlighting
-				highlight = {
-					enable = true,
-					-- disable = { "c", "rust" }, -- Wyłącz dla konkretnych języków
-					additional_vim_regex_highlighting = false, -- Wyłącz regex highlighting (szybsze)
-				},
+			-- Instaluj podstawowe parsery synchronicznie przy pierwszym uruchomieniu
+			ts.install(parsers, { summary = false }):wait(30000)
 
-				-- Auto-indentacja (eksperymentalne)
-				indent = {
-					enable = true,
-					-- disable = { "python" }, -- Wyłącz dla problematycznych języków
-				},
+			-- ==================== AUTO-INSTALL NA FILETYPE ====================
+			-- Lista języków do auto-instalacji (reszta języków)
+			local auto_install_langs = {
+				-- Web
+				html = true,
+				css = true,
+				scss = true,
+				javascript = true,
+				typescript = true,
+				tsx = true,
+				json = true,
+				yaml = true,
 
-				-- Incremental selection (wizualne zaznaczanie scope)
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "gnn", -- Inicjuj zaznaczanie
-						node_incremental = "grn", -- Powiększ zaznaczenie
-						scope_incremental = "grc", -- Powiększ do scope
-						node_decremental = "grm", -- Zmniejsz zaznaczenie
-					},
-				},
+				-- Backend/System
+				python = true,
+				go = true, -- Go!
+				bash = true,
+				markdown = true,
+				markdown_inline = true,
+
+				-- Odkomentuj jeśli używasz:
+				-- rust = true,
+				-- c = true,
+				-- cpp = true,
+				-- java = true,
+				-- php = true,
+			}
+
+			-- Funkcja do auto-instalacji i włączania highlighting
+			local function auto_install_and_highlight(event)
+				local ft = vim.bo[event.buf].filetype
+
+				-- Pomiń puste/specjalne filetypes
+				if not ft or ft == "" or ft == "help" or ft == "qf" then
+					return
+				end
+
+				-- Sprawdź czy język jest na liście do auto-install
+				if auto_install_langs[ft] then
+					-- Zainstaluj parser (asynchronicznie, nie blokuje UI)
+					local ok, task = pcall(ts.install, { ft }, { summary = false })
+					if ok then
+						-- Czekaj max 10 sekund na instalację
+						task:wait(10000)
+					end
+				end
+
+				-- Włącz highlighting dla buffora (nawet jeśli parser już był)
+				pcall(vim.treesitter.start, event.buf, ft)
+			end
+
+			-- Autocmd dla auto-instalacji + highlighting
+			vim.api.nvim_create_autocmd("FileType", {
+				group = vim.api.nvim_create_augroup("treesitter_auto_install", { clear = true }),
+				pattern = "*",
+				callback = auto_install_and_highlight,
+			})
+
+			-- ==================== AUTO-INDENTACJA (OPCJONALNE) ====================
+			vim.api.nvim_create_autocmd("FileType", {
+				group = vim.api.nvim_create_augroup("treesitter_indent", { clear = true }),
+				pattern = "*",
+				callback = function(event)
+					-- Wyłącz dla problematycznych języków
+					local disabled = { "python", "yaml" }
+					if vim.tbl_contains(disabled, vim.bo[event.buf].filetype) then
+						return
+					end
+					vim.bo[event.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+				end,
+			})
+
+			-- ==================== FOLDING (OPCJONALNE) ====================
+			vim.api.nvim_create_autocmd("FileType", {
+				group = vim.api.nvim_create_augroup("treesitter_folding", { clear = true }),
+				pattern = "*",
+				callback = function(event)
+					vim.wo[0][0].foldmethod = "expr"
+					vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+					vim.wo[0][0].foldenable = false -- Nie zwijaj domyślnie
+				end,
 			})
 		end,
 	},
 
-	-- ======================== DODATKOWE MODUŁY ========================
-
-	-- Kontekstowe komentarze (obsługa JSX, Vue itp.)
+	-- ======================== CONTEXT COMMENTSTRING ========================
 	{
 		"JoosepAlviste/nvim-ts-context-commentstring",
-		opts = {
-			enable_autocmd = false,
-		},
+		branch = "main",
+		lazy = false,
+		config = function()
+			require("ts_context_commentstring").setup({
+				enable_autocmd = false,
+			})
+		end,
 	},
 }
