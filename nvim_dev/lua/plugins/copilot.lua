@@ -7,93 +7,121 @@
 ---@module 'copilotchat'
 ---@description Konfiguracja CopilotChat dla Neovim
 ---Integruje GitHub Copilot z możliwością czatu, code review, fix, explain i innych funkcji AI
----@dependencies github/copilot.vim, nvim-lua/plenary.nvim
----
+---@dependencies zbirenbaum/copilot.lua, nvim-lua/plenary.nvim
 
 return {
 	"CopilotC-nvim/copilotchat.nvim",
 	dependencies = {
-		{ "github/copilot.vim" }, -- or zbirenbaum/copilot.lua
+		{ "zbirenbaum/copilot.lua" },
 		{ "nvim-lua/plenary.nvim", branch = "master" },
 	},
-	-- build = "make tiktoken", -- only on macos or linux
-	-- normalny setup Copilota tutaj
-	-- require("copilot").setup({ ... })
-
-	-- Auto-close Copilot limit alert
-	-- config = function()
-	-- 	require("CopilotChat").setup({})
-	--
-	-- 	vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
-	-- 		callback = function()
-	-- 			vim.defer_fn(function()
-	-- 				for _, win in ipairs(vim.api.nvim_list_wins()) do
-	-- 					local buf = vim.api.nvim_win_get_buf(win)
-	-- 					local ft = vim.bo[buf].filetype
-	-- 					local bt = vim.bo[buf].buftype
-	--
-	-- 					-- skip log windows and lazy
-	-- 					if ft == "lazy" or ft == "log" or bt == "quickfix" or bt == "help" then
-	-- 						goto continue
-	-- 					end
-	--
-	-- 					local ok, lines = pcall(vim.api.nvim_buf_get_lines, buf, 0, -1, false)
-	-- 					if ok then
-	-- 						for _, line in ipairs(lines) do
-	-- 							if
-	-- 								line:match("[Ll]imit") and (line:match("[Uu]pgrade") or line:match("[Dd]ismiss"))
-	-- 							then
-	-- 								pcall(vim.api.nvim_win_close, win, true)
-	-- 								return
-	-- 							end
-	-- 						end
-	-- 					end
-	--
-	-- 					::continue::
-	-- 				end
-	-- 			end, 300)
-	-- 		end,
-	-- 	})
-	-- end,
+	build = "make tiktoken",
 	event = "VeryLazy",
-	--
-	-- init = function()
-	-- 	local banned = {
-	-- 		"upgrade",
-	-- 		"plan",
-	-- 		"monthly",
-	-- 		"limit",
-	-- 		"reached",
-	-- 		"trial",
-	-- 		"pro",
-	-- 		"subscription",
-	-- 	}
-	--
-	-- 	-- Tylko notify - NIE zamykaj buforów
-	-- 	vim.notify = (function(orig)
-	-- 		return function(msg, level, opts)
-	-- 			if type(msg) == "string" then
-	-- 				local lower = msg:lower()
-	-- 				for _, word in ipairs(banned) do
-	-- 					if lower:find(word, 1, true) then
-	-- 						return -- Zablokuj tylko notyfikację
-	-- 					end
-	-- 				end
-	-- 			end
-	--
-	-- 			if opts and type(opts.title) == "string" then
-	-- 				local lower = opts.title:lower()
-	-- 				for _, word in ipairs(banned) do
-	-- 					if lower:find(word, 1, true) then
-	-- 						return
-	-- 					end
-	-- 				end
-	-- 			end
-	--
-	-- 			return orig(msg, level, opts)
-	-- 		end
-	-- 	end)(vim.notify)
-	-- end,
+
+	config = function()
+		-- Setup copilot.lua
+		require("copilot").setup({
+			panel = { enabled = false },
+			suggestion = {
+				enabled = true,
+				auto_trigger = false,
+			},
+		})
+
+		-- Setup CopilotChat
+		local prompts = require("CopilotChat.prompts")
+		require("CopilotChat").setup({
+			debug = false,
+			model = "gpt-4o",
+			temperature = 0.1,
+			system_prompt = prompts.copilot_instructions,
+			question_header = "## user",
+			answer_header = "## copilot",
+			error_header = "## error",
+			separator = "───",
+			show_help = true,
+			show_folds = true,
+			auto_follow_cursor = true,
+			auto_insert_mode = false,
+			window = {
+				layout = "float",
+				border = "rounded",
+				title = "copilot chat",
+				width = 0.6,
+				height = 0.6,
+			},
+			mappings = {
+				close = { normal = "<esc>", "q", insert = "<c-c>" },
+				reset = { normal = "<c-r>", "<c-x>", insert = "<c-r>" },
+				dismiss_suggestion = { normal = "<c-c>", "<c-d>", insert = "<c-c>" },
+				submit_prompt = { normal = "<c-e>", insert = "<c-s>" },
+				accept_diff = { normal = "<c-y>", insert = "<c-y>" },
+				yank_diff = { normal = "gy", register = '"' },
+				show_diff = { normal = "gd" },
+				show_system_prompt = { normal = "gp" },
+				show_user_selection = { normal = "gs" },
+				complete = {
+					insert = "<tab>",
+					detail = "use @<tab> or /<tab> to complete",
+				},
+			},
+		})
+
+		-- Auto-close Copilot limit popup
+		vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+			callback = function()
+				vim.defer_fn(function()
+					for _, win in ipairs(vim.api.nvim_list_wins()) do
+						local buf = vim.api.nvim_win_get_buf(win)
+						local ft = vim.bo[buf].filetype
+						local bt = vim.bo[buf].buftype
+
+						if ft == "lazy" or ft == "log" or bt == "quickfix" or bt == "help" then
+							goto continue
+						end
+
+						local ok, lines = pcall(vim.api.nvim_buf_get_lines, buf, 0, -1, false)
+						if ok then
+							for _, line in ipairs(lines) do
+								if
+									line:match("[Ll]imit") and (line:match("[Uu]pgrade") or line:match("[Dd]ismiss"))
+								then
+									pcall(vim.api.nvim_win_close, win, true)
+									return
+								end
+							end
+						end
+
+						::continue::
+					end
+				end, 300)
+			end,
+		})
+	end,
+
+	init = function()
+		local banned_messages = {
+			"upgrade",
+			"plan",
+			"monthly",
+			"limit",
+			"reached",
+			"subscription",
+		}
+		vim.notify = (function(orig)
+			return function(msg, level, opts)
+				if type(msg) == "string" then
+					local lower = msg:lower()
+					for _, word in ipairs(banned_messages) do
+						if lower:find(word, 1, true) then
+							return
+						end
+					end
+				end
+				return orig(msg, level, opts)
+			end
+		end)(vim.notify)
+	end,
 
 	---@function keys
 	---@description Definiuje wszystkie keybindings dla CopilotChat
@@ -108,80 +136,33 @@ return {
 			vim.notify("Feature: " .. (feature_enabled and "ON" or "OFF"))
 		end
 
-		---@function handle_smart_toggle
-		---@description Inteligentne przełączanie okna czatu (API 0.11+)
-		---W nowej wersji: stop() przerywa generowanie, toggle() przełącza okno
-		---@unused Zakomentowane - przykład zaawansowanego użycia
-		-- local handle_smart_toggle = function()
-		-- 	local chat = require("CopilotChat")
-		-- 	chat.toggle()
-		-- end
-
-		-- keys - globalne lazy-loading, poza opts
 		return {
 			-- ▰▰▰▰▰▰▰▰▰▰▰ PODSTAWOWE TOGGLE ▰▰▰▰▰▰▰▰▰▰▰
-			---Toggle okna czatu - główny skrót
 			{ "<c-p>", "<cmd>CopilotChatToggle<cr>", desc = "copilot: toggle chat" },
-
-			---Toggle custom feature
 			{ "<leader>ct", toggle_feature, desc = "copilot: toggle feature" },
 
 			-- ▰▰▰▰▰▰▰▰▰▰▰ VISUAL MODE - DZIAŁANIA NA ZAZNACZONYM KODZIE ▰▰▰▰▰▰▰▰▰▰▰
-			---Wyjaśnia zaznaczony kod
 			{ "<leader>ce", "<cmd>CopilotChatExplain<cr>", mode = "v", desc = "copilot: explain" },
-
-			---Code review zaznaczonego fragmentu
 			{ "<leader>cr", "<cmd>CopilotChatReview<cr>", mode = "v", desc = "copilot: review" },
-
-			---Naprawia błędy w zaznaczonym kodzie
 			{ "<leader>cf", "<cmd>CopilotChatFix<cr>", mode = "v", desc = "copilot: fix" },
-
-			---Optymalizuje zaznaczony kod
 			{ "<leader>co", "<cmd>CopilotChatOptimize<cr>", mode = "v", desc = "copilot: optimize" },
-
-			---Generuje dokumentację dla zaznaczonego kodu
 			{ "<leader>cd", "<cmd>CopilotChatDocs<cr>", mode = "v", desc = "copilot: docs" },
 
-			---Generuje testy dla zaznaczonego kodu
-			-- { "<leader>ct", "<cmd>CopilotChatTests<cr>", mode = "v", desc = "copilot: tests" }, -- duplikat z toggle_feature
-
 			-- ▰▰▰▰▰▰▰▰▰▰▰ NORMAL MODE - PODSTAWOWE OPERACJE ▰▰▰▰▰▰▰▰▰▰▰
-			---Otwiera okno czatu
 			{ "<leader>cc", "<cmd>CopilotChat<cr>", desc = "copilot: open chat" },
-
-			---Zamyka okno czatu
-			-- { "<leader>cc", "<cmd>CopilotChatClose<cr>", desc = "copilot: close chat" }, -- duplikat klawisza z open
-
-			---Resetuje sesję czatu
-			-- { "<leader>cr", "<cmd>CopilotChatReset<cr>", desc = "copilot: reset chat" }, -- duplikat z review (visual)
-
-			---Zatrzymuje generowanie odpowiedzi
 			{ "<leader>cs", "<cmd>CopilotChatStop<cr>", desc = "copilot: stop" },
 
 			-- ▰▰▰▰▰▰▰▰▰▰▰ ZARZĄDZANIE MODELAMI I PROMPTAMI ▰▰▰▰▰▰▰▰▰▰▰
-			---Wybór modelu AI
 			{ "<leader>cm", "<cmd>CopilotChatModels<cr>", desc = "copilot: select model" },
-
-			---Pokazuje aktualny model
-			-- { "<leader>cm", "<cmd>CopilotChatModel<cr>", desc = "copilot: current model" }, -- duplikat z select model
-
-			---Lista dostępnych promptów
 			{ "<leader>cp", "<cmd>CopilotChatPrompts<cr>", desc = "copilot: prompts" },
 
 			-- ▰▰▰▰▰▰▰▰▰▰▰ HISTORIA CZATU ▰▰▰▰▰▰▰▰▰▰▰
-			---Zapisuje historię czatu do pliku
-			-- { "<leader>cs", "<cmd>CopilotChatSave<cr>", desc = "copilot: save chat" }, -- duplikat z stop
-
-			---Ładuje historię czatu z pliku
 			{ "<leader>cl", "<cmd>CopilotChatLoad<cr>", desc = "copilot: load chat" },
 
 			-- ▰▰▰▰▰▰▰▰▰▰▰ GIT OPERACJE ▰▰▰▰▰▰▰▰▰▰▰
-			---Generuje commit message
 			{ "<leader>cg", "<cmd>CopilotChatCommit<cr>", desc = "copilot: generate commit" },
 
-			-- ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
-			-- Na końcu przed zamknięciem return { }
-			-- TEST: sprawdź czy filtr działa
+			-- ▰▰▰▰▰▰▰▰▰▰▰ TESTY ▰▰▰▰▰▰▰▰▰▰▰
 			{
 				"<leader>cT",
 				function()
@@ -193,8 +174,6 @@ return {
 				end,
 				desc = "copilot: TEST limit (should be blocked)",
 			},
-
-			---TEST: Normalna notyfikacja (powinna się POKAZAĆ)
 			{
 				"<leader>cN",
 				function()
@@ -202,247 +181,6 @@ return {
 				end,
 				desc = "copilot: TEST normal notification",
 			},
-
-			-- ===== ZAKOMENTOWANE - PRZYKŁADY DO DODANIA =====
-
-			-- ---Quick chat - szybkie zapytanie bez otwierania okna
-			-- {
-			-- 	"<leader>cq",
-			-- 	function()
-			-- 		local input = vim.fn.input("quick chat: ")
-			-- 		if input ~= "" then
-			-- 			require("CopilotChat").ask(input, { selection = require("copilotchat.select").buffer })
-			-- 		end
-			-- 	end,
-			-- 	desc = "copilot: quick chat",
-			-- },
-
-			-- ---Quick chat z visual selection
-			-- {
-			-- 	"<leader>cq",
-			-- 	function()
-			-- 		local input = vim.fn.input("quick chat: ")
-			-- 		if input ~= "" then
-			-- 			require("CopilotChat").ask(input)
-			-- 		end
-			-- 	end,
-			-- 	mode = "v",
-			-- 	desc = "copilot: quick chat (visual)",
-			-- },
-
-			-- ---Debug help - analizuje kod i wyjaśnia potencjalne problemy
-			-- {
-			-- 	"<leader>cb",
-			-- 	"<cmd>CopilotChat #buffer debug this code and explain potential issues<cr>",
-			-- 	desc = "copilot: debug code",
-			-- },
-
-			-- ===== CUSTOM PROMPTS - DODAJ SWOJE =====
-			-- { "<leader>ce", "<cmd>CopilotChatexplaindeep<cr>", desc = "copilot: deep explain" },
-			-- { "<leader>cb", "<cmd>CopilotChatbestpractices<cr>", desc = "copilot: best practices" },
-			-- { "<leader>cp", "<cmd>CopilotChatperformance<cr>", desc = "copilot: performance tips" },
-			-- { "<leader>cd", "<cmd>CopilotChatdebug<cr>", desc = "copilot: debug help" },
-
-			-- ===== INLINE ACTIONS =====
-			-- ---Inline chat - okno przy kursorze
-			-- {
-			-- 	"<leader>ci",
-			-- 	function()
-			-- 		require("CopilotChat").open({ window = { layout = "float", relative = "cursor" } })
-			-- 	end,
-			-- 	desc = "copilot: inline chat",
-			-- },
-
-			-- ===== TOGGLE Z KONFIGURACJĄ OKNA =====
-			-- ---Toggle vertical layout
-			-- {
-			-- 	"<leader>cv",
-			-- 	function()
-			-- 		require("CopilotChat").toggle({ window = { layout = "vertical" } })
-			-- 	end,
-			-- 	desc = "copilot: vertical chat",
-			-- },
-			-- ---Toggle horizontal layout
-			-- {
-			-- 	"<leader>ch",
-			-- 	function()
-			-- 		require("CopilotChat").toggle({ window = { layout = "horizontal" } })
-			-- 	end,
-			-- 	desc = "copilot: horizontal chat",
-			-- },
-
-			-- ===== ZAPYTANIA O BIEŻĄCY BUFOR =====
-			-- ---Co robi ten kod?
-			-- {
-			-- 	"<leader>cw",
-			-- 	"<cmd>CopilotChat #buffer what does this code do?<cr>",
-			-- 	desc = "copilot: what does code do",
-			-- },
-
-			-- ===== ZAPYTANIE O GIT DIFF =====
-			-- ---Wyjaśnia zmiany w git diff
-			-- {
-			-- 	"<leader>cg",
-			-- 	"<cmd>CopilotChat #gitdiff:staged explain these changes<cr>",
-			-- 	desc = "copilot: explain git diff",
-			-- },
-
-			-- ===== FOCUS NA CHAT WINDOW =====
-			-- ---Przenosi focus na okno czatu
-			-- {
-			-- 	"<leader>cf",
-			-- 	function()
-			-- 		require("CopilotChat").focus()
-			-- 	end,
-			-- 	desc = "copilot: focus chat",
-			-- },
-		}
-	end,
-
-	---@function opts
-	---@description Główna konfiguracja CopilotChat
-	---@return table Konfiguracja pluginu
-	opts = function()
-		local prompts = require("CopilotChat.prompts")
-
-		return {
-			-- ===== CORE =====
-			---Tryb debugowania
-			debug = false,
-
-			---Model AI do użycia
-			model = "gpt-4o",
-
-			---Temperatura odpowiedzi (0-1, niższa = bardziej deterministyczna)
-			temperature = 0.1,
-
-			---System prompt
-			system_prompt = prompts.copilot_instructions,
-
-			-- ===== UI =====
-			---Nagłówek pytania użytkownika
-			question_header = "## user",
-
-			---Nagłówek odpowiedzi Copilot
-			answer_header = "## copilot",
-
-			---Nagłówek błędu
-			error_header = "## error",
-
-			---Separator między wiadomościami
-			separator = "───",
-
-			---Pokazuj help
-			show_help = true,
-
-			---Pokazuj foldy
-			show_folds = true,
-
-			---Auto follow kursor
-			auto_follow_cursor = true,
-
-			---Auto wejście w tryb insert
-			auto_insert_mode = false,
-
-			-- ===== WINDOW =====
-			---Konfiguracja okna czatu
-			window = {
-				---Layout: float | vertical | horizontal
-				layout = "float",
-
-				---Styl ramki
-				border = "rounded",
-
-				---Tytuł okna
-				title = "copilot chat",
-
-				---Szerokość (0-1 jako procent lub liczba pikseli)
-				width = 0.6,
-
-				---Wysokość (0-1 jako procent lub liczba pikseli)
-				height = 0.6,
-			},
-
-			-- ===== KEYMAPS (WEWNĄTRZ OKNA CHATU) =====
-			---Mapowania klawiszy wewnątrz okna chatu
-			mappings = {
-				---Zamknij okno czatu
-				close = { normal = "<esc>", "q", insert = "<c-c>" },
-
-				---Resetuj sesję czatu
-				reset = { normal = "<c-r>", "<c-x>", insert = "<c-r>" },
-
-				---Odrzuć sugestię
-				dismiss_suggestion = { normal = "<c-c>", "<c-d>", insert = "<c-c>" },
-
-				---Wyślij prompt
-				submit_prompt = { normal = "<c-e>", insert = "<c-s>" },
-
-				---Zaakceptuj diff
-				accept_diff = { normal = "<c-y>", insert = "<c-y>" },
-
-				---Skopiuj diff
-				yank_diff = { normal = "gy", register = '"' },
-
-				---Pokaż diff
-				show_diff = { normal = "gd" },
-
-				---Pokaż system prompt
-				show_system_prompt = { normal = "gp" },
-
-				---Pokaż user selection
-				show_user_selection = { normal = "gs" },
-
-				---Autocomplete
-				complete = {
-					insert = "<tab>",
-					detail = "use @<tab> or /<tab> to complete",
-				},
-			},
-
-			-- ===== ZAKOMENTOWANE PRZYKŁADY MAPOWAŃ =====
-			-- ---Akceptuj sugestię Copilot (inline)
-			-- {
-			-- 	".l",
-			-- 	mode = "i",
-			-- 	expr = true,
-			-- 	function()
-			-- 		return vim.fn["copilot#accept"]("")
-			-- 	end,
-			-- 	desc = "copilot: accept suggestion",
-			-- },
-
-			-- ---Toggle chat window (alternatywna metoda)
-			-- vim.api.nvim_set_keymap(
-			-- 	"n",
-			-- 	"<space>cc",
-			-- 	":copilot chat toggle<cr>",
-			-- 	{ noremap = true, silent = true }
-			-- ),
-
-			-- ---Następna sugestia
-			-- { ".n", mode = "i", "<plug>(copilot-next)", desc = "copilot: next suggestion" },
-
-			-- ---Poprzednia sugestia
-			-- { ".p", mode = "i", "<plug>(copilot-previous)", desc = "copilot: previous suggestion" },
-
-			-- ---Odrzuć sugestię
-			-- { ".d", mode = "i", "<plug>(copilot-dismiss)", desc = "copilot: dismiss suggestion" },
-
-			-- ---Zaakceptuj słowo
-			-- { "<ctrl>l", mode = "i", "<plug>(copilot-accept-word)", desc = "copilot: accept word" },
-
-			-- ---Zaakceptuj linię
-			-- { "<ctrl>k", mode = "i", "<plug>(copilot-accept-line)", desc = "copilot: accept line" },
-
-			-- ---Status Copilot
-			-- { ".s", mode = "n", ":copilot status<cr>", desc = "copilot: status" },
-
-			-- ---Włącz Copilot
-			-- { ".e", mode = "n", ":copilot enable<cr>" },
-
-			-- ---Wyłącz Copilot
-			-- { ".d", mode = "n", ":copilot disable<cr>" },
 		}
 	end,
 }
