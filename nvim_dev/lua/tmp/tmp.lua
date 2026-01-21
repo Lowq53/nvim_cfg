@@ -1,3 +1,5 @@
+vim.opt.updatetime = 5000 -- czas w milisekunda dla atuozapisu cursor hold po tym czasie mozna robic auto-save
+
 vim.keymap.set("n", "<leader>tp", function()
 	vim.cmd("vsplit")
 	vim.cmd("term pwsh")

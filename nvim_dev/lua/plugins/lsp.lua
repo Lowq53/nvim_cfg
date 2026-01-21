@@ -3,6 +3,16 @@ return {
 	-- LSP = Language Server Protocol - zapewnia IntelliSense, goto definition, diagnostyki
 	-- Mason = instalator/manager dla LSP serwerów, formattersów, linterów
 	-- Nvim 0.11 u¿ywa nowego API: vim.lsp.config[] i vim.lsp.enable()
+	--
+	-- gd   - Goto Definition (skocz do definicji)
+	-- gR   - References (poka¿ wszystkie u¿ycia)
+	-- K    - Hover Documentation (dokumentacja pod kursorem)
+	-- <leader>rn - Rename Symbol (zmie¿ nazw¿)
+	-- <leader>ca - Code Action (akcje kodu)
+	-- Ctrl-Space - otwórz suggestions ctrl-n
+	-- Ctrl-n/p   - nast¿pny/poprzedni
+	-- Ctrl-y     - potwierd¿
+	-- Ctrl-e     - zamknij
 	{
 		"neovim/nvim-lspconfig",
 		event = "BufReadPre",
@@ -28,8 +38,75 @@ return {
 					map("gd", vim.lsp.buf.definition, "Goto Definition")
 					map("gR", vim.lsp.buf.references, "References")
 					map("K", vim.lsp.buf.hover, "Hover Documentation")
+					map("<c-k>", vim.lsp.buf.hover, "Hover Documentation")
 					map("<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
+
+					-- Diagnostic
+					map("gD", vim.lsp.buf.declaration, "Goto Declaration")
+					map("gi", vim.lsp.buf.implementation, "Goto Implementation")
+					map("gr", vim.lsp.buf.references, "Show References")
+					map("<C-H>", vim.lsp.buf.signature_help, "Signature Help")
+
+					-- Navigate
+					map("]d", vim.diagnostic.goto_next, "Next Diagnostic")
+					map("[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
+					map("<leader>e", vim.diagnostic.open_float, "Show Diagnostic")
+					map("<leader>q", vim.diagnostic.setloclist, "Diagnostic List")
 					map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
+					vim.keymap.set("n", "q", function()
+						for _, win in ipairs(vim.api.nvim_list_wins()) do
+							local buf = vim.api.nvim_win_get_buf(win)
+							local ft = vim.bo[buf].filetype
+							if ft == "markdown" then -- hover window u¿ywa markdown
+								vim.api.nvim_win_close(win, true)
+								return
+							end
+						end
+					end, { buffer = event.buf, desc = "Close hover window" })
+
+					-- workspace
+					map("<leader>wa", vim.lsp.buff.add_workspace_folder, "Add Workspace")
+					map("<leader>wr", vim.lsp.buff.remove_workspace_folder, "Remove Workspac")
+					map("<leader>wl", function()
+						print(vim.inspect(vim.lspe.buf.list_workspace_folders()))
+					end, "List Workspace")
+
+					-- format & type
+					map("<leader>D", vim.lsp.buf.type_definition, "Type Definition")
+					-- <leader>f ju¿ masz w conform.nvim
+
+					-- inlayHints(podpowiedzi w kodize)
+					vim.lsp.inlay_hint.enable(true) -- w¿¿cz globalnie
+					-- toggle na klawisz:
+					map("<leader>ih", function()
+						vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+					end, "Toggle Inlay Hints")
+
+					--codelens (akcje w kodzie)
+					vim.lsp.codelens.refresh() -- od¿wie¿
+					-- w autocmd:
+					vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+						callback = function()
+							vim.lsp.codelens.refresh()
+						end,
+					})
+
+					-- document sympols
+					map("<leader>ds", vim.lsp.buf.document_symbol, "Document Symbols")
+					map("<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace Symbols")
+
+					-- Folding (sk¿adanie kodu):
+					vim.wo.foldmethod = "expr"
+					vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
+
+					-- Semantic Tokens (kolorowanie):
+					-- w¿¿czone automatycznie, ale mo¿na wy¿¿czy¿:
+					vim.api.nvim_create_autocmd("LspAttach", {
+						callback = function(args)
+							local client = vim.lsp.get_client_by_id(args.data.client_id)
+							client.server_capabilities.semanticTokensProvider = nil
+						end,
+					})
 				end,
 			})
 
