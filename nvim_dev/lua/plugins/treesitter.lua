@@ -86,6 +86,7 @@ return {
 				"bash",
 				"markdown",
 				"markdown_inline",
+				"diff",
 
 				-- Odkomentuj jeśli używasz:
 				-- "rust",
