@@ -65,8 +65,8 @@ return {
 					end, { buffer = event.buf, desc = "Close hover window" })
 
 					-- workspace
-					map("<leader>wa", vim.lsp.buff.add_workspace_folder, "Add Workspace")
-					map("<leader>wr", vim.lsp.buff.remove_workspace_folder, "Remove Workspac")
+					map("<leader>wa", vim.lsp.buf.add_workspace_folder, "Add Workspace")
+					map("<leader>wr", vim.lsp.buf.remove_workspace_folder, "Remove Workspac")
 					map("<leader>wl", function()
 						print(vim.inspect(vim.lspe.buf.list_workspace_folders()))
 					end, "List Workspace")

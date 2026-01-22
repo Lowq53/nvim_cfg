@@ -5,7 +5,7 @@
 
 local Q = {}
 
-local vks = vim.keymap.set
+local map = vim.keymap.set
 local cmd = vim.api.nvim_create_user_command
 function Q.setup()
 	Q.setup_quickfix_mappings()
@@ -38,31 +38,26 @@ end
 -- Basic Quickfix keymaps
 -- ----------------------------------------------------------------------------
 function Q.setup_quickfix_mappings()
-	--quick fix navigation
-	--────────────────────────────────────────────────────────────────────────
-	vks("n", "<C-q>j", ":cnext<CR>", { desc = "Następny quickfix" })
-	vks("n", "<C-q>k", ":cprev<CR>", { desc = "Poprzedni quickfix" })
-	vks("n", "<C-q>h", ":colder<CR>", { desc = "Starsza lista quickfix" })
-	vks("n", "<C-q>l", ":cnewer<CR>", { desc = "Nowsza lista quickfix" })
-	vks("n", "<leader>qo", "<cmd>copen<cr>", { desc = "Quickfix: Open" })
-	vks("n", "<leader>qc", "<cmd>cclose<cr>", { desc = "Quickfix: Close" })
-	vks("n", "<space>q", Q.toggle, { desc = "Quickfix: Toggle" })
+	-- Open / close / toggle
+	map("n", "<leader>qo", "<cmd>copen<cr>", { desc = "Quickfix: Open" })
+	map("n", "<leader>qc", "<cmd>cclose<cr>", { desc = "Quickfix: Close" })
+	map("n", "<space>q", Q.toggle, { desc = "Quickfix: Toggle" })
 
 	-- Item navigation (cursor stays centered)
-	vks("n", "]q", "<cmd>cnext<cr>zz", { desc = "Quickfix: Next item" })
-	vks("n", "[q", "<cmd>cprev<cr>zz", { desc = "Quickfix: Prev item" })
+	map("n", "]q", "<cmd>cnext<cr>zz", { desc = "Quickfix: Next item" })
+	map("n", "[q", "<cmd>cprev<cr>zz", { desc = "Quickfix: Prev item" })
 
 	-- File-wise navigation inside QF
-	vks("n", "]Q", "<cmd>cnf<cr>", { desc = "Quickfix: Next file" })
-	vks("n", "[Q", "<cmd>cpf<cr>", { desc = "Quickfix: Prev file" })
+	map("n", "]Q", "<cmd>cnf<cr>", { desc = "Quickfix: Next file" })
+	map("n", "[Q", "<cmd>cpf<cr>", { desc = "Quickfix: Prev file" })
 
 	-- History navigation
-	vks("n", "<leader>qh", "<cmd>chistory<cr>", { desc = "Quickfix: History" })
-	vks("n", "<leader>qp", "<cmd>colder<cr>", { desc = "Quickfix: Older(Previous) list" })
-	vks("n", "<leader>qn", "<cmd>cnewer<cr>", { desc = "Quickfix: Newer list" })
+	map("n", "<leader>qh", "<cmd>chistory<cr>", { desc = "Quickfix: History" })
+	map("n", "<leader>qp", "<cmd>colder<cr>", { desc = "Quickfix: Older list" })
+	map("n", "<leader>qn", "<cmd>cnewer<cr>", { desc = "Quickfix: Newer list" })
 
 	-- Clear list (safe)
-	vks("n", "<leader>qx", "<cmd>cexpr []<cr>", { desc = "Quickfix: Clear list" })
+	map("n", "<leader>qx", "<cmd>cexpr []<cr>", { desc = "Quickfix: Clear list" })
 end
 
 -- ----------------------------------------------------------------------------
