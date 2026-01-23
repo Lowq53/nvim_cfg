@@ -143,7 +143,7 @@ return {
 					["<Tab>"] = { "show_and_insert_or_accept_single", "select_next", "fallback" },
 					["<S-Tab>"] = { "show_and_insert_or_accept_single", "select_prev", "fallback" },
 					["<CR>"] = { "accept", "fallback" },
-					["<C-k>"] = { "show_documentation", "hide_documentation", "fallback" },
+          ["<S-k>"] = { "show_documentation", "hide_documentation", "fallback" },
 					["<C-l>"] = { "accept", "fallback" },
 					["<C-y>"] = { "select_and_accept" },
 				},
@@ -199,6 +199,7 @@ return {
 			},
 		},
 	},
+	¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 
 	-- ========== PLUGIN 3: NATYWNE SNIPPETY (vim.snippet - Nvim 0.10+) ==========
 	-- U¾ywamy <Tab> do skok¢w w snippetach od LSP

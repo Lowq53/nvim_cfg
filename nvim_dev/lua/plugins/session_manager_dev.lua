@@ -101,6 +101,14 @@ return {
 			{ "<space>st", "<cmd>Persisted toggle<cr>", desc = "Toggle sesji" },
 			{ "<space>sx", "<cmd>Persisted stop<cr>", desc = "Stop nagrywania" },
 			{ "<space>sS", "<cmd>Persisted start<cr>", desc = "Start nagrywania" },
+      { "<space>sc", 
+      function()
+          require("persisted").stop() -- satrymuje śledzienie sesjii
+          vim.cmd("silent! %bd") -- zamknij wszystkie pliki
+          print("crear sesion (recording)")
+        end,
+      desc = "Nowa pusta sesja"
 		},
 	},
+}
 }
