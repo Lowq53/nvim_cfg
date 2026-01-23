@@ -45,7 +45,7 @@ return {
 					map("gD", vim.lsp.buf.declaration, "Goto Declaration")
 					map("gi", vim.lsp.buf.implementation, "Goto Implementation")
 					map("gr", vim.lsp.buf.references, "Show References")
-					map("<C-H>", vim.lsp.buf.signature_help, "Signature Help")
+					map("<c-i>", vim.lsp.buf.signature_help, "Signature Help")
 
 					-- Navigate
 					map("]d", vim.diagnostic.goto_next, "Next Diagnostic")

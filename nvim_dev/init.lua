@@ -12,7 +12,6 @@ require("config.lazy")
 --require("config.terminal")
 
 require("config.pwsh")
-require("config.lsp") -- ADD THIS LINE
 vim.opt.clipboard = "unnamedplus"
 
 -- vim.g.clipboard = {
