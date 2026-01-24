@@ -158,5 +158,325 @@ vim.api.nvim_set_hl(0, "LazyNormal", { link = "TelescopeNormal" })
 vim.api.nvim_set_hl(0, "LazyBorder", { link = "TelescopeBorder" })
 
 M.setup()
+-- ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰A
+
+-- pro code executor
+-- -- ════════════════════════════════════════════════════════════════════════════
+-- ENHANCED LUA CODE EXECUTOR WITH PRINT CAPTURE
+-- ════════════════════════════════════════════════════════════════════════════ ────────────────────────────────────────────────────────────────────────────
+-- Helper: Capture print() output
+-- ────────────────────────────────────────────────────────────────────────────
+local function capture_prints(func)
+  local output = {}
+  local old_print = print
+  
+  -- Override print to capture output
+  print = function(...)
+    local args = {...}
+    local str_parts = {}
+    for i, v in ipairs(args) do
+      table.insert(str_parts, tostring(v))
+    end
+    table.insert(output, table.concat(str_parts, "\t"))
+  end
+  
+  -- Execute function
+  local results = {pcall(func)}
+  local success = table.remove(results, 1)
+  
+  -- Restore original print
+  print = old_print
+  
+  return success, results, output
+end
+
+-- ────────────────────────────────────────────────────────────────────────────
+-- Helper: Get visual selection text
+-- ────────────────────────────────────────────────────────────────────────────
+local function get_visual_selection()
+  local start_pos = vim.fn.getpos("'<")
+  local end_pos = vim.fn.getpos("'>")
+  local start_line = start_pos[2] - 1
+  local end_line = end_pos[2]
+  
+  local lines = vim.api.nvim_buf_get_lines(0, start_line, end_line, false)
+  
+  -- Handle partial line selection
+  if #lines > 0 then
+    local start_col = start_pos[3] - 1
+    local end_col = end_pos[3]
+    
+    if #lines == 1 then
+      lines[1] = string.sub(lines[1], start_col + 1, end_col)
+    else
+      lines[1] = string.sub(lines[1], start_col + 1)
+      lines[#lines] = string.sub(lines[#lines], 1, end_col)
+    end
+  end
+  
+  return table.concat(lines, "\n"), end_line
+end
+
+-- ────────────────────────────────────────────────────────────────────────────
+-- Main: Execute Lua code
+-- ────────────────────────────────────────────────────────────────────────────
+function M.execute_lua()
+  local code, insert_line = get_visual_selection()
+  
+  if code == "" then
+    vim.notify("No code selected", vim.log.levels.WARN)
+    return
+  end
+  
+  -- Try to load and execute code
+  local func, load_err = load(code, "visual selection", "t", _G)
+  
+  if not func then
+    -- Syntax error
+    local output = {
+      "",
+      "-- ✗ Syntax Error:",
+      "-- " .. load_err,
+      ""
+    }
+    vim.api.nvim_buf_set_lines(0, insert_line, insert_line, false, output)
+    vim.notify("Syntax error in Lua code", vim.log.levels.ERROR)
+    return
+  end
+  
+  -- Execute with print capture
+  local success, results, prints = capture_prints(func)
+  
+  -- Build output
+  local output = { "" }
+  
+  if #prints > 0 then
+    table.insert(output, "-- Output:")
+    for _, line in ipairs(prints) do
+      table.insert(output, "-- " .. line)
+    end
+  end
+  
+  if not success then
+    -- Runtime error
+    table.insert(output, "-- ✗ Runtime Error:")
+    table.insert(output, "-- " .. tostring(results[1]))
+  elseif #results > 0 and results[1] ~= nil then
+    -- Return values
+    if #prints > 0 then
+      table.insert(output, "--")
+    end
+    table.insert(output, "-- Return:")
+    local result_str = vim.inspect(results)
+    for line in result_str:gmatch("[^\n]+") do
+      table.insert(output, "-- " .. line)
+    end
+  end
+  
+  table.insert(output, "")
+  
+  -- Insert output below selection
+  vim.api.nvim_buf_set_lines(0, insert_line, insert_line, false, output)
+  
+  -- Move cursor to output
+  vim.api.nvim_win_set_cursor(0, {insert_line + 1, 0})
+end
+
+-- ────────────────────────────────────────────────────────────────────────────
+-- Feature: Execute and replace selection with result
+-- ────────────────────────────────────────────────────────────────────────────
+function M.execute_and_replace()
+  local code, end_line = get_visual_selection()
+  local start_line = vim.fn.getpos("'<")[2] - 1
+  
+  if code == "" then
+    vim.notify("No code selected", vim.log.levels.WARN)
+    return
+  end
+  
+  local func, load_err = load("return " .. code, "eval", "t", _G)
+  
+  if not func then
+    -- Try without 'return' prefix
+    func, load_err = load(code, "eval", "t", _G)
+  end
+  
+  if not func then
+    vim.notify("Cannot evaluate: " .. load_err, vim.log.levels.ERROR)
+    return
+  end
+  
+  local success, results, prints = capture_prints(func)
+  
+  if not success then
+    vim.notify("Error: " .. tostring(results[1]), vim.log.levels.ERROR)
+    return
+  end
+  
+  -- Replace selection with result
+  local result = results[1] or ""
+  local result_str = type(result) == "table" and vim.inspect(result) or tostring(result)
+  local result_lines = vim.split(result_str, "\n")
+  
+  vim.api.nvim_buf_set_lines(0, start_line, end_line, false, result_lines)
+end
+
+-- ────────────────────────────────────────────────────────────────────────────
+-- Feature: Execute in scratch buffer (safe testing)
+-- ────────────────────────────────────────────────────────────────────────────
+function M.execute_in_scratch()
+  local code, _ = get_visual_selection()
+  
+  if code == "" then
+    vim.notify("No code selected", vim.log.levels.WARN)
+    return
+  end
+  
+  -- Create scratch buffer
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
+  vim.api.nvim_buf_set_option(buf, 'filetype', 'lua')
+  
+  -- Open in split
+  vim.cmd('split')
+  vim.api.nvim_win_set_buf(0, buf)
+  
+  -- Insert code
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(code, "\n"))
+  vim.api.nvim_buf_set_lines(buf, -1, -1, false, {"", "-- ════════════════════════════════════════", ""})
+  
+  -- Execute
+  local func, load_err = load(code, "scratch", "t", _G)
+  
+  if not func then
+    vim.api.nvim_buf_set_lines(buf, -1, -1, false, {"-- ✗ Syntax Error:", "-- " .. load_err})
+    return
+  end
+  
+  local success, results, prints = capture_prints(func)
+  
+  if #prints > 0 then
+    vim.api.nvim_buf_set_lines(buf, -1, -1, false, {"-- Output:"})
+    for _, line in ipairs(prints) do
+      vim.api.nvim_buf_set_lines(buf, -1, -1, false, {"-- " .. line})
+    end
+  end
+  
+  if not success then
+    vim.api.nvim_buf_set_lines(buf, -1, -1, false, {"", "-- ✗ Error:", "-- " .. tostring(results[1])})
+  elseif #results > 0 and results[1] ~= nil then
+    vim.api.nvim_buf_set_lines(buf, -1, -1, false, {"", "-- Return:"})
+    for line in vim.inspect(results):gmatch("[^\n]+") do
+      vim.api.nvim_buf_set_lines(buf, -1, -1, false, {"-- " .. line})
+    end
+  end
+end
+
+-- ────────────────────────────────────────────────────────────────────────────
+-- Feature: Quick math/expression eval
+-- ────────────────────────────────────────────────────────────────────────────
+function M.quick_calc()
+  local code, end_line = get_visual_selection()
+  local start_line = vim.fn.getpos("'<")[2] - 1
+  
+  if code == "" then
+    vim.notify("No expression selected", vim.log.levels.WARN)
+    return
+  end
+  
+  -- Try to evaluate as expression
+  local func, _ = load("return " .. code, "calc", "t", _G)
+  
+  if not func then
+    vim.notify("Invalid expression", vim.log.levels.ERROR)
+    return
+  end
+  
+  local success, result = pcall(func)
+  
+  if not success then
+    vim.notify("Error: " .. tostring(result), vim.log.levels.ERROR)
+    return
+  end
+  
+  -- Append result as comment
+  local result_line = "-- = " .. tostring(result)
+  vim.api.nvim_buf_set_lines(0, end_line, end_line, false, {result_line})
+end
+
+-- ────────────────────────────────────────────────────────────────────────────
+-- Setup keymaps
+-- ────────────────────────────────────────────────────────────────────────────
+function M.setup()
+  -- .ec - Execute code and insert output below
+  vim.keymap.set('v', '.ec', M.execute_lua, {
+    desc = "Execute Lua code (insert output)"
+  })
+  
+  -- .er - Execute and Replace selection with result
+  vim.keymap.set('v', '.er', M.execute_and_replace, {
+    desc = "Execute and Replace with result"
+  })
+  
+  -- .es - Execute in Scratch buffer (safe)
+  vim.keymap.set('v', '.es', M.execute_in_scratch, {
+    desc = "Execute in scratch buffer"
+  })
+  
+  -- .eq - Quick calculator (math eval)
+  vim.keymap.set('v', '.eq', M.quick_calc, {
+    desc = "Quick calculator"
+  })
+  
+  vim.notify("Lua executor loaded", vim.log.levels.INFO)
+end
+
+
+print("hello")
+
+-- ✗ Syntax Error:
+-- [string "visual selection"]:1: '=' expected near '<eof>'
+
+
+-- ✗ Syntax Error:
+-- [string "visual selection"]:1: '=' expected near 'print'
+
+
+-- Output:
+-- hello
+
+-- Output:
+-- hello
+-- Toggle floating Telescope window
+vim.keymap.set('n', '<leader>tf', function()
+  -- Check if Telescope floating window is open
+  local wins = vim.api.nvim_list_wins()
+  local telescope_open = false
+  
+  for _, win in ipairs(wins) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    local ft = vim.api.nvim_buf_get_option(buf, 'filetype')
+    if ft == 'TelescopePrompt' then
+      telescope_open = true
+      vim.api.nvim_win_close(win, true)
+      break
+    end
+  end
+  
+  -- If not open, open Telescope
+  if not telescope_open then
+    require('telescope.builtin').find_files({
+      layout_strategy = 'vertical',
+      layout_config = {
+        width = 0.9,
+        height = 0.9,
+        preview_height = 0.6,
+      },
+    })
+  end
+end, { desc = "Toggle Telescope floating" })
+
+
+
 
 return M

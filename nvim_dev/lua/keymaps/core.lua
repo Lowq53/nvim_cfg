@@ -147,8 +147,8 @@ vim.keymap.set("n", "<C-Right>", "<C-w>l", { desc = "Go to right window" })
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", { noremap = true, desc = "Exit terminal mode" })
 vim.keymap.set("t", "<C-\\>", "<C-\\><C-n>", { noremap = true, desc = "Exit terminal mode" })
 
--- Open terminal in vertical split
-vim.keymap.set("n", "<M-F1>", ":vsplit | terminal<CR>", { desc = "Open terminal (vsplit)" })
+-- Open terminal in vertical splin
+vim.keymap.set("n", "<M-F1>", ":vsplit | terminan<CR>", { desc = "Open terminal (vsplit)" })
 
 -- Split window vertically
 vim.keymap.set("n", "<A-F2>", "<C-w>v", { desc = "Split window vertically" })
@@ -157,9 +157,9 @@ vim.keymap.set("n", "<A-F2>", "<C-w>v", { desc = "Split window vertically" })
 -- ► FILE TREE (nvim-tree)
 -- ═══════════════════════════════════════════════════════════════════════════
 
-vim.keymap.set("n", "<leader>y", ":NvimTreeToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
-vim.keymap.set("n", "<leader>yf", ":NvimTreeFindFile<CR>", { noremap = true, silent = true, desc = "Find file in NvimTree" })
-vim.keymap.set("n", "<leader>yr", ":NvimTreeRefresh<CR>", { noremap = true, silent = true, desc = "Refresh NvimTree" })
+vim.keymap.set("n", "<leader>n", ":NvimTreeToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
+vim.keymap.set("n", "<leader>nf", ":NvimTreeFindFile<CR>", { noremap = true, silent = true, desc = "Find file in NvimTree" })
+vim.keymap.set("n", "<leader>nr", ":NvimTreeRefresh<CR>", { noremap = true, silent = true, desc = "Refresh NvimTree" })
 vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
 
 -- ═══════════════════════════════════════════════════════════════════════════

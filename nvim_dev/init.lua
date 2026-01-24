@@ -13,6 +13,25 @@ require("config.lazy")
 
 require("config.pwsh")
 vim.opt.clipboard = "unnamedplus"
+-- Windows fixes
+if vim.fn.has("win32") == 1 then
+  -- cmd.exe musi istnieć i być używalny przez .cmd/.bat (npm, gem, itp.)
+  vim.env.COMSPEC = "C:\\Windows\\System32\\cmd.exe"
+
+  local function add_to_path(dir)
+    local path = vim.env.PATH or ""
+    if not path:lower():find(dir:lower(), 1, true) then
+      vim.env.PATH = dir .. ";" .. path
+    end
+  end
+
+  -- krytyczne dla chcp i masy narzędzi
+  add_to_path("C:\\Windows\\System32")
+  add_to_path("C:\\Windows")
+
+  -- (opcjonalnie) jeśli masz 7-zip tu:
+  -- add_to_path("F:\\Programs\\7-Zip")
+end
 
 -- vim.g.clipboard = {
 --   name = "windows-clipboard",

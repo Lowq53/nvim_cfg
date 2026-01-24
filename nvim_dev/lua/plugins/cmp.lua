@@ -159,7 +159,8 @@ return {
 					enabled = true, -- pokazuje snippet "na szaro" przed zatwierdzeniem
 				},
 				trigger = {
-					show_in_snippets = true, -- poka¿ podpowiedzi w snippetach
+				  -- delted funciton in newest version
+					-- show_in_snippets = true, -- poka¿ podpowiedzi w snippetach
 					show_on_blocked_trigger_characters = { " ", "\n", "\t" },
 				},
 

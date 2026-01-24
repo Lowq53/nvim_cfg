@@ -17,7 +17,8 @@ return {
 			end
 			return {
 				-- CORE
-				{ "sf", tb("find_files"), desc = "[S]earch [F]iles" },
+				{ "ff", tb("find_files"), desc = "[S]earch [F]iles" },
+				{ ".f", tb("find_files"), desc = "[S]earch [F]iles" },
 				{ "sg", tb("live_grep"), desc = "[S]earch by [G]rep" },
 				{ "so.", tb("oldfiles"), desc = "[S]earch [O]ld files" },
 				{ "<leader><leader>", tb("buffers"), desc = "Buffers" },
@@ -25,6 +26,7 @@ return {
 				-- HELPERS
 				{ "<leader>sh", tb("help_tags"), desc = "Help" },
 				{ "<leader>sk", tb("keymaps"), desc = "Keymaps" },
+				{ ".k", tb("keymaps"), desc = "Keymaps" },
 				{ "<leader>ss", tb("builtin"), desc = "Telescope pickers" },
 				{ "<leader>sw", tb("grep_string"), desc = "Word under cursor" },
 				{ "<leader>sd", tb("diagnostics"), desc = "Diagnostics" },
@@ -37,7 +39,8 @@ return {
 					desc = "Find nvim config",
 				},
 				{
-					"<leader>gc",
+				  -- gc
+					".c",
 					tb("live_grep", { search_dirs = { vim.fn.stdpath("config") } }),
 					desc = "Grep nvim config",
 				},
@@ -57,10 +60,10 @@ return {
 				},
 
 				-- GIT
-				{ ",gc", tb("git_commits"), desc = "Git commits" },
-				{ ",gb", tb("git_branches"), desc = "Git branches" },
-				{ ",gs", tb("git_status"), desc = "Git status" },
-				{ ",gf", tb("git_bcommits"), desc = "Git bcommits" },
+				{ ".gc", tb("git_commits"), desc = "Git commits" },
+				{ ".gb", tb("git_branches"), desc = "Git branches" },
+				{ ".gs", tb("git_status"), desc = "Git status" },
+				{ ".gf", tb("git_bcommits"), desc = "Git bcommits" },
 			}
 		end,
 
@@ -205,6 +208,7 @@ return {
 
 			-- Code data (Windows)
 			vim.keymap.set("n", "<leader>fd", function()
+
 				builtin.find_files({
 					cwd = "C:/code_data/",
 					hidden = true,
