@@ -12,6 +12,9 @@ local M = {}
 
 ---Otwiera dokumentację help dla podanego pluginu.
 ---@param opts table Obiekt parametrów przekazany przez nvim_create_user_command (opts.args).
+
+
+print("Help setup: Konfiguracja załadowana pomyślnie!")
 M.plugin_help_map = {
 	["auto-save.nvim"] = "auto-save.txt",
 	["blink.cmp"] = "blink.txt",

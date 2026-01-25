@@ -50,7 +50,7 @@ return {
 					-- Zapewnia, że historia undo jest zapisywana na dysku
 					before_save = function()
 						vim.opt.undofile = true
-					end,
+					end,vim.lsp.inlay_hint.enable(false)
 					-- Opcjonalnie: formatowanie przed zapisem (jeśli używasz)
 					-- after_save = nil,
 				},

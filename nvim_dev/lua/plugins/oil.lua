@@ -14,7 +14,8 @@ return {
 		require("oil").setup({
 			default_file_explorer = true,
 			delete_to_trash = true,
-
+      -- bes tego nie bedie defaultoych keymapow 
+      use_default_keymaps = true,
 			-- Wizualne aspekty
 			columns = { "icon" },
 			view_options = {

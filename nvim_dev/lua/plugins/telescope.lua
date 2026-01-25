@@ -1,3 +1,4 @@
+
 return {
 	{
 		"nvim-telescope/telescope.nvim",
@@ -10,27 +11,63 @@ return {
 
 		-- 🔑 JEDYNY trigger do łądowania telescope
 		keys = function()
-			local function tb(fn, opts)
-				return function()
-					require("telescope.builtin")[fn](opts)
-				end
-			end
+			-- Funkcja pomocnicza 'tb' (Telescope Builtin)
+  		-- Opakowuje wywołanie w funkcję, aby lazy-loading działał poprawnie
+  		local builtin = require("telescope.builtin")
+  		local function tb(fn, opts)
+  			return function()
+  				builtin[fn](opts)
+  			end
+  		end
 			return {
 				-- CORE
 				{ "ff", tb("find_files"), desc = "[S]earch [F]iles" },
-				{ ".f", tb("find_files"), desc = "[S]earch [F]iles" },
+				{ ".ff", tb("find_files"), desc = "[S]earch [F]iles" },
+				{ ".gg", tb("live_grep"), desc = "[G]rep [F]iles" },
+
+				-- PWD / CWD (Current Working Directory)
+        { ".fy", tb("find_files", { cwd = vim.fn.fnamemodify(vim.fn.getcwd(), ":h"), hidden = true }), desc = "[F]iles .. (CWD)" },
+        { ".gy", tb("live_grep",  { cwd = vim.fn.fnamemodify(vim.fn.getcwd(), ":h"), hidden = true }), desc = "[G]rep .. CWD" },
+        { ".fc", tb("find_files", { cwd = vim.fn.getcwd(), hidden = true }), desc = "Find Files (CWD)" },
+        { ".gc", tb("live_grep",  { cwd = vim.fn.getcwd(), hidden = true }), desc = "[G]rep (CWD)" },
+        	{
+					".fn",
+					tb("find_files", { cwd = vim.fn.stdpath("config"), hidden = true }),
+					desc = "Find nvim config",
+				},
+				{
+					".gn",
+					tb("live_grep", { cwd = vim.fn.stdpath("config"), hidden = true, no_ignore = true }),
+					desc = "[G]rep nvim config",
+				},
+        
+
+		
+    --     -- GREP CONFIG
+				-- {
+				--   -- gc
+				-- 	".c",
+				-- 	tb("live_grep", { search_dirs = { vim.fn.stdpath("config") } }),
+				-- 	desc = "Grep nvim config",
+				-- },
+
+
+
+
+
+
+        { "<leader>ss", tb("builtin"), desc = "Telescope pickers" },
 				{ "sg", tb("live_grep"), desc = "[S]earch by [G]rep" },
 				{ "so.", tb("oldfiles"), desc = "[S]earch [O]ld files" },
 				{ "<leader><leader>", tb("buffers"), desc = "Buffers" },
 
 				-- HELPERS
-				{ "<leader>sh", tb("help_tags"), desc = "Help" },
-				{ "<leader>sk", tb("keymaps"), desc = "Keymaps" },
+				{ ".sh", tb("help_tags"), desc = "Help" },
+				{ ".sk", tb("keymaps"), desc = "Keymaps" },
 				{ ".k", tb("keymaps"), desc = "Keymaps" },
-				{ "<leader>ss", tb("builtin"), desc = "Telescope pickers" },
-				{ "<leader>sw", tb("grep_string"), desc = "Word under cursor" },
-				{ "<leader>sd", tb("diagnostics"), desc = "Diagnostics" },
-				{ "<leader>sr", tb("resume"), desc = "Resume" },
+				{ ".sw", tb("grep_string"), desc = "Word under cursor" },
+				{ ".sd", tb("diagnostics"), desc = "Diagnostics" },
+				{ ".sr", tb("resume"), desc = "Resume" },
 
 				-- NVIM CONFIG
 				{
@@ -38,17 +75,11 @@ return {
 					tb("find_files", { cwd = vim.fn.stdpath("config"), hidden = true }),
 					desc = "Find nvim config",
 				},
-				{
-				  -- gc
-					".c",
-					tb("live_grep", { search_dirs = { vim.fn.stdpath("config") } }),
-					desc = "Grep nvim config",
-				},
+			
+
 
 				-- BUFFERS
-				{
-					"<leader>/",
-					function()
+				{ "./", function()
 						require("telescope.builtin").current_buffer_fuzzy_find(
 							require("telescope.themes").get_dropdown({
 								winblend = 9,
@@ -106,7 +137,7 @@ return {
 						"^dist/",
 						"^build/",
 						"%.o$",
-						"%.a$",
+    				"%.a$",
 						"%.pyc$",
 						"%.swp$",
 						"%.bak$",
@@ -124,8 +155,16 @@ return {
 							-- NEW: Mapowanie pod <C-a> (append)
 							["<C-a>"] = actions.add_to_qflist + actions.open_qflist,
 							["<M-a>"] = actions.add_selected_to_qflist + actions.open_qflist,
-						},
-						n = {
+						 -- Tryb Insert (podczas pisania w wyszukiwarce)
+              ["<C-Left>"] = "preview_scrolling_left",
+              ["<C-Right>"] = "preview_scrolling_right",
+              -- Lub wersja z Alt (często wygodniejsza)
+              ["<S-h>"] = "preview_scrolling_left",
+              ["<S-l>"] = "preview_scrolling_right",
+          },
+          n = { -- Tryb Normal
+            ["h"] = "preview_scrolling_left",
+            ["l"] = "preview_scrolling_right",
 							["<C-a>"] = actions.add_to_qflist + actions.open_qflist,
 						},
 					},
@@ -156,6 +195,14 @@ return {
 					},
 				},
 			})
+
+			vim.api.nvim_create_autocmd("User", {
+  pattern = "TelescopePreviewerLoaded",
+  callback = function()
+    vim.wo.wrap = true
+  end,
+})
+    
 
 			local t = require("telescope.builtin")
 
