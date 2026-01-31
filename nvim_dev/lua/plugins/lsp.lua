@@ -155,6 +155,22 @@ return {
           },
         },
 
+        -- ===== RUST =====
+        -- Serwer: rust-analyzer (zainstaluj: mason)
+        rust_analyzer = {
+          settings = {
+            ['rust-analyzer'] = {
+              checkOnSave = {
+                allFeatures = true,
+                command = "clippy", -- u¿ywa clippy zamiast cargo check dla lepszych sugestii
+              },
+              procMacro = {
+                enable = true,
+              },
+            },
+          },
+        },
+
         -- ===== JAVASCRIPT / TYPESCRIPT =====
         -- Serwer: typescript-language-server (zainstaluj: mason)
         -- Obs¿uguje: JS, TS, JSX, TSX
@@ -258,26 +274,15 @@ return {
         -- Narz¿dzie: shfmt (zainstaluj: mason lub go install)
         sh = { "shfmt" },
         bash = { "shfmt" },
+        rust = { "ast-grep" },
 
         -- ===== POWERSHELL =====
         -- Formatter wbudowany w powershell_es LSP
         -- Nie trzeba osobnego formattera
+        -- ===== RRUST =====
+
+
       },
-
-      -- AUTO-FORMATOWANIE przy zapisie (Ctrl+S)
-      format_on_save = function(bufnr)
-        -- Wy¿¿cz dla specjalnych buforów (oil.nvim, terminal)
-        local ft = vim.bo[bufnr].filetype
-        if ft == "oil" or ft == "terminal" then
-          return
-        end
-
-        return {
-          timeout_ms = 2000,  -- max czas formatowania
-          lsp_format = "fallback", -- u¿yj LSP tylko je¿li brak formattera
-          async = false,      -- synchroniczne (czeka na koniec)
-        }
-      end,
 
       -- Konfiguracja konkretnych formatterów (opcjonalne)
       formatters = {
@@ -293,6 +298,7 @@ return {
           prepend_args = { "--line-length=88" },
         },
       },
+
     },
     keys = {
       -- Manual format: <leader>f
@@ -304,6 +310,25 @@ return {
         mode = "",
         desc = "Format buffer",
       },
+      -- AUTO-FORMATOWANIE przy zapisie
+      format_on_save = function(bufnr)
+        -- 1. Sprawd¿ czy formatowanie nie jest wy¿¿czone globalnie lub dla bufora
+        if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+          return
+        end
+
+        -- 2. Wy¿¿cz dla specjalnych buforów
+        local ft = vim.bo[bufnr].filetype
+        if ft == "oil" or ft == "terminal" then
+          return
+        end
+
+        return {
+          timeout_ms = 2000,
+          lsp_format = "fallback",
+          async = false,
+        }
+      end,
     },
   },
 

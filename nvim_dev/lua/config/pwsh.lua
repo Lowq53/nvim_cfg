@@ -25,11 +25,7 @@ vim.opt.clipboard = "unnamedplus"
 --#region
 --
 
-vim.env.PATH = table.concat({
-  vim.fn.stdpath("data") .. "\\mason\\bin", -- mason binaries
-  "C:\\Windows\\System32",                  -- chcp, cmd, etc.
-  vim.env.PATH,
-}, ";")
+vim.env.PATH = vim.env.PATH .. ";C:\\Windows\\system32;C:\\Windows"
 -- wykorzystanie chcp dla masona
 if vim.fn.has("win32") == 1 then
     -- 1. Poprawiamy PATH, aby Mason widział systemowe narzędzia (chcp, npm, node)

@@ -3,6 +3,7 @@
 -- only require here pls
 
 require("config.settings")
+require("config.autocmd")
 require("utils")
 require("keymaps")
 require("tmp.init")

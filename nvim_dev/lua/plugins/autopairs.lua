@@ -12,7 +12,7 @@ return {
 				ignored_next_char = "[%w%.]", -- nie paruj w słowach
 				fast_wrap = {
 					map = "<M-e>",
-					chars = { "{", "[", "(", '"', "'" },
+					chars = { "{", "[", "(", '"', "'"},
 					pattern = [=[[%'%"%>%]%)%}%,]]=],
 					end_key = "$",
 					keys = "qwertyuiopzxcvbnmasdfghjkl",
@@ -25,22 +25,32 @@ return {
 			-- ============================
 			-- VS CODE–LIKE QUOTES BEHAVIOR
 			-- ============================
+npairs.setup({
+    check_ts = true, -- opcjonalnie, jeśli używasz treesittera
+    -- Twoja reszta configu...
+})
 
+-- Dodanie reguły dla < >
+npairs.add_rule(Rule("<", ">", {
+    -- filetypes = { "html", "javascriptreact", "typescriptreact", "vue", "xml" } 
+    -- Możesz ograniczyć to tylko do języków webowych powyżej
+}))
 			npairs.add_rules({
 				-- "
-				Rule('"', '"'):with_move(function(opts)
-					return opts.next_char == '"'
-				end):with_pair(function(opts)
-					return opts.prev_char ~= "\\"
-				end),
+				Rule('"', '"')
+				  :with_move(function(opts) return opts.next_char == '"' end)
+				  :with_pair(function(opts) return opts.prev_char ~= "\\" end),
 
 				-- '
-				Rule("'", "'"):with_move(function(opts)
-					return opts.next_char == "'"
-				end):with_pair(function(opts)
-					return opts.prev_char ~= "\\"
-				end),
-			})
+				Rule("'", "'")
+				  :with_move(function(opts) return opts.next_char == "'" end)
+				  :with_pair(function(opts) return opts.prev_char ~= "\\" end),
+				-- Reguła dla średnika
+      Rule(";", ";")
+      -- Jeśli następny znak to średnik, nie wstawiaj nowego (with_pair = false)
+          :with_pair(function() return false end) -- Nie twórz ;;
+          :with_move(function(opts) return opts.next_char == ";" end) -- Przeskakuj
+      })
 		end,
 	},
 	{

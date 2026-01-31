@@ -101,7 +101,6 @@ table.insert(snips, s(
     }
   )
 ))
-
 -- ════════════════════════════════════════════════════════════════════════════
 -- TODO SNIPPETS - [ ] and ( )
 -- ════════════════════════════════════════════════════════════════════════════
@@ -111,19 +110,19 @@ table.insert(snips, s("t", {
   f(comment_prefix),
   t("- "),
   c(1, {
-    t("[ ] "),
-    t("( ) "),
+    t("[] "),
+    t("() "),
   }),
   i(2, "zadanie"),
-}, { desc = "- [ ] lub ( ) checkbox" }))
+}, { desc = "- [] lub () checkbox" }))
 
 -- Alias: todo
 table.insert(snips, s("todo", {
   f(comment_prefix),
   t("- "),
   c(1, {
-    t("[ ] "),
-    t("( ) "),
+    t("[] "),
+    t("() "),
   }),
   i(2, "zadanie"),
 }, { desc = "alias do t" }))
@@ -133,19 +132,19 @@ table.insert(snips, s("t1", {
   f(comment_prefix),
   t("  - "),
   c(1, {
-    t("[ ] "),
-    t("( ) "),
+    t("[] "),
+    t("() "),
   }),
   i(2, "podpunkt"),
-}, { desc = "  - [ ] z wcięciem 2 spacje" }))
+}, { desc = "  - [] z wcięciem 2 spacje" }))
 
 -- Double indented (4 spaces)
 table.insert(snips, s("t2", {
   f(comment_prefix),
   t("    - "),
   c(1, {
-    t("[ ] "),
-    t("( ) "),
+    t("[] "),
+    t("() "),
   }),
   i(2, "głębszy poziom"),
 }, { desc = "    - [ ] wcięcie 4 spacje" }))
@@ -155,8 +154,8 @@ table.insert(snips, s("todo2", {
   f(comment_prefix),
   t("- "),
   c(1, {
-    t("[ ] "),
-    t("( ) "),
+    t("[] "),
+    t("() "),
   }),
   i(2, "główne zadanie"),
   t({ "", "" }),
@@ -177,6 +176,57 @@ table.insert(snips, s("todo2", {
     }),
   }),
 }, { desc = "Todo z zagnieżdżonymi punktami" }))
+
+-- ════════════════════════════════════════════════════════════════════════════
+-- section sinpest
+-- ════════════════════════════════════════════════════════════════════════════
+table.insert(snips, s(
+  "section",
+  fmt(
+    [[
+{pref}# {title}
+{sep1}
+{cursor}
+{sep2}
+]],
+    {
+      pref = f(comment_prefix),
+      title = i(1, "SECTION NAME"),
+      sep1 = f(function()
+        return comment_line(72, "▰")
+      end),
+      cursor = i(0),
+      sep2 = f(function()
+        return comment_line(72, "═")
+      end),
+    }
+  ),
+  { desc = "Section with double separator" }
+))
+
+table.insert(snips, s(
+  "section2",
+  fmt(
+    [[
+{pref}# {title}
+{sep1}
+{cursor}
+{sep2}
+]],
+    {
+      pref = f(comment_prefix),
+      title = i(1, "SECTION NAME"),
+      sep1 = f(function()
+        return comment_line(72, "═")
+      end),
+      cursor = i(0),
+      sep2 = f(function()
+        return comment_line(72, "─")
+      end),
+    }
+  ),
+  { desc = "Section with double separator" }
+))
 
 -- ════════════════════════════════════════════════════════════════════════════
 -- REGISTER ALL SNIPPETS

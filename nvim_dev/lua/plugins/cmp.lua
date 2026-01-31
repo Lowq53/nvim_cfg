@@ -59,7 +59,7 @@ return {
 			-- ========== LOADERS ==========
 			-- 1. Friendly-snippets (VSCode format) - lazy load
 			require("luasnip.loaders.from_vscode").lazy_load()
-
+      ls.filetype_extend("html", { "css", "javascript" })
 			-- 2. W¿asne snippety (Lua format) - lazy load
 			require("luasnip.loaders.from_lua").lazy_load({
 				paths = { vim.fn.stdpath("config") .. "\\lua\\snippets" },
@@ -78,6 +78,19 @@ return {
 					ls.change_choice(-1)
 				end
 			end, { silent = true, desc = "LuaSnip: Prev Choice" })
+
+			-- DODAJ NOWE (Ctrl+h/l dla choice):
+vim.keymap.set({ "i", "s" }, "<C-h>", function()
+    if ls.choice_active() then
+        ls.change_choice(-1)
+    end
+end, { silent = true, desc = "LuaSnip: Prev Choice" })
+
+vim.keymap.set({ "i", "s" }, "<C-l>", function()
+    if ls.choice_active() then
+        ls.change_choice(1)
+    end
+end, { silent = true, desc = "LuaSnip: Next Choice" })  
 			-- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 
 			vim.keymap.set({ "i", "s" }, "<C-k>", function()
@@ -184,12 +197,12 @@ return {
 			snippets = {
 				preset = "luasnip", -- ? Blink czyta snippety przez LuaSnip API
 			},
-
+      --  todo obczai¿ filtrowanie snippetow
 			sources = {
 				default = { "lsp", "path", "snippets", "buffer" },
 				providers = {
 					lsp = { score_offset = 100 }, -- najwy¿szy
-					snippets = { score_offset = 80 },
+					snippets = { score_offset = 150 },
 					path = { score_offset = 50 },
 					buffer = { score_offset = 20 }, -- najni¿szy
 				},
@@ -198,6 +211,18 @@ return {
 			fuzzy = {
 				implementation = "lua", -- zmieä na "fzf" je˜li masz fzf zainstalowane
 			},
+			snippets = {
+    preset = 'luasnip',
+    -- To mówi Blinkowi, jak ma u¿ywa¿ LuaSnip do rozwijania i skakania
+    expand = function(snippet) require('luasnip').lsp_expand(snippet) end,
+    active = function(filter)
+        if filter and filter.direction then
+            return require('luasnip').jumpable(filter.direction)
+        end
+        return require('luasnip').in_snippet()
+    end,
+    jump = function(direction) require('luasnip').jump(direction) end,
+},
 		},
 	},
 

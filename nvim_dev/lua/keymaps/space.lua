@@ -28,6 +28,14 @@ vim.keymap.set('n', '<space>m', '<cmd>:messages<CR>', { desc = ':messages' })
 vim.keymap.set('n', '<space>sa', 'ggVG', {
     desc = 'Select All (zaznacz cały tekst w buforze)',
     noremap = true,
+  
+  silent = true
+})
+
+-- W trybie normalnym: zaznacz cały bufor i wklej ze schowka systemowego
+vim.keymap.set('n', '<space>r', 'ggVG"+p', {
+    desc = 'Zaznacz wszystko i wklej ze schowka',
+    noremap = true,
     silent = true
 })
 -- vim.api.nvim_create_user_command('n', )

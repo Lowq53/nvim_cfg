@@ -1,4 +1,5 @@
 -- AppData\Local\nvim_cfg\nvim_dev\lua\keymaps\navi.lua
+--
 local vks = vim.keymap.set
 --lsp diagnostic
 --────────────────────────────────────────────────────────────────────────
@@ -65,6 +66,8 @@ vks("i", "<C-l>", "<Right>", { desc = "W prawo w insert modee" })
 -- Szybkie przełączanie tabów wielkimi literami (częsty wzorzec seniora)
 -- ────────────────────────────────────────────────────────────────────────
 vks("n", "<A-p>", ":tabprevious<CR>", { desc = "Poprzedni tab" })
+vks("n", "<leader>tw", ":tabclose<CR>", { desc = "Closing tab"})
+vks('n', '<leader>td', ':tabedit % | vsplit #<CR>', { desc = 'Duplikuj 2 bufory do nowej karty' })
 vks("n", "<A-n>", ":tabnext<CR>", { desc = "Następny tab" })
 
 -- Opcjonalnie: szybkie tworzenie i zamykanie tabów
@@ -75,10 +78,21 @@ vks("n", "<leader>0", ":tablast<CR>", { desc = "Skocz do ostatniego taba", silen
 
 -- Jeśli wolisz zostać przy gt/gT, ale chcesz skróty numeryczne (np. lider + 1):
 -- ────────────────────────────────────────────────────────────────────────
-for i = 1, 9 do
-	vim.keymap.set("n", "<space>" .. i, i .. "gt", {
-		desc = "Skocz do taba " .. i,
-		silent = true,
-	})
-end
+-- local wk = require("which-key")
+--
+-- -- Pętla: ustawia skróty i ukrywa je w menu Which-Key
+-- for i = 1, 9 do
+--     -- Ustawia fizyczny skrót: Space + cyfra
+--     vim.keymap.set("n", "<leader>" .. i, i .. "gt", { silent = true })
+--     
+--     -- Mówi Which-Key, żeby nie wyświetlał 9 osobnych linii
+--     wk.add({
+--         { "<leader>" .. i, hidden = true }
+--     })
+-- end
+--
+-- -- Dodaje jeden zbiorczy opis pod klawiszem "1"
+-- wk.add({
+--     { "<leader>1", group = "Tabs switch (1-9)" }
+-- })
 --▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰

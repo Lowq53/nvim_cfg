@@ -7,15 +7,24 @@ return {
 	-- Twój zoptymalizowany config Oil.nvim
 	-- Oto kompletny, poprawiony kod z obsługą kopiowania ścieżki, zamykaniem pod q oraz integracją z Twoim systemem.
 	--
-	-- Lua
+	-- help oil
 	"stevearc/oil.nvim",
 	dependencies = { "nvim-tree/nvim-web-devicons" },
+	keys = {
+		-- it need to be here to open oil from any buffor
+		{ "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
+		-- Mapowanie otwierające Oil w oknie pływającym
+		vim.keymap.set("n", "<leader>fo", function()
+			require("oil").toggle_float()
+		end, { desc = "Oil: Toggle Floating" }),
+	},
+
 	config = function()
 		require("oil").setup({
 			default_file_explorer = true,
 			delete_to_trash = true,
-      -- bes tego nie bedie defaultoych keymapow 
-      use_default_keymaps = true,
+			-- bes tego nie bedie defaultoych keymapow
+			use_default_keymaps = true,
 			-- Wizualne aspekty
 			columns = { "icon" },
 			view_options = {
@@ -53,7 +62,7 @@ return {
 				["g."] = "actions.toggle_hidden",
 				["gh"] = "actions.toggle_hidden", -- Toggle ukrytych plików
 				--["y"] = "actions.copy_to_clipboard",
-				-- ["d"] = "actions.delete",
+				-- ["d"] = "actions.delete"ursorLine     xxx guibg=#2f334d
 				-- ["r"] = "actions.rename",
 				-- ["a"] = "actions.create",
 				-- ["."] = "actions.set_current_filter",
@@ -101,12 +110,4 @@ return {
 			},
 		})
 	end,
-	keys = {
-		-- it need to be here to open oil from any buffor
-		{ "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
-		-- Mapowanie otwierające Oil w oknie pływającym
-		vim.keymap.set("n", "<leader>fo", function()
-			require("oil").toggle_float()
-		end, { desc = "Oil: Toggle Floating" }),
-	},
 }

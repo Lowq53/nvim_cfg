@@ -28,6 +28,8 @@ return {
 				"ts_ls", -- TypeScript/JavaScript
 				"html", -- HTML
 				"cssls", -- CSS
+
+				"rust_analyzer",
 			},
 			automatic_enable = true, -- AUTO włącza zainstalowane LSP (v2.0)
 		},
