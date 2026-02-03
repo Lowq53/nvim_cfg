@@ -112,7 +112,7 @@ vim.keymap.set("n", "<C-s>", ":w<CR>", { noremap = true, silent = true, desc = "
 
 -- Close buffer
 vim.keymap.set("n", "<C-ww>", ":bd<CR>", { noremap = true, silent = true, desc = "Close buffer" })
-vim.keymap.set("n", "<leader>x", ":bd<CR>", { desc = "Delete current buffer" })
+vim.keymap.set("n", "<space>x", ":bd<CR>", { desc = "Delete current buffer" })
 
 -- Redo
 vim.keymap.set("n", "<C-y>", "<C-yzz>", { noremap = true, silent = true, desc = "Redo (centered)" })

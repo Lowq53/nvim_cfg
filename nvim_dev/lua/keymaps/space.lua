@@ -20,6 +20,17 @@ vim.keymap.set('n', '<space>x', '<cmd>source %<CR>', { desc = 'Source current fi
 
 -- DODATKOWO: Wykonuje tylko zaznaczony fragment (Visual Mode)
 vim.keymap.set('v', '<space>x', ':source<CR>', { desc = 'Source selection' })
+vim.keymap.set("n", "<space>d", function()
+  local buftype = vim.bo.buftype
+
+  if buftype == "terminal" then
+    -- zamknij terminal bez pytania
+    vim.cmd("bd! " .. vim.api.nvim_get_current_buf())
+  else
+    -- normalne zamknięcie bufora
+    vim.cmd("bd")
+  end
+end, { desc = "Close buf or term" })
 
 -- printing :messages
 vim.keymap.set('n', '<space>m', '<cmd>:messages<CR>', { desc = ':messages' })
