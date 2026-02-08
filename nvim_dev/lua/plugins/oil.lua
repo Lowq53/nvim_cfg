@@ -14,11 +14,10 @@ return {
 		-- it need to be here to open oil from any buffor
 		{ "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
 		-- Mapowanie otwierające Oil w oknie pływającym
-		vim.keymap.set("n", "<leader>fo", function()
+    { "<leader>fo", function()
 			require("oil").toggle_float()
-		end, { desc = "Oil: Toggle Floating" }),
-	},
-
+		end,  desc = "Oil: Toggle Floating" },
+    },
 	config = function()
 		require("oil").setup({
 			default_file_explorer = true,

@@ -1,0 +1,272 @@
+# Oil.nvim - File Manager Guide
+
+## 📚 How to Find Help
+
+**In Neovim:**
+```vim
+:help oil
+:help oil-actions
+:help oil-columns
+```
+
+**Official Repo:**
+https://github.com/stevearc/oil.nvim
+
+## 🎯 Most Important Features
+
+1. **Edit filesystem like a buffer** - use dd to delete files, i to insert new files
+2. **Cross-directory operations** - copy/move files across different directories
+3. **LSP integration** - auto-rename files in imports when renaming in oil
+4. **SSH support** - edit remote files via `oil-ssh://`
+5. **Trash support** - deleted files go to system trash
+
+---
+
+## 🔧 Your Config - Improvements Needed
+
+### ❌ CRITICAL BUG - Syntax Error in `keys` table
+
+**Lines 9-12 - WRONG:**
+```lua
+keys = {
+    { "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
+    vim.keymap.set("n", "<leader>fo", function()  -- ❌ BŁĄD
+        require("oil").toggle_float()
+    end, { desc = "Oil: Toggle Floating" }),
+},
+```
+
+**✅ CORRECT:**
+```lua
+keys = {
+    { "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
+    { "<leader>fo", function() require("oil").toggle_float() end, desc = "Oil: Toggle Floating" },
+},
+```
+
+### 🧹 Clean Up Commented Junk
+
+**Remove these lines (59-62):**
+```lua
+--["y"] = "actions.copy_to_clipboard",
+-- ["d"] = "actions.delete"ursorLine     xxx guibg=#2f334d  ❌ Co to jest?
+-- ["r"] = "actions.rename",
+-- ["a"] = "actions.create",
+```
+
+### ⚡ Add Missing Features
+
+**1. LSP Auto-rename (CRITICAL for refactoring):**
+```lua
+-- Add to setup():
+lsp_file_methods = {
+    enabled = true,
+    timeout_ms = 1000,
+    autosave_changes = true,  -- Auto-save when renaming files
+},
+```
+
+**2. Better git integration:**
+```lua
+-- Add to setup():
+git = {
+    add = function(path) return true end,     -- Auto git-add new files
+    mv = function(src, dest) return true end, -- Auto git-mv renamed files
+    rm = function(path) return true end,      -- Auto git-rm deleted files
+},
+```
+
+**3. Add columns for better visibility:**
+```lua
+columns = {
+    "icon",
+    "permissions",  -- Shows rwx permissions
+    "size",         -- File size
+    "mtime",        -- Last modified time
+},
+```
+
+---
+
+## 🔄 Alternative File Manager Plugins
+
+### 1. **mini.files** ⭐ (Most Similar to Oil)
+- **Repo:** https://github.com/echasnovski/mini.nvim
+- **Features:** Column view, edit-as-buffer, cross-directory operations
+- **Pros:** Part of mini.nvim ecosystem, very lightweight
+- **Cons:** Less mature than oil.nvim
+- **Use when:** You want similar workflow but prefer mini.nvim ecosystem
+
+### 2. **neo-tree.nvim** (Traditional Tree View)
+- **Repo:** https://github.com/nvim-neo-tree/neo-tree.nvim
+- **Features:** Sidebar tree, git status, buffer list, diagnostics
+- **Pros:** Rich UI, many integrations, good for project overview
+- **Cons:** Different workflow (sidebar vs buffer)
+- **Use when:** You prefer traditional IDE-style file tree
+
+### 3. **nvim-tree.lua** (Classic Tree)
+- **Repo:** https://github.com/nvim-tree/nvim-tree.lua
+- **Features:** Classic sidebar tree, file operations, git integration
+- **Pros:** Very popular, stable, feature-rich
+- **Cons:** Not as modern as neo-tree
+- **Use when:** You want proven, stable tree explorer
+
+### 4. **yazi.nvim** (Terminal File Manager Integration)
+- **Repo:** https://github.com/mikavilpas/yazi.nvim
+- **Features:** Integrates Yazi terminal file manager
+- **Pros:** Full-featured file manager, preview images/videos, blazingly fast
+- **Cons:** Requires external tool (yazi)
+- **Use when:** You use terminal file managers and want deep integration
+
+### 5. **ranger.nvim** (Ranger Integration)
+- **Repo:** https://github.com/kelly-lin/ranger.nvim
+- **Features:** Integrates Ranger terminal file manager
+- **Pros:** Powerful file manager, miller columns view
+- **Cons:** Requires ranger installed
+- **Use when:** You're already a Ranger user
+
+### 6. **dirbuf.nvim** (Like Oil, Simpler)
+- **Repo:** https://github.com/elihunter173/dirbuf.nvim
+- **Features:** Edit filesystem as buffer (like oil)
+- **Pros:** Simpler than oil, no dependencies
+- **Cons:** Less features than oil
+- **Use when:** You want minimal oil-like experience
+
+---
+
+## 🏆 Recommendation
+
+**Keep oil.nvim if:**
+- You love vim-style editing for file operations
+- You need cross-directory operations
+- You want LSP integration for refactoring
+
+**Switch to mini.files if:**
+- You prefer lighter plugins
+- You're already in mini.nvim ecosystem
+
+**Switch to neo-tree if:**
+- You want traditional IDE experience
+- You need git status in sidebar
+- You prefer mouse-friendly UI
+
+**Switch to yazi.nvim if:**
+- You're power user who lives in terminal
+- You need image/video previews
+- You want blazing fast file operations
+
+---
+
+## 📋 Quick Comparison Table
+
+| Plugin | Style | LSP Integration | Git Status | Cross-dir Ops | Dependencies |
+|--------|-------|----------------|------------|---------------|--------------|
+| **oil.nvim** | Buffer | ✅ Yes | 🟡 Basic | ✅ Yes | nvim-web-devicons |
+| **mini.files** | Column | ❌ No | ❌ No | ✅ Yes | None |
+| **neo-tree** | Sidebar | 🟡 Limited | ✅ Rich | ❌ No | nui.nvim, plenary |
+| **nvim-tree** | Sidebar | ❌ No | ✅ Yes | ❌ No | nvim-web-devicons |
+| **yazi.nvim** | Terminal | ❌ No | ✅ Yes | ✅ Yes | yazi (external) |
+
+---
+
+## 🚀 Final Fixed Config
+
+```lua
+return {
+    "stevearc/oil.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    lazy = false,  -- Oil recommends lazy=false
+    keys = {
+        { "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
+        { "<leader>fo", function() require("oil").toggle_float() end, desc = "Oil: Toggle Floating" },
+    },
+    config = function()
+        require("oil").setup({
+            default_file_explorer = true,
+            delete_to_trash = true,
+            use_default_keymaps = true,
+            
+            columns = {
+                "icon",
+                "permissions",
+                "size",
+                "mtime",
+            },
+            
+            view_options = {
+                show_hidden = true,
+                is_hidden_file = function(name, bufnr)
+                    return vim.startswith(name, ".") and name ~= ".."
+                end,
+            },
+            
+            float = {
+                padding = 2,
+                max_width = 100,
+                max_height = 20,
+                border = "rounded",
+            },
+            
+            -- LSP integration for refactoring
+            lsp_file_methods = {
+                enabled = true,
+                timeout_ms = 1000,
+                autosave_changes = true,
+            },
+            
+            -- Git integration
+            git = {
+                add = function(path) return true end,
+                mv = function(src, dest) return true end,
+                rm = function(path) return true end,
+            },
+            
+            keymaps = {
+                ["g?"] = "actions.show_help",
+                ["<CR>"] = "actions.select",
+                ["<C-h>"] = "actions.select_split",
+                ["<C-v>"] = "actions.select_vsplit",
+                ["<C-p>"] = "actions.preview",
+                ["<C-c>"] = "actions.close",
+                ["<C-l>"] = "actions.refresh",
+                ["-"] = "actions.parent",
+                ["_"] = "actions.open_cwd",
+                ["gs"] = "actions.change_sort",
+                ["gx"] = "actions.open_external",
+                ["gh"] = "actions.toggle_hidden",
+                ["q"] = "actions.close",
+                ["<ESC>"] = "actions.close",
+                
+                -- Copy full path
+                ["yp"] = {
+                    callback = function()
+                        local oil = require("oil")
+                        local entry = oil.get_cursor_entry()
+                        if entry then
+                            local dir = oil.get_current_dir()
+                            local full_path = dir .. entry.name
+                            vim.fn.setreg("+", full_path)
+                            print("Copied: " .. full_path)
+                        end
+                    end,
+                    desc = "Copy full path to clipboard",
+                },
+                
+                -- Diff with current buffer
+                ["<leader>dp"] = {
+                    callback = function()
+                        local oil = require("oil")
+                        local entry = oil.get_cursor_entry()
+                        if not entry then return end
+                        local dir = oil.get_current_dir()
+                        local fullPath = dir .. entry.name
+                        oil.close()
+                        vim.cmd("vertical diffsplit " .. vim.fn.fnameescape(fullPath))
+                    end,
+                    desc = "Diff with last buffer",
+                },
+            },
+        })
+    end,
+}
+```
