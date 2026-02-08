@@ -42,10 +42,8 @@ vks("n", "<C-l>", "<C-w>l", { desc = "Przejdź do okna prawego" })
 vks("n", "<C-d>", "<C-d>zz", { desc = "Pół strony w dół z wyśrodkowaniem" })
 vks("n", "<C-u>", "<C-u>zz", { desc = "Pół strony w górę z wyśrodkowaniem" })
 
--- normal mode tab navi
--- vks("n", "<C-S-H>", "gT", { desc = "Poprzednia zakładka" })
--- vks("n", "<C-S-L>", "gt", { desc = "Następna zakładka" })
-vks("c", "<C-h>", "<Left>")
+
+
 -- console navi
 -- ────────────────────────────────────────────────────────────────────────
 vks("c", "<C-h>", "<Left>")
@@ -54,14 +52,14 @@ vks("c", "<C-k>", "<Up>")
 vks("c", "<C-l>", "<Right>")
 
 -- insert mnode navi
---────────────────────────────────────────────────────────────────────────
-vks("i", "<C-S-h>", "<Left>", { desc = "W lewo w insert mode" })
-vks("i", "<C-j>", "<Down>", { desc = "W dół w insert mode" })
-vks("i", "<C-k>", "<Up>", { desc = "W górę w insert mode" })
-vks("i", "<C-l>", "<Right>", { desc = "W prawo w insert modee" })
-
+--──────────────────────────────────────────────────────────────────────
+-- vks("i", "<C-S-h>", "<Left>", { desc = "W lewo w insert mode" })
+-- vks("i", "<C-j>", "<Down>", { desc = "W dół w insert mode" })
+-- vks("i", "<C-k>", "<Up>", { desc = "W górę w insert mode" })
+-- vks("i", "<C-l>", "<Right>", { desc = "W prawo w insert modee" })
+--
 -- TEST TAB NEVIGATION SETUP
---▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+--▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
 
 -- Szybkie przełączanie tabów wielkimi literami (częsty wzorzec seniora)
 -- ────────────────────────────────────────────────────────────────────────

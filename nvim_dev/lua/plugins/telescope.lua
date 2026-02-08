@@ -147,10 +147,10 @@ return {
 					-- Mapowania nawigacyjne
 					mappings = {
 						i = {
-							["<C-j>"] = actions.move_selection_next,
-							["<C-k>"] = actions.move_selection_previous,
-							["<C-h>"] = actions.preview_scrolling_up,
-							["<C-l>"] = actions.preview_scrolling_down,
+							["<A-j>"] = actions.move_selection_next,
+							["<A-k>"] = actions.move_selection_previous,
+							["<A-h>"] = actions.preview_scrolling_up,
+							["<A-l>"] = actions.preview_scrolling_down,
 							-- OLD: ["<C-q>"] = actions.send_to_qflist + actions.open_qflist
 							-- NEW: Mapowanie pod <C-a> (append)
 							["<C-a>"] = actions.add_to_qflist + actions.open_qflist,

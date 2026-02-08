@@ -146,7 +146,7 @@ CRITICAL (Fix Immediately)
 
 HIGH PRIORITY
 -------------
-[H1] KEYMAP CONFLICTS - Multiple bindings for same key
+[H1✅] KEYMAP CONFLICTS - Multiple bindings for same key
      Conflicts found:
        - <C-l>: mapped in cmp.lua, navi.lua, telescope.lua, oil.lua
        - <C-j/k>: used for both snippet navigation and window movement
@@ -155,7 +155,7 @@ HIGH PRIORITY
      Fix: Audit all keymaps, document priorities, resolve conflicts
      Suggested: Create keymap_audit.lua tool to detect conflicts
 
-[H2] NO ERROR HANDLING in PowerShell Setup
+[H2✅] NO ERROR HANDLING in PowerShell Setup
      Location: lua/config/pwsh.lua
      Problem: Assumes PowerShell 7+ and specific paths exist
      Impact: Silent failures on systems without pwsh
@@ -164,13 +164,13 @@ HIGH PRIORITY
          -- fallback logic
        end
 
-[H3] LSP CONFIGURATION DUPLICATION
+[H3✅] LSP CONFIGURATION DUPLICATION
      Locations: lua/config/lsp.lua vs lua/plugins/lsp.lua
      Problem: config/lsp.lua is mostly commented but still loaded
      Impact: Confusion about which config is active
      Fix: Delete config/lsp.lua or make it explicitly commented as "OLD"
 
-[H4] DEPRECATED FILES STILL IN CODEBASE
+[H4✅] DEPRECATED FILES STILL IN CODEBASE
      Files:
        - lua/-settings/ (entire directory)
        - lua/config/keymaps.lua (use lua/keymaps/ instead)
@@ -1889,13 +1889,7 @@ Low-hanging fruit to boost productivity:
 8. PRIORITY RANKING OF IMPROVEMENTS
 ================================================================================
 
-=== CRITICAL (Do Today) ===
-Priority: IMMEDIATE - Config may not work correctly
 
-1. [C1] FIX SYNTAX ERROR in lua/plugins/oil.lua:108
-   Impact: Oil.nvim may fail to load
-   Time: 5 minutes
-   Action: Move vim.keymap.set() inside config function
 
 2. [C2] REMOVE PRODUCTION TMP LOADING in init.lua
    Impact: Unstable code loaded every time

@@ -1,344 +1,342 @@
 return {
-  -- ======================== LSP & MASON ========================
-  -- LSP = Language Server Protocol - zapewnia IntelliSense, goto definition, diagnostyki
-  -- Mason = instalator/manager dla LSP serwerów, formattersów, linterów
-  -- Nvim 0.11 u¿ywa nowego API: vim.lsp.config[] i vim.lsp.enable()
-  --
-  -- gd   - Goto Definition (skocz do definicji)
-  -- gR   - References (poka¿ wszystkie u¿ycia)
-  -- K    - Hover Documentation (dokumentacja pod kursorem)
-  -- <leader>rn - Rename Symbol (zmie¿ nazw¿)
-  -- <leader>ca - Code Action (akcje kodu)
-  -- Ctrl-Space - otwórz suggestions ctrl-n
-  -- Ctrl-n/p   - nast¿pny/poprzedni
-  -- Ctrl-y     - potwierd¿
-  -- Ctrl-e     - zamknij
-  {
-    "neovim/nvim-lspconfig",
-    event = "BufReadPre",
-    dependencies = {
-      "williamboman/mason.nvim",        -- instalator narz¿dzi
-      "williamboman/mason-lspconfig.nvim", -- bridge mi¿dzy mason a lspconfig
-      "saghen/blink.cmp",               -- completion engine
-      "j-hui/fidget.nvim",              -- LSP progress notifications
-    },
-    config = function()
-      -- Setup Mason (musi by¿ pierwszy)
-      require("mason").setup()
+	-- ======================== LSP & MASON ========================
+	-- LSP = Language Server Protocol - zapewnia IntelliSense, goto definition, diagnostyki
+	-- Mason = instalator/manager dla LSP serwerów, formattersów, linterów
+	-- Nvim 0.11 u¿ywa nowego API: vim.lsp.config[] i vim.lsp.enable()
+	--
+	-- gd   - Goto Definition (skocz do definicji)
+	-- gR   - References (poka¿ wszystkie u¿ycia)
+	-- K    - Hover Documentation (dokumentacja pod kursorem)
+	-- <leader>rn - Rename Symbol (zmie¿ nazw¿)
+	-- <leader>ca - Code Action (akcje kodu)
+	-- Ctrl-Space - otwórz suggestions ctrl-n
+	-- Ctrl-n/p   - nast¿pny/poprzedni
+	-- Ctrl-y     - potwierd¿
+	-- Ctrl-e     - zamknij
+	{
+		"neovim/nvim-lspconfig",
+		event = "BufReadPre",
+		dependencies = {
+			"williamboman/mason.nvim", -- instalator narz¿dzi
+			"williamboman/mason-lspconfig.nvim", -- bridge mi¿dzy mason a lspconfig
+			"saghen/blink.cmp", -- completion engine
+			"j-hui/fidget.nvim", -- LSP progress notifications
+		},
+		config = function()
+			-- Setup Mason (musi by¿ pierwszy)
+			require("mason").setup()
 
-      local mason_lsp = require("mason-lspconfig")
-      local capabilities = require("blink.cmp").get_lsp_capabilities()
+			local mason_lsp = require("mason-lspconfig")
+			local capabilities = require("blink.cmp").get_lsp_capabilities()
 
-      -- Keymapy LSP (aktywuj¿ si¿ gdy LSP attachuje do bufora)
-      vim.api.nvim_create_autocmd("LspAttach", {
-        callback = function(event)
-          local map = function(keys, func, desc)
-            vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
-          end
-          map("gd", vim.lsp.buf.definition, "Goto Definition")
-          map("gR", vim.lsp.buf.references, "References")
-          map("K", vim.lsp.buf.hover, "Hover Documentation")
-          map("<c-k>", vim.lsp.buf.hover, "Hover Documentation")
-          map("<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
+			-- Keymapy LSP (aktywuj¿ si¿ gdy LSP attachuje do bufora)
+			vim.api.nvim_create_autocmd("LspAttach", {
+				callback = function(event)
+					local map = function(keys, func, desc)
+						vim.keymap.set("n", keys, func, { buffer = event.buf, desc = "LSP: " .. desc })
+					end
+					map("gd", vim.lsp.buf.definition, "Goto Definition")
+					map("gR", vim.lsp.buf.references, "References")
+					map("K", vim.lsp.buf.hover, "Hover Documentation")
+					map("<c-k>", vim.lsp.buf.hover, "Hover Documentation")
+					map("<leader>rn", vim.lsp.buf.rename, "Rename Symbol")
+					map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
 
-          -- Diagnostic
-          map("gD", vim.lsp.buf.declaration, "Goto Declaration")
-          map("gi", vim.lsp.buf.implementation, "Goto Implementation")
-          map("gr", vim.lsp.buf.references, "Show References")
-          map("<c-i>", vim.lsp.buf.signature_help, "Signature Help")
+					-- Diagnostic
+					map("gD", vim.lsp.buf.declaration, "Goto Declaration")
+					map("gi", vim.lsp.buf.implementation, "Goto Implementation")
+					map("gr", vim.lsp.buf.references, "Show References")
+					map("<c-i>", vim.lsp.buf.signature_help, "Signature Help")
+					map("]d", vim.diagnostic.goto_next, "Next Diagnostic")
+					map("[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
+					map("<leader>e", vim.diagnostic.open_float, "Show Diagnostic")
+					map("<leader>q", vim.diagnostic.setloclist, "Diagnostic List")
 
-          -- Navigate
-          map("]d", vim.diagnostic.goto_next, "Next Diagnostic")
-          map("[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
-          map("<leader>e", vim.diagnostic.open_float, "Show Diagnostic")
-          map("<leader>q", vim.diagnostic.setloclist, "Diagnostic List")
-          map("<leader>ca", vim.lsp.buf.code_action, "Code Action")
-          vim.keymap.set("n", "q", function()
-            for _, win in ipairs(vim.api.nvim_list_wins()) do
-              local buf = vim.api.nvim_win_get_buf(win)
-              local ft = vim.bo[buf].filetype
-              if ft == "markdown" then -- hover window u¿ywa markdown
-                vim.api.nvim_win_close(win, true)
-                return
-              end
-            end
-          end, { buffer = event.buf, desc = "Close hover window" })
+					vim.keymap.set("n", "q", function()
+						for _, win in ipairs(vim.api.nvim_list_wins()) do
+							local buf = vim.api.nvim_win_get_buf(win)
+							local ft = vim.bo[buf].filetype
+							if ft == "markdown" then -- hover window u¿ywa markdown
+								vim.api.nvim_win_close(win, true)
+								return
+							end
+						end
+					end, { buffer = event.buf, desc = "Close hover window" })
 
-          -- workspace
-          map("<leader>wa", vim.lsp.buf.add_workspace_folder, "Add Workspace")
-          map("<leader>wr", vim.lsp.buf.remove_workspace_folder, "Remove Workspac")
-          map("<leader>wl", function()
-            print(vim.inspect(vim.lspe.buf.list_workspace_folders()))
-          end, "List Workspace")
+					-- workspace
+					map("<leader>wa", vim.lsp.buf.add_workspace_folder, "Add Workspace")
+					map("<leader>wr", vim.lsp.buf.remove_workspace_folder, "Remove Workspac")
+					map("<leader>wl", function()
+						print(vim.inspect(vim.lspe.buf.list_workspace_folders()))
+					end, "List Workspace")
 
-          -- format & type
-          map("<leader>D", vim.lsp.buf.type_definition, "Type Definition")
-          -- <leader>f ju¿ masz w conform.nvim
+					-- format & type
+					map("<leader>D", vim.lsp.buf.type_definition, "Type Definition")
+					-- <leader>f ju¿ masz w conform.nvim
 
-          -- inlayHints(podpowiedzi w kodize)
-          vim.lsp.inlay_hint.enable(true) -- w¿¿cz globalnie
-          -- toggle na klawisz:
-          map("<leader>ih", function()
-            vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-          end, "Toggle Inlay Hints")
+					-- inlayHints(podpowiedzi w kodize)
+					vim.lsp.inlay_hint.enable(true) -- w¿¿cz globalnie
+					-- toggle na klawisz:
+					map("<leader>ih", function()
+						vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+					end, "Toggle Inlay Hints")
 
-          --codelens (akcje w kodzie)
-          vim.lsp.codelens.refresh()                             -- od¿wie¿
-          -- w autocmd:
-          vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold" }, { -- Usun¿¿em InsertLeave
-            callback = function()
-              -- Sprawd¿, czy klient LSP w ogóle obs¿uguje codelens, ¿eby nie sypa¿ b¿¿dami
-              local clients = vim.lsp.get_active_clients({ bufnr = 0 })
-              for _, client in ipairs(clients) do
-                if client.supports_method("textDocument/codeLens") then
-                  vim.lsp.codelens.refresh()
-                  break
-                end
-              end
-            end,
-          })
+					--codelens (akcje w kodzie)
+					vim.lsp.codelens.refresh() -- od¿wie¿
+					-- w autocmd:
+					vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold" }, { -- Usun¿¿em InsertLeave
+						callback = function()
+							-- Sprawd¿, czy klient LSP w ogóle obs¿uguje codelens, ¿eby nie sypa¿ b¿¿dami
+							local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+							for _, client in ipairs(clients) do
+								if client.supports_method("textDocument/codeLens") then
+									vim.lsp.codelens.refresh()
+									break
+								end
+							end
+						end,
+					})
 
-          -- document sympols
-          map("<leader>ds", vim.lsp.buf.document_symbol, "Document Symbols")
-          map("<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace Symbols")
+					-- document sympols
+					map("<leader>ds", vim.lsp.buf.document_symbol, "Document Symbols")
+					map("<leader>ws", vim.lsp.buf.workspace_symbol, "Workspace Symbols")
 
-          -- Folding (sk¿adanie kodu):
-          vim.wo.foldmethod = "expr"
-          vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
+					-- Folding (sk¿adanie kodu):
+					vim.wo.foldmethod = "expr"
+					vim.wo.foldexpr = "v:lua.vim.lsp.foldexpr()"
 
-          -- Semantic Tokens (kolorowanie):
-          -- w¿¿czone automatycznie, ale mo¿na wy¿¿czy¿:
-          vim.api.nvim_create_autocmd("LspAttach", {
-            callback = function(args)
-              local client = vim.lsp.get_client_by_id(args.data.client_id)
-              client.server_capabilities.semanticTokensProvider = nil
-            end,
-          })
-        end,
-      })
+					-- Semantic Tokens (kolorowanie):
+					-- w¿¿czone automatycznie, ale mo¿na wy¿¿czy¿:
+					vim.api.nvim_create_autocmd("LspAttach", {
+						callback = function(args)
+							local client = vim.lsp.get_client_by_id(args.data.client_id)
+							client.server_capabilities.semanticTokensProvider = nil
+						end,
+					})
+				end,
+			})
 
-      -- Lista serwerów LSP z konfiguracj¿
-      local servers = {
-        -- ===== LUA =====
-        -- Serwer: lua-language-server (zainstaluj: mason)
-        lua_ls = {
-          settings = {
-            Lua = {
-              runtime = { version = "LuaJIT" },
-              diagnostics = { globals = { "vim" } }, -- rozpoznaje 'vim' jako globaln¿
-              workspace = { checkThirdParty = false },
-              workspace = {
-                checkThirdParty = false,
-                -- TO JEST KLUCZOWE: nie skanuj zb¿dnych rzeczy
-                ignoreDir = { ".git", "node_modules", ".cache", "lua-language-server" },
-                -- Nie indeksuj plików powy¿ej pewnej wielko¿ci
-                maxPreload = 2000,
-                preloadFileSize = 1000,
-              },
-              telemetry = { enable = false }, -- wy¿¿cz zb¿dne wysy¿anie danych
-            },
-          },
-        },
+			-- Lista serwerów LSP z konfiguracj¿
+			local servers = {
+				-- ===== LUA =====
+				-- Serwer: lua-language-server (zainstaluj: mason)
+				lua_ls = {
+					settings = {
+						Lua = {
+							runtime = { version = "LuaJIT" },
+							diagnostics = { globals = { "vim" } }, -- rozpoznaje 'vim' jako globaln¿
+							workspace = { checkThirdParty = false },
+							workspace = {
+								checkThirdParty = false,
+								-- TO JEST KLUCZOWE: nie skanuj zb¿dnych rzeczy
+								ignoreDir = { ".git", "node_modules", ".cache", "lua-language-server" },
+								-- Nie indeksuj plików powy¿ej pewnej wielko¿ci
+								maxPreload = 2000,
+								preloadFileSize = 1000,
+							},
+							telemetry = { enable = false }, -- wy¿¿cz zb¿dne wysy¿anie danych
+						},
+					},
+				},
 
-        -- ===== PYTHON =====
-        -- Serwer: pyright (zainstaluj: mason)
-        -- Alternatywy: pylsp, ruff-lsp
-        pyright = {
-          settings = {
-            python = {
-              analysis = {
-                autoSearchPaths = true,
-                useLibraryCodeForTypes = true,
-                diagnosticMode = "openFilesOnly",
-              },
-            },
-          },
-        },
+				-- ===== PYTHON =====
+				-- Serwer: pyright (zainstaluj: mason)
+				-- Alternatywy: pylsp, ruff-lsp
+				pyright = {
+					settings = {
+						python = {
+							analysis = {
+								autoSearchPaths = true,
+								useLibraryCodeForTypes = true,
+								diagnosticMode = "openFilesOnly",
+							},
+						},
+					},
+				},
 
-        -- ===== RUST =====
-        -- Serwer: rust-analyzer (zainstaluj: mason)
-        rust_analyzer = {
-          settings = {
-            ['rust-analyzer'] = {
-              checkOnSave = {
-                allFeatures = true,
-                command = "clippy", -- u¿ywa clippy zamiast cargo check dla lepszych sugestii
-              },
-              procMacro = {
-                enable = true,
-              },
-            },
-          },
-        },
+				-- ===== RUST =====
+				-- Serwer: rust-analyzer (zainstaluj: mason)
+				rust_analyzer = {
+					settings = {
+						["rust-analyzer"] = {
+							checkOnSave = {
+								allFeatures = true,
+								command = "clippy", -- u¿ywa clippy zamiast cargo check dla lepszych sugestii
+							},
+							procMacro = {
+								enable = true,
+							},
+						},
+					},
+				},
 
-        -- ===== JAVASCRIPT / TYPESCRIPT =====
-        -- Serwer: typescript-language-server (zainstaluj: mason)
-        -- Obs¿uguje: JS, TS, JSX, TSX
-        ts_ls = {
-          settings = {
-            typescript = {
-              inlayHints = {
-                includeInlayParameterNameHints = "all",
-                includeInlayFunctionParameterTypeHints = true,
-              },
-            },
-          },
-        },
+				-- ===== JAVASCRIPT / TYPESCRIPT =====
+				-- Serwer: typescript-language-server (zainstaluj: mason)
+				-- Obs¿uguje: JS, TS, JSX, TSX
+				ts_ls = {
+					settings = {
+						typescript = {
+							inlayHints = {
+								includeInlayParameterNameHints = "all",
+								includeInlayFunctionParameterTypeHints = true,
+							},
+						},
+					},
+				},
 
-        -- ===== HTML =====
-        -- Serwer: vscode-html-language-server (zainstaluj: mason)
-        html = {},
+				-- ===== HTML =====
+				-- Serwer: vscode-html-language-server (zainstaluj: mason)
+				html = {},
 
-        -- ===== CSS / SCSS / LESS =====
-        -- Serwer: vscode-css-language-server (zainstaluj: mason)
-        cssls = {
-          settings = {
-            css = { validate = true },
-            scss = { validate = true },
-            less = { validate = true },
-          },
-        },
+				-- ===== CSS / SCSS / LESS =====
+				-- Serwer: vscode-css-language-server (zainstaluj: mason)
+				cssls = {
+					settings = {
+						css = { validate = true },
+						scss = { validate = true },
+						less = { validate = true },
+					},
+				},
 
-        -- ===== JSON =====
-        -- Serwer: vscode-json-language-server (zainstaluj: mason)
-        jsonls = {},
+				-- ===== JSON =====
+				-- Serwer: vscode-json-language-server (zainstaluj: mason)
+				jsonls = {},
 
-        -- ===== BASH =====
-        -- Serwer: bash-language-server (zainstaluj: mason + shellcheck)
-        bashls = {},
+				-- ===== BASH =====
+				-- Serwer: bash-language-server (zainstaluj: mason + shellcheck)
+				bashls = {},
 
-        -- ===== VIM SCRIPT =====
-        -- Serwer: vim-language-server (zainstaluj: mason)
-        vimls = {},
+				-- ===== VIM SCRIPT =====
+				-- Serwer: vim-language-server (zainstaluj: mason)
+				vimls = {},
 
-        -- ===== POWERSHELL (Windows/Linux) =====
-        -- Serwer: PowerShellEditorServices (zainstaluj: mason)
-        -- WYMAGA: PowerShell 7+ (pwsh) zainstalowany w systemie!
-        -- Windows: winget install Microsoft.PowerShell
-        -- Linux: https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-linux
-        powershell_es = {
-          bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services",
-          filetypes = { "ps1", "psm1", "psd1" },
-          shell = "pwsh", -- u¿ywa PowerShell 7+
-        },
-      }
+				-- ===== POWERSHELL (Windows/Linux) =====
+				-- Serwer: PowerShellEditorServices (zainstaluj: mason)
+				-- WYMAGA: PowerShell 7+ (pwsh) zainstalowany w systemie!
+				-- Windows: winget install Microsoft.PowerShell
+				-- Linux: https://learn.microsoft.com/powershell/scripting/install/installing-powershell-on-linux
+				powershell_es = {
+					bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services",
+					filetypes = { "ps1", "psm1", "psd1" },
+					shell = "pwsh", -- u¿ywa PowerShell 7+
+				},
+				biome = {}, -- dodany je¿li u¿ywasz jako linter/formatter
+				ast_grep = {}, -- wymaga zainstalowanego ast-grep
+			}
 
-      -- Mason automatycznie instaluje serwery z listy
-      mason_lsp.setup({
-        ensure_installed = vim.tbl_keys(servers),
-      })
+			-- Mason automatycznie instaluje serwery z listy
+			mason_lsp.setup({
+				ensure_installed = vim.tbl_keys(servers),
+			})
 
-      -- Setup ka¿dego serwera u¿ywaj¿c nowego API (Nvim 0.11)
-      for server, opts in pairs(servers) do
-        opts.capabilities = capabilities
-        vim.lsp.config[server] = opts
-        vim.lsp.enable(server)
-      end
-    end,
-  },
+			-- Setup ka¿dego serwera u¿ywaj¿c nowego API (Nvim 0.11)
+			for server, opts in pairs(servers) do
+				opts.capabilities = capabilities
+				vim.lsp.config[server] = opts
+				vim.lsp.enable(server)
+			end
+		end,
+	},
 
-  -- ======================== FORMATOWANIE ========================
-  -- Conform.nvim = mened¿er formatterów (zast¿puje null-ls)
-  -- U¿ywa zewn¿trznych narz¿dzi (prettier, black, itp.)
-  {
-    "stevearc/conform.nvim",
-    event = "BufWritePre",
-    opts = {
-      -- Formattery dla ka¿dego j¿zyka
-      formatters_by_ft = {
-        -- ===== LUA =====
-        -- Narz¿dzie: stylua (zainstaluj: mason lub cargo install stylua)
-        lua = { "stylua" },
+	-- ======================== FORMATOWANIE ========================
+	-- Conform.nvim = mened¿er formatterów (zast¿puje null-ls)
+	-- U¿ywa zewn¿trznych narz¿dzi (prettier, black, itp.)
+	{
+		"stevearc/conform.nvim",
+		event = "BufWritePre",
+		opts = {
+			-- Formattery dla ka¿dego j¿zyka
+			formatters_by_ft = {
+				-- ===== LUA =====
+				-- Narz¿dzie: stylua (zainstaluj: mason lub cargo install stylua)
+				lua = { "stylua" },
 
-        -- ===== PYTHON =====
-        -- Narz¿dzia: isort (importy) + black (kod)
-        -- Zainstaluj: pip install black isort LUB przez mason
-        -- Kolejno¿¿ MA znaczenie: najpierw isort, potem black
-        python = { "isort", "black" },
+				-- ===== PYTHON =====
+				-- Narz¿dzia: isort (importy) + black (kod)
+				-- Zainstaluj: pip install black isort LUB przez mason
+				-- Kolejno¿¿ MA znaczenie: najpierw isort, potem black
+				python = { "isort", "black" },
 
-        -- ===== WEB (JS/TS/HTML/CSS) =====
-        -- Narz¿dzie: prettier (zainstaluj: mason lub npm install -g prettier)
-        -- Obs¿uguje wszystkie j¿zyki webowe
-        javascript = { "prettier" },
-        typescript = { "prettier" },
-        javascriptreact = { "prettier" },
-        typescriptreact = { "prettier" },
-        html = { "prettier" },
-        css = { "prettier" },
-        scss = { "prettier" },
-        json = { "prettier" },
-        yaml = { "prettier" },
-        markdown = { "prettier" },
+				-- ===== WEB (JS/TS/HTML/CSS) =====
+				-- Narz¿dzie: prettier (zainstaluj: mason lub npm install -g prettier)
+				-- Obs¿uguje wszystkie j¿zyki webowe
+				javascript = { "prettier" },
+				typescript = { "prettier" },
+				javascriptreact = { "prettier" },
+				typescriptreact = { "prettier" },
+				html = { "prettier" },
+				css = { "prettier" },
+				scss = { "prettier" },
+				json = { "prettier" },
+				yaml = { "prettier" },
+				markdown = { "prettier" },
 
-        -- ===== BASH =====
-        -- Narz¿dzie: shfmt (zainstaluj: mason lub go install)
-        sh = { "shfmt" },
-        bash = { "shfmt" },
-        rust = { "ast-grep" },
+				-- ===== BASH =====
+				-- Narz¿dzie: shfmt (zainstaluj: mason lub go install)
+				sh = { "shfmt" },
+				bash = { "shfmt" },
+				rust = { "ast-grep" },
 
-        -- ===== POWERSHELL =====
-        -- Formatter wbudowany w powershell_es LSP
-        -- Nie trzeba osobnego formattera
-        -- ===== RRUST =====
+				-- ===== POWERSHELL =====
+				-- Formatter wbudowany w powershell_es LSP
+				-- Nie trzeba osobnego formattera
+				-- ===== RRUST =====
+			},
 
+			-- Konfiguracja konkretnych formatterów (opcjonalne)
+			formatters = {
+				-- Przyk¿ad: prettier z custom opcjami
+				prettier = {
+					prepend_args = {
+						"--tab-width=2",
+						"--use-tabs=false",
+					},
+				},
+				-- Przyk¿ad: black z maksymaln¿ d¿ugo¿ci¿ linii
+				black = {
+					prepend_args = { "--line-length=88" },
+				},
+			},
+		},
+		keys = {
+			-- Manual format: <leader>f
+			{
+				"<leader>fb",
+				function()
+					require("conform").format({ async = true, lsp_format = "fallback" })
+				end,
+				mode = "",
+				desc = "Format buffer",
+			},
+			-- AUTO-FORMATOWANIE przy zapisie
+			format_on_save = function(bufnr)
+				-- 1. Sprawd¿ czy formatowanie nie jest wy¿¿czone globalnie lub dla bufora
+				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
+					return
+				end
 
-      },
+				-- 2. Wy¿¿cz dla specjalnych buforów
+				local ft = vim.bo[bufnr].filetype
+				if ft == "oil" or ft == "terminal" then
+					return
+				end
 
-      -- Konfiguracja konkretnych formatterów (opcjonalne)
-      formatters = {
-        -- Przyk¿ad: prettier z custom opcjami
-        prettier = {
-          prepend_args = {
-            "--tab-width=2",
-            "--use-tabs=false",
-          },
-        },
-        -- Przyk¿ad: black z maksymaln¿ d¿ugo¿ci¿ linii
-        black = {
-          prepend_args = { "--line-length=88" },
-        },
-      },
+				return {
+					timeout_ms = 2000,
+					lsp_format = "fallback",
+					async = false,
+				}
+			end,
+		},
+	},
 
-    },
-    keys = {
-      -- Manual format: <leader>f
-      {
-        "<leader>f",
-        function()
-          require("conform").format({ async = true, lsp_format = "fallback" })
-        end,
-        mode = "",
-        desc = "Format buffer",
-      },
-      -- AUTO-FORMATOWANIE przy zapisie
-      format_on_save = function(bufnr)
-        -- 1. Sprawd¿ czy formatowanie nie jest wy¿¿czone globalnie lub dla bufora
-        if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
-          return
-        end
-
-        -- 2. Wy¿¿cz dla specjalnych buforów
-        local ft = vim.bo[bufnr].filetype
-        if ft == "oil" or ft == "terminal" then
-          return
-        end
-
-        return {
-          timeout_ms = 2000,
-          lsp_format = "fallback",
-          async = false,
-        }
-      end,
-    },
-  },
-
-  -- ======================== LAZYDEV (Lua Development) ========================
-  -- Autokompletowanie dla Neovim Lua API (vim.api.*, itp.)
-  {
-    "folke/lazydev.nvim",
-    ft = "lua",
-    opts = {},
-  },
+	-- ======================== LAZYDEV (Lua Development) ========================
+	-- Autokompletowanie dla Neovim Lua API (vim.api.*, itp.)
+	{
+		"folke/lazydev.nvim",
+		ft = "lua",
+		opts = {},
+	},
 }
 
 -- ====================================================================
