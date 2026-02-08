@@ -13,7 +13,7 @@ return {
 			"nvim-lua/plenary.nvim",
 			"nvim-telescope/telescope.nvim",
 		},
-		cmd = { "Ss", "Sr", "Sl" },
+		cmd = { "Smgr save", "Smgr restore", "Smgr list" },
 
 		config = function()
 			require("session_manager").setup({

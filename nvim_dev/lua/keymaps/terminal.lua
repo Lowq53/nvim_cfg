@@ -1,11 +1,24 @@
 -- Mapowanie <space>t do otwierania terminala po lewej stronie
+--
+-- FROM TEMP
+--▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
+vim.keymap.set("n", "<leader>tp", function()
+	vim.cmd("vsplit")
+	vim.cmd("term pwsh")
+	-- Opóźnienie wysłania klawiszy, aby terminal zdążył się zainicjować
+	vim.schedule(function()
+		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes([[<C-\><C-n><C-w>=]], true, false, true), "n", false)
+	end)
+end, { desc = "Open pwsh in vsplit and equalize" })
+
 -- WINDOWS TERMINALS
 --▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
-vim.api.nvim_set_keymap("n", "<leader>tp", "<cmd>vsplit | term pwsh |<CR><C-\\><C-n><CR>", {
-	desc = ":term pwsh",
-	noremap = true,
-	silent = true,
-})
+-- vim.api.nvim_set_keymap("n", "<leader>tp", "<cmd>vsplit | term pwsh |<CR><C-\\><C-n><CR>", {
+-- 	desc = ":term pwsh",
+-- 	noremap = true,
+-- 	silent = true,
+-- })
 
 -- Git Bash / MSYS2 / MinGW
 vim.keymap.set("n", "<leader>tg", "<cmd>vsplit | term C:/msys64/usr/bin/bash.exe<CR><C-\\><C-n><cmd>wincmd =<CR>", {
@@ -56,3 +69,5 @@ vim.api.nvim_create_autocmd("TermOpen", {
 -- Opcjonalnie: Mapowanie ESC do wyjścia z trybu terminala
 vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
 -- tedfds
+--
+
