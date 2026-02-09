@@ -80,3 +80,9 @@ vim.opt.hlsearch = true
 -- ===== LEADERS =====
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
+
+
+-- ===== Tresitter =====
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevelstart = 99
