@@ -1,4 +1,4 @@
--- C:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\config\pwsh.lua
+-- C:/Users/LOWq_53/AppData/Local/nvim_cfg/nvim_dev/lua/config/pwsh.lua
 
 -- Ustawienie opcji dla poprawnego działania shella w Neovim
 vim.opt.clipboard = "unnamedplus"
@@ -6,10 +6,10 @@ vim.opt.clipboard = "unnamedplus"
 if jit.os == "Windows" then
     -- PATH update (unikamy duplikatów)
     local paths_to_add = {
-        "C:\\Windows\\System32",
-        "C:\\Windows",
-        "C:\\Program Files\\PowerShell\\7",
-        "C:\\Program Files\\nodejs",
+        "C:/Windows/System32",
+        "C:/Windows",
+        "C:/Program Files/PowerShell/7",
+        "C:/Program Files/nodejs",
     }
 
     for _, path in ipairs(paths_to_add) do

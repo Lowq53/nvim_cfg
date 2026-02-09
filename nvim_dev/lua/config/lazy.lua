@@ -1,4 +1,4 @@
--- AppData\Local\nvim_cfg\nvim_dev\lua\config\lazy.lua
+-- AppData/Local/nvim_cfg/nvim_dev/lua/config/lazy.lua
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 -- 2. Mechanizm Auto-Bootstrap: Sprawd« czy lazy istnieje, je˜li nie - sklonuj go
@@ -22,8 +22,6 @@ vim.opt.rtp:prepend(lazypath)
 -- Make sure to setup `mapleader` and `maplocalleader` before
 -- loading lazy.nvim so that mappings are correct.
 -- This is also a good place to setup other settings (vim.opt)
-vim.g.mapleader = "\\"
-vim.g.maplocalleader = "\\"
 
 -- Setup lazy.nvim
 require("lazy").setup({

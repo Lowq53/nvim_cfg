@@ -1,4 +1,4 @@
---c:\Users\LOWq_53\AppData\Local\nvim_dev\lua\config\ui.lua
+--c:/Users/LOWq_53/AppData/Local/nvim_dev/lua/config/ui.lua
 local M = {}
 
 local function set_transparency()

@@ -1,4 +1,4 @@
--- C:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\keymaps\space.lua
+-- C:/Users/LOWq_53/AppData/Local/nvim_cfg/nvim_dev/lua/keymaps/space.lua
 -- Kopiuje cały bufor do rejestru systemowego (+)
 vim.keymap.set('n', '<space>y', ':%y+<CR>', { desc = 'Kopiuj cały bufor do systemowego schowka' })
 

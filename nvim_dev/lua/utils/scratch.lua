@@ -4,6 +4,8 @@
 -- Otwiera plik scratch.txt w osobnym oknie do szybkich notatek.
 -- Plik jest automatycznie zapisywany przy każdej zmianie bufora.
 -- ================================================================
+local M = {}
+
 
 --- Ścieżka do folderu przechowującego pliki scratch
 --- vim.fn.stdpath("data") zwraca ~/.local/share/nvim (Linux)
@@ -87,7 +89,7 @@ vim.api.nvim_create_user_command(
 		desc = "Open scratchpad file", -- opis (widoczny w :command Scratch)
 	}
 )
-
+return M
 -- === ALTERNATYWNY KEYMAP (OPCJONALNIE) ===
 
 -- Możesz też dodać skrót klawiszowy:

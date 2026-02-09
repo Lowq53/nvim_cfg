@@ -49,7 +49,7 @@ return {
 		-- init = function()
 		-- 	-- Windows: dodaj MSYS2 do PATH
 		-- 	if vim.fn.has("win32") == 1 then
-		-- 		vim.env.PATH = vim.env.PATH .. ";C:\\msys64\\mingw64\\bin;C:\\msys64\\usr\\bin"
+		-- 		vim.env.PATH = vim.env.PATH .. ";C://msys64//mingw64//bin;C://msys64//usr//bin"
 		-- 	end
 		--
 		-- 	-- Ustaw kompilator (głównie dla Windows)

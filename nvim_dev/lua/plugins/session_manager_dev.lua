@@ -1,4 +1,4 @@
--- C:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\plugins\session_manager_dev.lua
+-- C:/Users/LOWq_53/AppData/Local/nvim_cfg/nvim_dev/lua/plugins/session_manager_dev.lua
 return {
 	{
 		"Lowq53/nvim-session-manager",
@@ -55,7 +55,7 @@ return {
 		--
 		-- LOKALIZACJA SESJI:
 		-- Linux:   ~/.local/share/nvim/persisted/
-		-- Windows: ~\AppData\Local\nvim-data\persisted\
+		-- Windows: ~/AppData/Local/nvim-data/persisted/
 		--
 		"olimorris/persisted.nvim",
 		version = "2.1.1",
@@ -63,7 +63,7 @@ return {
 
 
     config = function()
-		local save_dir = vim.fn.stdpath("data") .. "\\persisted"
+		local save_dir = vim.fn.stdpath("data") .. "//persisted"
 
     if vim.fn.isdirectory(save_dir) == 0 then
       vim.fn.mkdir(save_dir, "p") -- gwarancja istnienia

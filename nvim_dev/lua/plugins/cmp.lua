@@ -1,7 +1,7 @@
 -- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 -- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 -- SENIORSKI SETUP: NVIM 0.11 NATIVE SNIPPETS + LUASNIP FALLBACK
--- Plik: C:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\plugins\snippets.lua
+-- Plik: C:/Users/LOWq_53/AppData/Local/nvim_cfg/nvim_dev/lua/plugins/snippets.lua
 -- ¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿¿
 -- https://grok.com/project/5976f874-e8f1-4b2e-9386-dbb4216e9f1b?tab=sources&chat=96739e16-1ac0-4258-bfd8-3ea7aad350e8&rid=c3522608-6c21-4a74-a7ca-33f12f3e5f58
 --
@@ -62,7 +62,7 @@ return {
       ls.filetype_extend("html", { "css", "javascript" })
 			-- 2. W¿asne snippety (Lua format) - lazy load
 			require("luasnip.loaders.from_lua").lazy_load({
-				paths = { vim.fn.stdpath("config") .. "\\lua\\snippets" },
+				paths = { vim.fn.stdpath("config") .. "//lua//snippets" },
 			})
 
 			-- ========== KEYMAPS ==========

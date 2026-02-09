@@ -93,7 +93,7 @@ LANGUAGE SUPPORT (13 LSP Servers)
 
 KEYMAP ORGANIZATION
 -------------------
-Leader key: \ (backslash)
+Leader key: / (backslash)
 15 modular keymap files:
   - core.lua (346 lines) - basic editing, window nav
   - navi.lua - diagnostics, search navigation
@@ -183,7 +183,7 @@ HIGH PRIORITY
 MEDIUM PRIORITY
 ---------------
 [M1] INCONSISTENT PATH SEPARATORS on Windows
-     Problem: Mix of "/" and "\" throughout codebase
+     Problem: Mix of "/" and "/" throughout codebase
      Locations: Various lua files
      Impact: May cause path resolution issues on Windows
      Fix: Use vim.fn.expand() or vim.loop.os_uname() for platform detection
@@ -953,7 +953,7 @@ Test 4: LSP Functionality
   Checks: LSP server running and communicating
 
 Test 5: Telescope Works
-  Command: nvim +Telescope\ find_files
+  Command: nvim +Telescope/ find_files
   Success: Picker opens with file list
   Checks: Telescope and dependencies loaded
 
@@ -1224,7 +1224,7 @@ After major changes, test these workflows:
     [ ] List sessions (<space>sf)
 
 [ ] Terminal
-    [ ] Open terminal (<C-\>)
+    [ ] Open terminal (<C-/>)
     [ ] Escape terminal (Esc)
     [ ] Toggle terminal
 

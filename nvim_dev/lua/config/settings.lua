@@ -1,15 +1,17 @@
--- c:\Users\LOWq_53\AppData\Local\nvim_cfg\nvim_dev\lua\config\settings.lua
+-- c:/Users/LOWq_53/AppData/Local/nvim_cfg/nvim_dev/lua/config/settings.lua
 local opt = vim.opt
 
 -- Force UTF-8 encoding and Unix line endings
 -- ═══════════════════════════════════════════════════════════════════════════
+-- Make sure to setup `mapleader` and `maplocalleader` before
+-- loading lazy.nvim so that mappings are correct.
+-- This is also a good place to setup other settings (vim.opt)
+vim.g.mapleader = "\\"
+vim.g.maplocalleader = "\\"
 
 vim.opt.encoding = "utf-8"
 vim.opt.fileencoding = "utf-8"
 vim.opt.fileformat = "unix" -- Fixes ^M issues
-
-vim.g.mapleader = "\\"
-vim.g.maplocalleader = "\\"
 
 -- chunk-level tylko w tym pliku
 -- local vks = vim.keympap.set
@@ -86,3 +88,43 @@ vim.g.maplocalleader = "\\"
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevelstart = 99
+
+-- need to check lualine evil_lualine is deleting by transparent backgorund in nvim dev
+-- Wymuszenie przezroczystości na samym końcu ładowania
+vim.api.nvim_create_autocmd("User", {
+	pattern = "VeryLazy", -- Czeka, aż wszystkie pluginy się załadują
+	callback = function()
+		require("tokyonight").setup({ transparent = true })
+		vim.cmd("colorscheme tokyonight")
+
+		-- Dodatkowe "ubezpieczenie" - czyści tło ręcznie, gdyby plugin zawiódł
+		local groups = { "Normal", "NormalFloat", "NormalNC", "SignColumn", "NvimTreeNormal" }
+		for _, group in ipairs(groups) do
+			vim.api.nvim_set_hl(0, group, { bg = "none" })
+		end
+	end,
+})
+-- === NUMBERS ===
+vim.api.nvim_set_hl(0, "LineNr", { fg = "#d65a31", -- czerwono-pomarańczowy
+})
+
+vim.api.nvim_set_hl(0, "LineNrAbove", { fg = "#ff8c42", -- jaśniejszy pomarańcz bold = false,
+})
+
+vim.api.nvim_set_hl(0, "LineNrBelow", { fg = "#ff8c42",
+  bold = false,
+})
+
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#ff4500", -- mocny czerwony/orange
+  bold = true,
+})
+
+-- === COMMENTS ===
+vim.api.nvim_set_hl(0, "Comment", { fg = "#e5c07b", -- blady pomarańczowo-żółty
+  italic = true,
+})
+
+-- opcjonalnie: Treesitter
+vim.api.nvim_set_hl(0, "@comment", { fg = "#e5c07b",
+  italic = true,
+})

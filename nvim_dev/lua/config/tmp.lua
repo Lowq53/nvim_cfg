@@ -1,3 +1,162 @@
+-- # extendion tag for plugins help
+-- ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
+---@class PluginHelpModule
+---@field plugin_help_map table<string, string> Mapowanie nazw pluginów na tagi help.
+local M = {}
+
+-- Słownik mapujący nazwy z Lazy do nazw plików help
+-- Większość pluginów używa nazwy bez ".nvim" lub ".lua"
+---Mapa translacji nazw pluginów z menedżera lazy.nvim na konkretne pliki dokumentacji.
+---Niektóre pluginy mają niestandardowe nazwy plików .txt w folderze doc/.
+
+---Otwiera dokumentację help dla podanego pluginu.
+---@param opts table Obiekt parametrów przekazany przez nvim_create_user_command (opts.args).
+
+
+print("Help setup: Konfiguracja załadowana pomyślnie!")
+M.plugin_help_map = {
+	["auto-save.nvim"] = "auto-save.txt",
+	["blink.cmp"] = "blink.txt",
+	["Comment.nvim"] = "comment.txt",
+	["LuaSnip"] = "luasnip.txt",
+	["oil.nvim"] = "oil.txt",
+	["telescope.nvim"] = "telescope.txt",
+	["fidget.nvim"] = "fidget.txt",
+	["gitsigns.nvim"] = "gitsigns.txt",
+	["nvim-lspconfig"] = "lspconfig.txt",
+	["nvim-treesitter"] = "nvim-treesitter.txt",
+	["which-key.nvim"] = "which-key.txt",
+}
+
+---Otwiera dokumentację help dla podanego pluginu.
+---@param opts table Obiekt parametrów przekazany przez nvim_create_user_command (opts.args).
+function M.open_plugin_help(opts)
+	local plugin_name = opts.args
+	local help_file = M.plugin_help_map[plugin_name] or (plugin_name:gsub("%.nvim$", ""):gsub("%.lua$", ""))
+
+	local ok = pcall(vim.cmd, "help " .. help_file)
+	if not ok then
+		vim.notify("Help tag not found for: " .. plugin_name, vim.log.levels.WARN)
+	end
+end
+
+-- Rejestracja PH jako aliasu dla PHelp
+vim.api.nvim_create_user_command("PH", M.open_plugin_help, {
+	nargs = 1,
+	complete = function()
+		return vim.tbl_keys(require("lazy").plugins())
+	end,
+})
+-- Przykład użycia dla oil.nvim:
+-- 1. Wywołanie komendy: :PHelp oil.nvim
+-- 2. Funkcja sprawdza M.plugin_help_map["oil.nvim"] -> wynik: "oil.txt"
+-- 3. Wykonuje: vim.cmd("help oil.txt")
+
+vim.api.nvim_create_user_command("PHelp", M.open_plugin_help, {
+	nargs = 1,
+	complete = function()
+		local keys = {}
+		for k, _ in pairs(require("lazy").plugins()) do
+			table.insert(keys, k)
+		end
+		table.sort(keys)
+		return keys
+	end,
+	desc = "Open help for a specific plugin managed by Lazy",
+})
+
+return M
+
+-- load session module
+-- ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+name = name or "default"
+
+	local base_file = SESSION_DIR .. name .. ".mks"
+	local final_file = base_file
+	local counter = 1
+
+	if vim.fn.filereadable(base_file) == 1 then
+		while vim.fn.filereadable(SESSION_DIR .. name .. "_" .. counter .. ".mks") == 1 do
+			counter = counter + 1
+		end
+		final_file = SESSION_DIR .. name .. "_" .. counter .. ".mks"
+	end
+
+	-- 1. SHADA najpierw
+	local shada_file = SHADA_DIR .. name .. "_" .. counter .. ".shada"
+	vim.cmd("wshada! " .. shada_file)
+
+	-- 2. SESSION potem
+	vim.cmd("mksession! " .. final_file)
+
+	print("✓ Sesja: " .. vim.fn.fnamemodify(final_file, ":t"))
+	print("✓ Shada: " .. vim.fn.fnamemodify(shada_file, ":t"))
+end
+
+-- :Trs <name> - Restore session (POPRAutocomplete and Snippets Autocomplete and Snippets Autocomplete and Snippets Autocomplete and Snippets Autocomplete and Snippets Autocomplete and Snippets Autocomplete and Snippets Autocomplete and Snippets AWNA KOLEJNOŚĆ!)
+function M.restore_session(name)
+	name = name or "default"
+
+	local latest_session, num = find_latest_session(name)
+
+	if not latest_session then
+		local base_file = name .. ".mks"
+		if vim.fn.filereadable(SESSION_DIR .. base_file) == 1 then
+			latest_session = base_file
+			num = 0
+		else
+			print("✗ Nie znaleziono sesji: " .. name)
+			return
+		end
+	end
+
+	local shada_file = SHADA_DIR .. name .. "_" .. num .. ".shada"
+
+	-- KRYTYCZNA ZMIANA: SHADA PRZED SESSION!
+	-- 1. Wczytaj SHADA najpierw (rejestry, historia, marki)
+	if vim.fn.filereadable(shada_file) == 1 then
+		vim.cmd("rshada! " .. shada_file)
+		print("✓ Wczytano shada: " .. vim.fn.fnamemodify(shada_file, ":t"))
+	end
+
+	-- 2. SESSION potem (okna, buffery, CWD)
+	vim.cmd("source " .. SESSION_DIR .. latest_session)
+	print("✓ Przywrócono sesję: " .. latest_session)
+end
+
+-- Komendy
+vim.api.nvim_create_user_command("Tss", function(opts)
+	M.save_session(opts.args)
+end, { nargs = "?", desc = "Save session with auto-increment" })
+
+vim.api.nvim_create_user_command("Trs", function(opts)
+	M.restore_session(opts.args)
+end, { nargs = "?", desc = "Restore latest session" })
+
+-- Keymaps
+vim.keymap.set("n", "<A-F5>", function()
+	M.save_session("quick")
+end, { desc = "Quick save session" })
+
+vim.keymap.set("n", "<A-F6>", function()
+	M.restore_session("quick")
+end, { desc = "Quick restore session" })
+
+-- -- AUTO-SAVE przy wyjściu
+-- vim.api.nvim_create_autocmd("VimLeavePre", {
+-- 	callback = function()
+-- 		M.save_session("auto")
+-- 	end,
+-- })
+
+return M
+
+
+  
+-- new1 keymaps
+-- ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
 --[[
 FLOAT FOCUS / FLOAT OPACITY MANAGER
 
@@ -480,3 +639,109 @@ end, { desc = "Toggle Telescope floating" })
 
 
 return M
+
+
+
+
+-- new keymaps
+-- ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
+vim.opt.updatetime = 5000 -- czas w milisekunda dla atuozapisu cursor hold po tym czasie mozna robic auto-save
+
+
+-- messages to new buffer
+vim.keymap.set('n', '<leader>mm', function()
+    local messages = vim.fn.execute('messages')
+    
+    -- Tworzymy nowy bufor bezpośrednio (bez przełączania okna od razu)
+    local buf = vim.api.nvim_create_buf(false, true) -- listed: false, scratch: true
+    
+    -- Rozbijamy tekst i wstawiamy do bufora
+    local lines = vim.split(messages, '\n')
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    
+    -- Otwieramy bufor w nowym oknie (np. dolny split o wysokości 10 linii)
+    vim.cmd('split')
+    vim.api.nvim_win_set_buf(0, buf)
+    
+    -- Opcjonalne: Ustawienie kursora na samym dole, by widzieć najnowsze logi
+    vim.api.nvim_win_set_cursor(0, { #lines, 0 })
+end, { desc = 'Messages to scratch buffer' })
+
+
+
+-- new keymaps
+-- ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
+vim.opt.updatetime = 5000 -- czas w milisekunda dla atuozapisu cursor hold po tym czasie mozna robic auto-save
+
+
+-- messages to new buffer
+vim.keymap.set('n', '<leader>mm', function()
+    local messages = vim.fn.execute('messages')
+    
+    -- Tworzymy nowy bufor bezpośrednio (bez przełączania okna od razu)
+    local buf = vim.api.nvim_create_buf(false, true) -- listed: false, scratch: true
+    
+    -- Rozbijamy tekst i wstawiamy do bufora
+    local lines = vim.split(messages, '\n')
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    
+    -- Otwieramy bufor w nowym oknie (np. dolny split o wysokości 10 linii)
+    vim.cmd('split')
+    vim.api.nvim_win_set_buf(0, buf)
+    
+    -- Opcjonalne: Ustawienie kursora na samym dole, by widzieć najnowsze logi
+    vim.api.nvim_win_set_cursor(0, { #lines, 0 })
+end, { desc = 'Messages to scratch buffer' })
+
+-- new keymaps
+-- ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
+vim.opt.updatetime = 5000 -- czas w milisekunda dla atuozapisu cursor hold po tym czasie mozna robic auto-save
+
+
+-- messages to new buffer
+vim.keymap.set('n', '<leader>mm', function()
+    local messages = vim.fn.execute('messages')
+    
+    -- Tworzymy nowy bufor bezpośrednio (bez przełączania okna od razu)
+    local buf = vim.api.nvim_create_buf(false, true) -- listed: false, scratch: true
+    
+    -- Rozbijamy tekst i wstawiamy do bufora
+    local lines = vim.split(messages, '\n')
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    
+    -- Otwieramy bufor w nowym oknie (np. dolny split o wysokości 10 linii)
+    vim.cmd('split')
+    vim.api.nvim_win_set_buf(0, buf)
+    
+    -- Opcjonalne: Ustawienie kursora na samym dole, by widzieć najnowsze logi
+    vim.api.nvim_win_set_cursor(0, { #lines, 0 })
+end, { desc = 'Messages to scratch buffer' })
+
+-- new keymaps
+-- ▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰▰
+
+vim.opt.updatetime = 5000 -- czas w milisekunda dla atuozapisu cursor hold po tym czasie mozna robic auto-save
+
+
+-- messages to new buffer
+vim.keymap.set('n', '<leader>mm', function()
+    local messages = vim.fn.execute('messages')
+    
+    -- Tworzymy nowy bufor bezpośrednio (bez przełączania okna od razu)
+    local buf = vim.api.nvim_create_buf(false, true) -- listed: false, scratch: true
+    
+    -- Rozbijamy tekst i wstawiamy do bufora
+    local lines = vim.split(messages, '\n')
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    
+    -- Otwieramy bufor w nowym oknie (np. dolny split o wysokości 10 linii)
+    vim.cmd('split')
+    vim.api.nvim_win_set_buf(0, buf)
+    
+    -- Opcjonalne: Ustawienie kursora na samym dole, by widzieć najnowsze logi
+    vim.api.nvim_win_set_cursor(0, { #lines, 0 })
+end, { desc = 'Messages to scratch buffer' })
+
