@@ -13,10 +13,10 @@ local opts = { noremap = true, silent = true }
 -- ► LEADER KEYS
 -- ═══════════════════════════════════════════════════════════════════════════
 
--- Simulated second leader with comma
-vim.keymap.set("n", ",f", function()
-	print("Simulated leader with ','")
-end, { desc = "Simulated comma leader" })
+-- Simulated second leader with comma / blokuje buildin comand dla tilt/ przskakiwanie szukanej litery
+-- vim.keymap.set("n", ",f", function()
+-- 	print("Simulated leader with ','")
+-- end, { desc = "Simulated comma leader" })
 
 -- ═══════════════════════════════════════════════════════════════════════════
 -- ► AUTO-PAIRS (Insert Mode)

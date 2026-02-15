@@ -202,7 +202,7 @@ return {
 				-- Serwer: vscode-json-language-server (zainstaluj: mason)
 				jsonls = {},
 
-				-- ===== BASH =====
+				-- ===== BAmH =====
 				-- Serwer: bash-language-server (zainstaluj: mason + shellcheck)
 				bashls = {},
 
