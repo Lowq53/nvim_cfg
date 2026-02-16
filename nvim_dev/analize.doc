@@ -170,60 +170,7 @@ HIGH PRIORITY
      Impact: Confusion about which config is active
      Fix: Delete config/lsp.lua or make it explicitly commented as "OLD"
 
-[H4✅] DEPRECATED FILES STILL IN CODEBASE
-     Files:
-       - lua/-settings/ (entire directory)
-       - lua/config/keymaps.lua (use lua/keymaps/ instead)
-       - lua/config/ui.lua (might be unused)
-     Problem: Clutters codebase, confusing to maintain
-     Impact: Developer confusion, potential conflicts
-     Fix: Delete after confirming they're not sourced
-
-
-MEDIUM PRIORITY
----------------
-[M1] INCONSISTENT PATH SEPARATORS on Windows
-     Problem: Mix of "/" and "/" throughout codebase
-     Locations: Various lua files
-     Impact: May cause path resolution issues on Windows
-     Fix: Use vim.fn.expand() or vim.loop.os_uname() for platform detection
-
-[M2] MASSIVE FILE SIZES - Hard to maintain
-     Files:
-       - lua/keymaps/core.lua (346 lines)
-       - lua/plugins/telescope.lua (364 lines)
-       - lua/plugins/lsp.lua (260 lines)
-       - lua/plugins/cmp.lua (260 lines)
-     Problem: Difficult to navigate and modify
-     Impact: Slower maintenance, harder to debug
-     Fix: Split into logical sub-files:
-       - core.lua → core_editing.lua + core_windows.lua
-       - telescope.lua → telescope_pickers.lua + telescope_keymaps.lua
-
-[M3] COMMENTED CODE BLOAT
-     Locations: Throughout config files, especially:
-       - lua/config/lsp.lua (50+ lines of commented code)
-       - lua/plugins/lsp.lua (commented alternatives)
-     Problem: Makes code harder to read
-     Impact: Confusion about what's active
-     Fix: Move old code to git history, add brief comments explaining changes
-
-[M4] SNIPPET FILE INCOMPLETE
-     Location: lua/snippets/python.lua
-     Problem: File exists but has minimal content
-     Impact: Missing productivity tool for Python development
-     Fix: Add common Python snippets (class, def, if __name__, docstrings)
-
-[M5] WHICH-KEY NOT FULLY UTILIZED
-     Problem: which-key installed but no group definitions in keymap files
-     Impact: User doesn't see organized keymap hints
-     Fix: Add which-key.register() calls with group names:
-       which_key.register({
-         ["<leader>s"] = { name = "+sessions" },
-         ["<leader>f"] = { name = "+find" },
-       })
-
-[M6] NO SESSION VALIDATION
+✅[M6] NO SESSION VALIDATION
      Location: lua/plugins/session_manager_dev.lua
      Problem: Sessions may load with missing files/buffers
      Impact: Error messages on session restore
@@ -232,7 +179,7 @@ MEDIUM PRIORITY
 
 LOW PRIORITY
 ------------
-[L1] MIXED LANGUAGE COMMENTS (Polish/English)
+✅[L1] MIXED LANGUAGE COMMENTS (Polish/English)
      Problem: Inconsistent documentation language
      Impact: Harder for international contributors
      Fix: Standardize on English for comments

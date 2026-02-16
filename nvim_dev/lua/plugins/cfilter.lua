@@ -1,11 +1,11 @@
--- ~/.config/nvim/lua/plugins/cfilter.lua
+-- -- ~/.config/nvim/lua/plugins/cfilter.lua
 return {
-  -- cfilter jest wbudowany, tylko go aktywuj
-  {
-    "cfilter",
-    lazy = false,
-    config = function()
-      vim.cmd.packadd("cfilter")
-    end,
-  },
+--   -- cfilter jest wbudowany, tylko go aktywuj
+--   {
+--     "cfilter",
+--     lazy = false,
+--     config = function()
+--       vim.cmd.packadd("cfilter")
+--     end,
+--   },
 }

@@ -1,4 +1,4 @@
--- AppData/Local/nvim_cfg/nvim_dev/lua/config/lazy.lua
+-- AppData/Local/nvim_cfg/nvim_dev/lua/config/lazy.lualazylazy
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
 -- 2. Mechanizm Auto-Bootstrap: Sprawd« czy lazy istnieje, je˜li nie - sklonuj go
@@ -50,7 +50,12 @@ require("lazy").setup({
 	-- colorscheme that will be used when installing plugins.
 	install = { colorscheme = { "habamax" } },
 	-- automatically check for plugin updates -- false --
-	checker = { enabled = false },
+	-- sprawdza aktualizacje w tle
+	checker = { enabled = true,
+	notify = true },
+	ui = {
+    show_startup = false, -- nie pokazuj g¿ównego okna przy ka¿dym starcie
+  },
 })
 
 -- Pro Tip dla Seniora: Jak wymusiÄ‡ UI przy pierwszym starcie?

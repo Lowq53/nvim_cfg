@@ -1,4 +1,7 @@
 -- C:/Users/LOWq_53/AppData/Local/nvim_cfg/nvim_dev/lua/config/pwsh.lua
+-- --- @brief Konfiguracja powłoki PowerShell oraz środowiska Windows dla Neovim.
+--- @details Skrypt dba o poprawne kodowanie (UTF-8), ustawia pwsh/powershell jako domyślny shell
+--- oraz naprawia błędy zapisu plików wtyczki Mason na systemie Windows.
 
 -- Ustawienie opcji dla poprawnego działania shella w Neovim
 vim.opt.clipboard = "unnamedplus"
@@ -13,6 +16,7 @@ if jit.os == "Windows" then
     }
 
     for _, path in ipairs(paths_to_add) do
+        -- Sprawdzenie (case-insensitive), czy ścieżka jest już obecna w PATH
         if not string.find(vim.env.PATH:lower(), path:lower(), 1, true) then
             vim.env.PATH = path .. ";" .. vim.env.PATH
         end
@@ -35,7 +39,9 @@ if jit.os == "Windows" then
         vim.opt.shell = "cmd.exe"  -- minimal fallback
     end
 
-    -- Mason i Filetype fix
+    --- @section Autocommands
+    --- Fix dla wtyczki Mason: wymuszenie kodowania UTF-8 bez BOM (Byte Order Mark).
+    --- Rozwiązuje problemy z instalacją serwerów LSP na Windowsie.
     vim.api.nvim_create_autocmd("FileType", {
         pattern = "mason",
         callback = function()

@@ -1,7 +1,7 @@
 -- lua/plugins/lualine.lua
 return {
 	"nvim-lualine/lualine.nvim",
-	enabled = false,
+	enabled = true,
 	event = "VeryLazy",
 	dependencies = {
 		"nvim-tree/nvim-web-devicons", -- dla ikon w statusline

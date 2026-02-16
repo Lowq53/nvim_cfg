@@ -17,7 +17,7 @@ require("config.lazy")
 --require("config.terminal")
 
 require("config.pwsh")
-
+require("config.ui")
 -- vim.g.clipboard = {
 --   name = "windows-clipboard",
 --   copy = {
