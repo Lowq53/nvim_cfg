@@ -20,4 +20,4 @@ return {
       { "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Fzf Grep" },
     },
   },
-}
+  }

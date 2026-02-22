@@ -55,7 +55,8 @@ return {
 
 
 
-
+        { ".c", tb("pickers" ), desc="TelescopPickers" },
+        { ".r", tb("resume" ), desc="TelescopPickers" },
         { "<leader>ss", tb("builtin"), desc = "Telescope pickers" },
 				{ "sg", tb("live_grep"), desc = "[S]earch by [G]rep" },
 				{ "so.", tb("oldfiles"), desc = "[S]earch [O]ld files" },

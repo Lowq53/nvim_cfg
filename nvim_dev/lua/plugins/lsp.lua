@@ -84,10 +84,19 @@ return {
 					--codelens (akcje w kodzie)
 					vim.lsp.codelens.refresh() -- od¿wie¿
 					-- w autocmd:
-					vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold" }, { -- Usun¿¿em InsertLeave
+					vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold" }, {
 						callback = function()
-							-- Sprawd¿, czy klient LSP w ogóle obs¿uguje codelens, ¿eby nie sypa¿ b¿¿dami
+							-- BEZPIECZNIK: Nie rób nic, je¿li to terminal lub specjalne okno
+							if vim.bo.buftype ~= "" then
+								return
+							end
+
+							-- Sprawd¿, czy klient LSP obs¿uguje codelens
 							local clients = vim.lsp.get_active_clients({ bufnr = 0 })
+							if #clients == 0 then
+								return
+							end -- Szybkie wyj¿cie, je¿li brak LSP
+
 							for _, client in ipairs(clients) do
 								if client.supports_method("textDocument/codeLens") then
 									vim.lsp.codelens.refresh()
@@ -245,77 +254,31 @@ return {
 		"stevearc/conform.nvim",
 		event = "BufWritePre",
 		opts = {
-			-- Formattery dla ka¿dego j¿zyka
+			-- 1. Definicja silników formatowania
 			formatters_by_ft = {
-				-- ===== LUA =====
-				-- Narz¿dzie: stylua (zainstaluj: mason lub cargo install stylua)
 				lua = { "stylua" },
-
-				-- ===== PYTHON =====
-				-- Narz¿dzia: isort (importy) + black (kod)
-				-- Zainstaluj: pip install black isort LUB przez mason
-				-- Kolejno¿¿ MA znaczenie: najpierw isort, potem black
 				python = { "isort", "black" },
-
-				-- ===== WEB (JS/TS/HTML/CSS) =====
-				-- Narz¿dzie: prettier (zainstaluj: mason lub npm install -g prettier)
-				-- Obs¿uguje wszystkie j¿zyki webowe
 				javascript = { "prettier" },
 				typescript = { "prettier" },
-				javascriptreact = { "prettier" },
-				typescriptreact = { "prettier" },
 				html = { "prettier" },
 				css = { "prettier" },
-				scss = { "prettier" },
 				json = { "prettier" },
-				yaml = { "prettier" },
-				markdown = { "prettier" },
-
-				-- ===== BASH =====
-				-- Narz¿dzie: shfmt (zainstaluj: mason lub go install)
 				sh = { "shfmt" },
 				bash = { "shfmt" },
-				rust = { "ast-grep" },
-
-				-- ===== POWERSHELL =====
-				-- Formatter wbudowany w powershell_es LSP
-				-- Nie trzeba osobnego formattera
-				-- ===== RRUST =====
+				rust = { "rustfmt" }, -- Zmieniono na standardowy rustfmt
+				-- POWERSHELL
+				pwsh = { "powershell_es" },
+				ps1 = { "powershell_es" },
 			},
 
-			-- Konfiguracja konkretnych formatterów (opcjonalne)
-			formatters = {
-				-- Przyk¿ad: prettier z custom opcjami
-				prettier = {
-					prepend_args = {
-						"--tab-width=2",
-						"--use-tabs=false",
-					},
-				},
-				-- Przyk¿ad: black z maksymaln¿ d¿ugo¿ci¿ linii
-				black = {
-					prepend_args = { "--line-length=88" },
-				},
-			},
-		},
-		keys = {
-			-- Manual format: <leader>f
-			{
-				"<leader>fb",
-				function()
-					require("conform").format({ async = true, lsp_format = "fallback" })
-				end,
-				mode = "",
-				desc = "Format buffer",
-			},
-			-- AUTO-FORMATOWANIE przy zapisie
+			-- 2. LOGIKA AUTO-FORMATOWANIA (Musi by¿ w opts!)
 			format_on_save = function(bufnr)
-				-- 1. Sprawd¿ czy formatowanie nie jest wy¿¿czone globalnie lub dla bufora
+				-- Wy¿¿cz dla konkretnych plików lub je¿li flaga jest ustawiona
 				if vim.g.disable_autoformat or vim.b[bufnr].disable_autoformat then
 					return
 				end
 
-				-- 2. Wy¿¿cz dla specjalnych buforów
+				-- Wy¿¿cz dla specjalnych typów plików (np. Oil lub Terminal)
 				local ft = vim.bo[bufnr].filetype
 				if ft == "oil" or ft == "terminal" then
 					return
@@ -323,10 +286,31 @@ return {
 
 				return {
 					timeout_ms = 2000,
-					lsp_format = "fallback",
+					lsp_fallback = true,
 					async = false,
 				}
 			end,
+
+			-- 3. Konfiguracja konkretnych narz¿dzi
+			formatters = {
+				prettier = {
+					prepend_args = { "--tab-width", "2", "--use-tabs", "false" },
+				},
+				black = {
+					prepend_args = { "--line-length", "88" },
+				},
+			},
+		},
+		-- 4. SKRÓTY KLAWISZOWE
+		keys = {
+			{
+				"<leader>fb",
+				function()
+					require("conform").format({ async = true, lsp_fallback = true })
+				end,
+				mode = "",
+				desc = "Format buffer",
+			},
 		},
 	},
 

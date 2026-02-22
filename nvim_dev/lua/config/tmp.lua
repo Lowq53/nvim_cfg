@@ -52,7 +52,7 @@ vim.api.nvim_create_user_command("PH", M.open_plugin_help, {
 -- 1. Wywołanie komendy: :PHelp oil.nvim
 -- 2. Funkcja sprawdza M.plugin_help_map["oil.nvim"] -> wynik: "oil.txt"
 -- 3. Wykonuje: vim.cmd("help oil.txt")
-
+nvim_dev
 vim.api.nvim_create_user_command("PHelp", M.open_plugin_help, {
 	nargs = 1,
 	complete = function()

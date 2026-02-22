@@ -70,7 +70,6 @@ return {
 				section_separators = { left = "", right = "" },
 				disabled_filetypes = { statusline = { "dashboard", "alpha" } },
 			},
-
 			sections = {
 				-- LEWA: kontekst okna
 				lualine_a = {

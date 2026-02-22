@@ -1,29 +1,49 @@
 return {
 	{
 		"yetone/avante.nvim",
-		enabled = false,
+		enabled = true,
 		event = "VeryLazy",
+		cmd = { "AvanteAsk", "AvanteEdit", "AvanteToggle" },
 		lazy = false,
 		version = false,
 		opts = {
-			provider = "openrouter", -- DOMYŚLNY (darmowy)
+			provider = "gemini",
+			providers = {
 
-			-- Provider 1: OpenRouter (darmowy)
-			openrouter = {
-				endpoint = "https://openrouter.ai/api/v1",
-				model = "deepseek/deepseek-r1:free",
-				api_key_name = "OPENROUTER_API_KEY",
+				-- ✅ GEMINI (działa natywnie w avante)
+				gemini = {
+					model = "gemini-1.5-flash",
+					api_key_name = "MAIN_GEMINI_API_KEY",
+					extra_request_body = {
+						max_tokens = 4096,
+						temperature = 0,
+					},
+				},
+
+				-- ✅ OPENROUTER (MUSI dziedziczyć z openai)
+				openrouter = {
+					__inherited_from = "openai",
+
+					endpoint = "https://openrouter.ai/api/v1",
+					model = "deepseek/deepseek-r1:free",
+					api_key_name = "OPENROUTER_API_KEY",
+				},
+
+				-- ✅ CLAUDE (MUSI dziedziczyć z anthropic)
+				claude = {
+					__inherited_from = "anthropic",
+
+					endpoint = "https://api.anthropic.com",
+					model = "claude-sonnet-4-20250514",
+					api_key_name = "ANTHROPIC_API_KEY",
+
+					extra_request_body = {
+						max_tokens = 4096,
+						temperature = 0,
+					},
+				},
 			},
-
-			-- Provider 2: Claude (płatny)
-			claude = {
-				endpoint = "https://api.anthropic.com",
-				model = "claude-sonnet-4-20250514",
-				temperature = 0,
-				max_tokens = 4096,
-			},
-
-			auto_suggestions_provider = "openrouter", -- ZMIEŃ na openrouter
+			auto_suggestions_provider = "gemini",
 			behaviour = {
 				auto_suggestions = false,
 				auto_set_highlight_group = true,

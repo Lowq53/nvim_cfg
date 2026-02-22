@@ -8,3 +8,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     end
   end,
 })
+
+-- auto wyrównanie po owtarciu okna 
+vim.api.nvim_create_autocmd("WinNew", {
+    callback = function()
+        vim.cmd("wincmd =")
+    end,
+})

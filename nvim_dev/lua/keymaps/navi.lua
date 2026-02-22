@@ -63,14 +63,14 @@ vks("c", "<C-l>", "<Right>")
 
 -- Szybkie przełączanie tabów wielkimi literami (częsty wzorzec seniora)
 -- ────────────────────────────────────────────────────────────────────────
-vks("n", "<A-p>", ":tabprevious<CR>", { desc = "Poprzedni tab" })
+vks("n", "<A-p>", ":tabprevious<CR>", { desc = "Poprzedni tab", silent = true })
 vks("n", "<leader>tw", ":tabclose<CR>", { desc = "Closing tab"})
 vks('n', '<leader>td', ':tabedit % | vsplit #<CR>', { desc = 'Duplikuj 2 bufory do nowej karty' })
-vks("n", "<A-n>", ":tabnext<CR>", { desc = "Następny tab" })
+vks("n", "<A-n>", ":tabnext<CR>", { desc = "Następny tab", silent = true })
 
 -- Opcjonalnie: szybkie tworzenie i zamykanie tabów
 -- ────────────────────────────────────────────────────────────────────────
-vks("n", "<leader>tn", ":tabnew<CR>", { desc = "Nowy tab" })
+vks("n", "<leader>tn", ":tabnew<CR>", { desc = "Nowy tab", silent = true })
 vks("n", "<leader>tc", ":tabclose<CR>", { desc = "Zamknij tab" })
 vks("n", "<leader>0", ":tablast<CR>", { desc = "Skocz do ostatniego taba", silent = true })
 
