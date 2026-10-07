@@ -1,0 +1,27 @@
+# OCENA configu "neov" (bundle bez plugins, bo nie było "review"). Najpierw BŁĘDY, które realnie psują start:
+
+# 1) config.settings zwraca FUNKCJĘ (return function() ... end), a init.lua robi require("config.settings") BEZ wywołania
+#    -> ustawienia (mouse, tabstop, undofile, smartcase, splitright...) NIGDY się nie wykonują.
+#    Fix: require("config.settings")()     (tak samo dla config.ui2, jeśli też zwraca funkcję)
+# 2) config.ui2 NIE jest w bundlu -> prawdopodobnie nie istnieje lua/config/ui2.lua (bundler wypisuje wtedy "EXTERNAL: config.ui2").
+#    require("config.ui2") bez pcall = błąd przy starcie. Sprawdź:  Test-Path lua\config\ui2.lua
+#    Fix na czas szukania:  pcall(require, "config.ui2")
+# 3) _G.set_transparency() i _G.set_custom_syntax_colors(): globalne funkcje, nigdzie w bundlu niezdefiniowane.
+#    Jeśli ich nie definiuje plugin/ui2 -> "attempt to call a nil value". Fix: if _G.set_transparency then _G.set_transparency() end
+# 4) Literówka w lazy: install = { colorscheme = { "tolkyonight" } }  ->  "tokyonight"
+# 5) vim.cmd.colorscheme("tokyonight") po lazy.setup: przy pierwszym starcie (plugin jeszcze nieinstalowany) rzuci błąd.
+#    Fix: pcall(vim.cmd.colorscheme, "tokyonight")  (albo ustaw w spec pluginu z lazy=false, priority=1000)
+# 6) vim.env.VIMRUNTIME = 'C:\\dev\\nvimdev\\nvim_0.11.5\\...' w init.lua: za późno, nvim ustawia runtime ZANIM wczyta init.lua,
+#    więc to nie zmienia ładowanego runtime (tylko env dla podprocesów). Do tego twardo wpisana wersja 0.11.5 i ścieżka Windows
+#    (na Linuxie nie istnieje). Ustawiaj to w środowisku/aliasie startowym, nie w init.lua.
+
+# DO PORZĄDKU (nie psuje):
+# - duplikaty: termguicolors/background w lazy.lua i settings; number/relativenumber w init i settings. Zostaw w settings (po naprawie pkt 1).
+# - rocks = { enabled = true, hererocks = true }: hererocks na Windows chce Pythona i kompilatora, spowalnia. Jeśli żaden plugin nie używa luarocks -> enabled = false.
+# - change_detection: enabled = false, notify = true (notify bez sensu przy wyłączonym). checker = { enabled = true } = sprawdzanie updatów w sieci przy starcie.
+# - defer_fn otwierający okno Lazy przy każdym starcie bez pliku (argc()==0): wygodne albo irytujące, Twoja decyzja.
+# - init.lua: stare komentarze o LazyVim i ~/.config; mieszanka tabów i spacji w lazy.lua vs settings.lua.
+
+# DOBRE: leader ustawiony PRZED lazy, bootstrap lazy z obsługą błędu, rozdzielenie settings/lazy, smartcase, undofile, swapfile off, skrót Ctrl+C w oknie Lazy.
+
+# Pytanie: odpalić bundle z "review" na tym configu (nvim_cfg\neov) i wkleić out.lua? Wtedy ocenię też pluginy i sprawdzę, kto definiuje set_transparency.

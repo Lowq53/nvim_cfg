@@ -1,10 +1,10 @@
-nvim_dev/lazy-lock.json
-nvim_neo/
-neov/
-nvim/
-nvim-lowq53/
-nvim_test/
+*-data/
 
+# lazy.nvim lockfile
 lazy-lock.json
 
-*-data/
+# sekrety (hasła, klucze API)
+.env
+.env.*
+*.env
+!.env.example
