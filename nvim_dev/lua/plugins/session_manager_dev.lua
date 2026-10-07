@@ -18,6 +18,7 @@ return {
 		config = function()
 			require("session_manager").setup({
 				base_dir = vim.fs.normalize(vim.fn.stdpath("data") .. "/sessions"),
+				help_mode = "float",   -- "notify" | "float" | "preview"
 			})
 		end,
 
@@ -46,6 +47,7 @@ return {
 		-- :Persisted select        - Picker do wyboru sesji (wbudowany)
 		-- :Persisted delete        - Usuń sesję z listy
 		-- :Persisted delete_current- Usuń bieżącą sesję
+		--
 		-- :Persisted toggle        - Włącz/wyłącz nagrywanie sesji
 		-- :Persisted start         - Rozpocznij nagrywanie (jeśli autosave = false)
 		-- :Persisted stop          - Zatrzymaj nagrywanie
@@ -58,7 +60,7 @@ return {
 		-- Windows: ~/AppData/Local/nvim-data/persisted/
 		--
 		"olimorris/persisted.nvim",
-		version = "2.1.1",
+		version = "1.1.1",
 		lazy = false,
 
 

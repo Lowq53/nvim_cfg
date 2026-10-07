@@ -2,7 +2,6 @@
 -- ═══════════════════════════════════════════════════════════════════════════
 -- ► CLIPBOARD OPERATIONS (VSCode-like)
 -- ═══════════════════════════════════════════════════════════════════════════
-
 --- @Note Neovim Power User: Copy & Motions
 --- @description Przewodnik po zaawansowanym kopiowaniu, rejestrach i ruchach (motions).
 ---
@@ -28,6 +27,20 @@
 --- @usage Wklej do init.lua dla wygody:
 -- vim.opt.clipboard = "unnamedplus" -- Używa schowka systemowego dla każdego 'y'
 -- vim.keymap.set('v', '<C-c>', '"+y') -- Tradycyjne Ctrl+C w trybie wizualnym
+
+-- auto-copy przy puszczeniu myszy
+vim.opt.mouse = "a"
+vim.opt.clipboard = "unnamedplus"
+
+-- auto copy po puszczeniu lewego przycisku myszy
+vim.keymap.set({ "n", "v", "i" }, "<LeftRelease>", function()
+  -- jeśli coś zaznaczone w visual
+  if vim.fn.mode():match("[vV]") then
+    vim.cmd('normal! "+y')
+    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 150 })
+  end
+end)
+
 
 vim.keymap.set({ "n", "v" }, "<C-c>", '"+y', { noremap = true, silent = true, desc = "Copy to clipboard" })
 vim.keymap.set({ "n", "v" }, "<leader>y", '"+y', { noremap = true, silent = true, desc = "Copy to clipboard" })

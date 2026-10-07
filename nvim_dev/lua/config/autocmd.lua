@@ -8,3 +8,10 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     end
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "ps1",
+  callback = function()
+    vim.bo.commentstring = "# %s"
+  end,
+})
