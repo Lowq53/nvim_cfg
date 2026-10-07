@@ -15,3 +15,9 @@ vim.api.nvim_create_autocmd("WinNew", {
         vim.cmd("wincmd =")
     end,
 })
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "ps1",
+  callback = function()
+    vim.bo.commentstring = "# %s"
+  end,
+})

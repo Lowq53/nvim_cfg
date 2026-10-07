@@ -64,20 +64,15 @@ vks("c", "<C-l>", "<Right>")
 -- Szybkie przełączanie tabów wielkimi literami (częsty wzorzec seniora)
 -- ────────────────────────────────────────────────────────────────────────
 vks("n", "<A-p>", ":tabprevious<CR>", { desc = "Poprzedni tab", silent = true })
-vks("n", "<leader>tw", ":tabclose<CR>", { desc = "Closing tab"})
+vks("n", "<leader>tw", ":tabclose<CR>", { desc = "Closing tab", silent = true })
 vks('n', '<leader>td', ':tabedit % | vsplit #<CR>', { desc = 'Duplikuj 2 bufory do nowej karty' })
 vks("n", "<A-n>", ":tabnext<CR>", { desc = "Następny tab", silent = true })
 
 -- Opcjonalnie: szybkie tworzenie i zamykanie tabów
 -- ────────────────────────────────────────────────────────────────────────
 vks("n", "<leader>tn", ":tabnew<CR>", { desc = "Nowy tab", silent = true })
-vks("n", "<leader>tc", ":tabclose<CR>", { desc = "Zamknij tab" })
+-- vks("n", "<leader>tc", ":tabclose<CR>", { desc = "Zamknij tab", silent = true })
 vks("n", "<leader>0", ":tablast<CR>", { desc = "Skocz do ostatniego taba", silent = true })
-
--- Jeśli wolisz zostać przy gt/gT, ale chcesz skróty numeryczne (np. lider + 1):
--- ────────────────────────────────────────────────────────────────────────
--- local wk = require("which-key")
---
 -- -- Pętla: ustawia skróty i ukrywa je w menu Which-Key
 -- for i = 1, 9 do
 --     -- Ustawia fizyczny skrót: Space + cyfra
