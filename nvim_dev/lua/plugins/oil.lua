@@ -14,10 +14,14 @@ return {
 		-- it need to be here to open oil from any buffor
 		{ "-", "<cmd>Oil<cr>", desc = "Open parent directory" },
 		-- Mapowanie otwierające Oil w oknie pływającym
-    { "<leader>fo", function()
-			require("oil").toggle_float()
-		end,  desc = "Oil: Toggle Floating" },
-    },
+		{
+			"<leader>fo",
+			function()
+				require("oil").toggle_float()
+			end,
+			desc = "Oil: Toggle Floating",
+		},
+	},
 	config = function()
 		require("oil").setup({
 			default_file_explorer = true,
@@ -71,9 +75,16 @@ return {
 				["<ESC>"] = "actions.close", -- Zamykanie pod ESC
 				["<M-->"] = "actions.cd", -- Mapowanie Alt + - dla zmiany PWD
 
-				-- KOPIOWANIE ŚCIEŻKI (\pa)
+				-- moving like vim and Yazi
+				-- Wejście do pliku/folderu
+				["l"] = "actions.select",
+
+				-- Cofnięcie do katalogu nadrzędnego
+				["h"] = "actions.parent",
+
 				-- Tworzymy własną funkcję w Lua dla Oil
 				["yp"] = {
+					-- KOPIOWANIE ŚCIEŻKI (\pa)
 					callback = function()
 						local oil = require("oil")
 						local entry = oil.get_cursor_entry()

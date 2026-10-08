@@ -102,6 +102,8 @@ return {
 		},
 		build = "make",
 		dependencies = {
+			"ColinKennedy/mega.logging", -- NOWE
+			"ColinKennedy/mega.cmdparse", -- NOWE
 			"nvim-treesitter/nvim-treesitter",
 			"stevearc/dressing.nvim",
 			"nvim-lua/plenary.nvim",
