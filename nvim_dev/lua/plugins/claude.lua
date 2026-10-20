@@ -12,7 +12,7 @@ return {
 
 				-- ✅ GEMINI (działa natywnie w avante)
 				gemini = {
-					model = "gemini-1.5-flash",
+					model = "gemini-3-flash-preview",
 					api_key_name = "MAIN_GEMINI_API_KEY",
 					extra_request_body = {
 						max_tokens = 4096,

@@ -29,6 +29,7 @@ opt.copyindent = true -- Kopiuj strukturę wcięć przy nowej linii
 -- 2. Estetyka zawijania (Protip: dodanie symbolu na początku zawiniętej linii)
 opt.showbreak = "↪ " -- Znak wyświetlany na vzawiniętej części wiersza
 
+opt.equalalways = false -- wylacza auto equal
 -- ===== CORE OPTIONS =====
 -- ═══════════════════════════════════════════════════════════════════════════
 
@@ -83,12 +84,10 @@ vim.opt.hlsearch = true
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = "\\"
 
-
 -- ===== Tresitter =====
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevelstart = 99
-
 
 -- Wbudowane pluginy ładujemy przez packadd, nie przez managera paczek
 vim.cmd("packadd cfilter")

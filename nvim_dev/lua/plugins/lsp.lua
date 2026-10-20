@@ -99,7 +99,7 @@ return {
 
 							for _, client in ipairs(clients) do
 								if client.supports_method("textDocument/codeLens") then
-									vim.lsp.codelens.refresh()
+									--vim.lsp.codelens.refresh()
 									break
 								end
 							end
