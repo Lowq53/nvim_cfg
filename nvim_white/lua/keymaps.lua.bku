@@ -1,0 +1,399 @@
+
+-- Simulated second leader with comma
+vim.keymap.set("n", ",f", function()
+  print("Simulated leader with ','")
+end, { desc = "Simulated comma leader" })
+
+-- ► Skrót do przeładowania keymaps bez restartu
+--
+vim.keymap.set("n", "<leader>r", function()
+  local file = vim.fn.stdpath("config") .. "/lua/keymaps.lua"
+  dofile(file)
+  vim.notify("Keymaps :) reloaded!", vim.log.levels.INFO)
+end, { desc = "Reload :) keymaps.lua" })
+
+-- kolejny shortcut do scierzek
+
+local Path = require("plenary.path")
+local scan = require("plenary.scandir")
+
+vim.keymap.set("n", "<leader>fdd", function()
+  local directories = {
+    "C:/code_data/",
+    "E:/Tools/BPY_Scripts/",
+    vim.fn.expand("~") .. "/projects/",
+  }
+
+  local files = {}
+
+  -- Skanujemy każdy katalog i dodajemy pliki do tablicy
+  for _, dir in ipairs(directories) do
+    local scanned = scan.scan_dir(dir, { hidden = true, depth = 5 })
+    vim.list_extend(files, scanned)
+  end
+
+  pickers.new({}, {
+    prompt_title = "Search in multiple dirs",
+    finder = finders.new_table({
+      results = files,
+    }),
+    sorter = conf.file_sorter({}),
+    attach_mappings = function(prompt_bufnr, map)
+      actions.select_default:replace(function()
+        local selection = action_state.get_selected_entry()
+        actions.close(prompt_bufnr)
+        vim.cmd("edit " .. selection[1])
+      end)
+      return true
+    end,
+  })
+      :find()
+end, { desc = "Multi directory search" })
+
+--################################################
+
+-- require("gitsigns").setup({
+-- 	on_attach = function(bufnr)
+-- 		local gs = package.loaded.gitsigns
+
+-- 		local function map(mode, l, r, opts)
+-- 			opts = opts or {}
+-- 			opts.buffer = bufnr
+-- 			vim.keymap.set(mode, l, r, opts)
+-- 		end
+
+-- 		-- mapowania na bufrowe komendy git
+-- 		map("n", "]c", function()
+-- 			if vim.wo.diff then
+-- 				return "]c"
+-- 			end
+-- 			vim.schedule(function()
+-- 				gs.next_hunk()
+-- 			end)
+-- 			return "<Ignore>"
+-- 		end, { expr = true })
+
+-- 		map("n", "[c", function()
+-- 			if vim.wo.diff then
+-- 				return "[c"
+-- 			end
+-- 			vim.schedule(function()
+-- 				gs.prev_hunk()
+-- 			end)
+-- 			return "<Ignore>"
+-- 		end, { expr = true })
+
+-- 		-- inne przydatne mapy
+-- 		map({ "n", "v" }, "<leader>hs", ":Gitsigns stage_hunk<CR>")
+-- 		map({ "n", "v" }, "<leader>hr", ":Gitsigns reset_hunk<CR>")
+-- 		map("n", "<leader>hb", gs.toggle_current_line_blame)
+-- 	end,
+-- })
+
+local vim = vim
+-- pigeon shortuts - Primegen
+-- łaczenie pozwala zeby kursor był w jednym miejscu nie dodaje go na koncu lini
+--
+--
+vim.keymap.set("n", "J", "mzJ`z")
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+
+
+vim.keymap.set("n", "<leader>s p", ":%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>",
+  { noremap = true, silent = false })
+
+
+
+
+
+-- Przenoszenie linii w górę/dół w trybie Normal
+vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { noremap = true, silent = true })
+vim.keymap.set("n", "<A-Up>", ":m .-2<CR>==", { noremap = true, silent = true })
+
+vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { noremap = true, silent = true })
+vim.keymap.set("n", "<A-Down>", ":m .+1<CR>==", { noremap = true, silent = true })
+
+-- Przenoszenie w trybie Visual
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set("v", "<A-up>", ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
+
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set("v", "<A-down>", ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+
+-- Przenoszenie linii w górę/dół (jak podałeś)
+vim.keymap.set("n", "<A-j>", ":m .+1<CR>==", { noremap = true, silent = true })
+vim.keymap.set("n", "<A-k>", ":m .-2<CR>==", { noremap = true, silent = true })
+
+vim.keymap.set("v", "<A-j>", ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set("v", "<A-k>", ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
+
+-- Podstawowe skróty jak w VSCode:
+
+-- Ctrl+c kopiuje do clipboarda (VSCode copy)
+vim.keymap.set({ "n", "v" }, "<C-c>", '"+y', { noremap = true, silent = true })
+vim.keymap.set({ "n", "v" }, "<leader>y", '"+y', { noremap = true, silent = true })
+
+-- Wklej z systemowego schowka
+vim.keymap.set("n", "<C-v>", '"+p', { noremap = true, silent = true }) -- Ctrl+v wkleja
+
+-- Zaznacz wszystko (Select All)
+vim.keymap.set("n", "<C-a>", "ggVG", { noremap = true, silent = true })
+
+-- Zapisz plik (Save)
+vim.keymap.set("n", "<C-s>", ":w<CR>", { noremap = true, silent = true })
+
+-- Zamknij bufor/zakładkę (Close tab)
+vim.keymap.set("n", "<C-ww>", ":bd<CR>", { noremap = true, silent = true })
+
+-- Cofnij (Undo)
+-- vim.keymap.set("n", "<C-z>", "u", { noremap = true, silent = true })
+
+-- Ponów (Redo)
+vim.keymap.set("n", "<C-y>", "<C-yzz>", { noremap = true, silent = true })
+
+-- Przełącz między buforami (tabs) jak w VSCode Ctrl+Tab / Ctrl+Shift+Tab
+vim.keymap.set("n", "<C-Tab>", ":bnext<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<C-S-Tab>", ":bprev<CR>", { noremap = true, silent = true })
+
+-- Otwórz wyszukiwanie (Find)
+vim.keymap.set("n", "<C-f>", "/", { noremap = true, silent = false })
+
+-- vim.keymap.set("n", "<A-q>", ":wq!<CR>", { noremap = true, silent = true })
+vim.keymap.set("n", "<A-q>", function()
+  if vim.bo.buftype == "terminal" then
+    vim.cmd("bw!")
+  else
+    vim.cmd("wq!") -- zamyka terminal
+    -- vim.cmd("wq!") -- normal bufor
+    vim.keymap.set("n", "<A-q>", ":wq!<CR>", { noremap = true, silent = true })
+  end
+end, { noremap = true, silent = true })
+
+-- Przełączanie do poprzedniego bufora
+vim.keymap.set("n", "<C-PageUp>", ":bprevious<CR>", { noremap = true, silent = true })
+
+-- Przełączanie do następnego bufora
+vim.keymap.set("n", "<C-PageDown>", ":bnext<CR>", { noremap = true, silent = true })
+
+vim.keymap.set("n", "<F5>", ":pwd<CR>", { desc = "Lista plików w bieżącym katalogu" })
+vim.keymap.set("n", "<F6>", ":!ls<CR>", { desc = "Lista plików w bieżącym katalogu" })
+
+-- ~/.config/nvim/lua/keymaps.lua
+
+-- Upewnij się, że Twój leader jest zdefiniowany w settings.lua, np.W=
+
+-- Mapowania klawiszy dla nvim-tree.lua
+vim.keymap.set("n", "<leader>y", ":NvimTreeToggle<CR>", { noremap = true, silent = true, desc = "Toggle NvimTree" })
+vim.keymap.set(
+  "n",
+  "<leader>yf",
+  ":NvimTreeFindFile<CR>",
+  { noremap = true, silent = true, desc = "Find current file in NvimTree" }
+)
+vim.keymap.set("n", "<leader>yr", ":NvimTreeRefresh<CR>", { noremap = true, silent = true, desc = "Refresh NvimTree" })
+
+vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", { desc = "Toggle NvimTree" })
+-- Możesz też użyć funkcji Lua do mapowania, co jest bardziej idiomatyczne dla Neovima:
+-- local nvimtree = require('nvim-tree.api') -- Załaduj API nvim-tree dla funkcji
+-- vim.keymap.set('n', '<leader>n', function()
+--   nvimtree.tree.toggle()
+-- end, { noremap = true, silent = true, desc = "Toggle NvimTree (Lua)" })
+--
+-- vim.keymap.set('n', '<leader>nf', function()
+--   nvimtree.tree.find_file()
+-- end, { noremap = true, silent = true, desc = "Find current file (Lua)" })W=
+--vim.keymap.set("n", "<leader>lf", vim.lsp.buf.format, { desc = "Formatuj kod" })
+vim.keymap.set("n", "<leader>lr", vim.lsp.buf.rename, { desc = "Zmień nazwę" })
+vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, { desc = "Akcje kodu" })
+
+-- Lazy.nvim
+vim.keymap.set("n", "<leader>lc", "<cmd>Lazy<cr>", { desc = "Otwórz Lazy" })
+vim.keymap.set("n", "<leader>lu", "<cmd>Lazy update<cr>", { desc = "Aktualizuj pluginy" })
+
+-- LSP i lintowanie
+vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Diagnostyka" })
+vim.keymap.set("n", "<leader>ln", vim.diagnostic.goto_next, { desc = "Następny błąd" })
+vim.keymap.set("n", "<leader>lp", vim.diagnostic.goto_prev, { desc = "Poprzedni błąd" })
+
+-- Logi
+vim.keymap.set("n", "<leader>lL", "<cmd>Lazy log<cr>", { desc = "Logi Lazy" })
+vim.keymap.set("n", "<leader>lD", "<cmd>Lazy debug<cr>", { desc = "Debug Lazy" })
+
+-- F7: Otwórz nową linię poniżej (tak jak <Leader>o, jeśli chcesz powielić)
+-- vim.keymap.set("n", "<C-F12>", "o<Esc>", { noremap = true, silent = true, desc = "Otwórz nową linię poniżej" })
+
+vim.keymap.set("n", "<F7>", ':exec "cd %:h"<CR>',
+  { noremap = true, silent = true, desc = "Zmień katalog na katalog bieżącego pliku" })
+vim.keymap.set("n", "<F8>", ":cd ..<CR>", { noremap = true, silent = true, desc = "Zmień katalog na nadrzędny" })
+-- Mapowanie klawisza F9 do przeładowania konfiguracji
+-- =======
+---- Mapowanie klawiszy do funkcji przeładowania
+
+local function reload_config()
+  -- vim.keymap.set("n", "<F9>", function()
+  -- vim.keymap.set('n', '<leader>R', function()
+  -- Zapisz wszystkie zmienione pliki
+
+  --  -- Wyczyść załadowane moduły z folderu lua/ mpt wprlomg
+  --  for name, _ in pairs(package.loaded) do
+  --    if name:match("^user") then -- tylko moduły z twojej konfiguracji
+  --      package.loaded[name] = nil
+  --    end
+  --  end
+  -- Mapowanie klawisza (np. <leader>R) do przeładowania
+  -- 1. Zapisz wszystkie bufory (opcjonalne)
+  vim.cmd("wall")
+
+  -- 2. Wyczyść cache Lazy i przeładuj pluginy
+  require("lazy.core.cache").reset()
+  -- require("lazy").setup()
+
+  -- 3. Przeładuj moduły konfiguracyjne (np. keymaps.lua, settings.lua)
+  for name, _ in pairs(package.loaded) do
+    if name:match("^user%.") or name:match("^core%.") then -- Dostosuj do swojej struktury
+      package.loaded[name] = nil
+    end
+  end
+
+  -- 4. Przeładuj init.lua
+  vim.cmd("source $MYVIMRC")
+
+  -- 5. Zaktualizuj which-key (kluczowy krok!)
+  if pcall(require, "which-key") then
+    require("which-key").register(require("which-key").plugins) -- Wymuś aktualizację
+  end
+  vim.notify('Reload Neovim config', vim.log.levels.INFO)
+  -- end, { desc = '[R]eload config' })
+  -- =======
+  -- Załaduj ponownie init.lua lub główny plik
+  --  dofile(vim.fn.stdpath("config") .. "/init.lua")
+  -- Informacja dla użytkownika
+  --  vim.notify("🔄 Konfiguracja przeładowana!", vim.log.levels.INFO)
+end
+
+-- vim.keymap.set('n', '<leader>R', reload_config, { desc = '[R]eload config' })
+vim.keymap.set('n', '<F9>', reload_config, { desc = 'Reload config (F9)' })
+
+vim.keymap.set("n", "su", ":windo diffthis<CR>", { desc = "Enable diff" })
+vim.keymap.set("n", "sx", ":windo diffoff<CR>", { desc = "Disable diff" })
+vim.keymap.set("n", "sn", "]c", { desc = "Next diff" })
+vim.keymap.set("n", "sp", "[c", { desc = "Previous diff" })
+vim.keymap.set("n", "st", ":diffput<CR>", { desc = "Diff put" })
+vim.keymap.set("n", "sg", ":diffget<CR>", { desc = "Diff geta" })
+
+--
+--
+vim.keymap.set("n", "<C-Up>", "<C-w>k", { desc = "Przejdź do okna górnego (Ctrl+↑)" })
+vim.keymap.set("n", "<C-Down>", "<C-w>j", { desc = "Przejdź do okna dolnego (Ctrl+↓)" })
+vim.keymap.set("n", "<C-Left>", "<C-w>h", { desc = "Przejdź do okna lewego (Ctrl+←)" })
+vim.keymap.set("n", "<C-Right>", "<C-w>l", { desc = "Przejdź do okna prawego (Ctrl+→)" })
+
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Przejdź do okna lewego (Ctrl+←)" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Przejdź do okna prawego (Ctrl+→)" })
+-- buffor, shortcuts, terminal
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true })
+vim.keymap.set('t', '<C-\\>', '<C-\\><C-n>', { noremap = true })
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { noremap = true })
+
+
+vim.keymap.set("n", "<leader>x", ":bd<CR>", { desc = "Usuń bieżący bufor" })
+
+vim.keymap.set("n", "<M-F1>", ":vsplit | terminal<CR>", { desc = "Executed Terminal" })
+vim.keymap.set("n", "<A-F2>", "<C-w>v", { desc = "Podziel okno wertykalnie (Alt+F1)" })
+vim.keymap.set("n", "<A-F3>", ":bn | !bd #<CR>", { desc = "Executed Terminal" })
+
+
+-- Leader lm - Wyświetl listę wszystkich markerów
+
+-- F12 - Wyświetl listę wszystkich markerów
+-- F11 - Wyświetl listę wszystkich rejestrów (z ich zawartością)
+vim.keymap.set("n", "<C-F12>", ":marks<CR>", { desc = "Show all marks" })
+vim.keymap.set("n", "<C-F11>", ":reg<CR>", { desc = "Show all registers" })
+
+vim.keymap.set("n", "<Leader>lm", ":marks<CR>", { desc = "Show all marks" })
+vim.keymap.set("n", "<Leader>lr", ":reg<CR>", { desc = "Show all registers" })
+
+-- LSP KEYMAPS
+vim.keymap.set("n", "<leader>ls", ":LspStop<CR>", { desc = "[L]SP [S]top (disable LSP for current buffer)" })
+vim.keymap.set("n", "<leader>lS", ":LspStart<CR>", { desc = "[L]SP [S]tart (enable LSP again)" })
+
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = "Go to definition" })
+vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { desc = "Go to declaration" })
+vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { desc = "Go to implementation" })
+vim.keymap.set('n', 'gr', vim.lsp.buf.references, { desc = "Find references" })
+
+
+
+
+local lsp_enabled = true -- Domyślnie włączony
+function ToggleLSP()
+  if lsp_enabled then
+    -- Wyłącz wszystkie aktywne LSP
+    vim.lsp.stop_client(vim.lsp.get_active_clients())
+    vim.notify("LSP wyłączony", vim.log.levels.WARN)
+  else
+    -- Włącz LSP dla aktualnego bufora (wymaga `nvim-lspconfig`)
+    vim.cmd('edit') -- Przeładuj bufor, aby uruchomić LSP
+    vim.notify("LSP włączony", vim.log.levels.INFO)
+  end
+  lsp_enabled = not lsp_enabled
+end
+
+-- Mapowanie klawisza (np. <leader>ll)
+vim.keymap.set('n', '<leader>ls', ToggleLSP, { desc = '[L]SP Toggle' })
+
+
+-- Plik: lua/user/open_url.lua
+-- Funkcja i mapowanie klawisza `ww` dla Kickstart.nvim
+--
+--
+--
+--
+--
+--
+
+-- 1. Definicja globalnej funkcji otwierającej zaznaczone lub pod kursorem URL
+-- Plik: lua/user/open_url.lua
+-- Funkcja i mapowanie klawisza `ww` dla Kickstart.nvim
+
+-- Globalna funkcja otwierająca zaznaczone słowo (tekst wewnątrz spacji) jako URL
+function _G.open_selected_as_url()
+  -- 1. Zapisz aktualny rejestr
+  local old_register = vim.fn.getreg('"')
+
+  -- 2. Skopiuj tekst pod kursorem (dla trybu normalnego) lub zaznaczony tekst (dla trybu visual)
+  if vim.fn.mode() == 'n' then
+    vim.cmd('normal! ya ') -- kopiuj całe "słowo" (w tym znaki specjalne jak /, :, itp)
+  else
+    -- vim.cmd('normal! gv"yy') -- kopiuj aktualny zaznaczony obszar
+  end
+
+  -- 3. Pobierz URL
+  local url = vim.fn.getreg('y')
+
+  -- 4. Przywróć oryginalny rejestr
+  vim.fn.setreg('"', old_register)
+
+  -- 5. Dodaj protokół jeśli brak
+  if not url:match('^%a+://') then
+    url = 'https://' .. url
+  end
+
+  -- 6. Otwórz URL
+  if vim.fn.has('win32') == 1 then
+    vim.fn.system('start "" "' .. url .. '"')
+  elseif vim.fn.has('unix') == 1 then
+    vim.fn.system('xdg-open "' .. url .. '" &')
+  else
+    vim.notify('Unsupported system', vim.log.levels.ERROR)
+    return
+  end
+
+  -- 7. Powiadomienie
+  vim.notify('Otwieram URL: ' .. url, vim.log.levels.INFO)
+end
+
+-- Mapowania
+vim.keymap.set('n', '<leader>w', '<cmd>lua open_selected_as_url()<CR>', { desc = 'Open URL under cursor' })
+vim.keymap.set('v', '<leader>w', '<cmd>lua open_selected_as_url()<CR>', { desc = 'Open selected URL' })
