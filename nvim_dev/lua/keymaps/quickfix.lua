@@ -102,4 +102,5 @@ cmd("Qp", function()
 	vim.cmd("cprev")
 end, { desc = "Quickfix: Prev item" })
 
+Q.setup()
 return Q

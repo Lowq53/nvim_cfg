@@ -24,6 +24,7 @@
 --   -- LEADER
 --   space, extra -> rozbić: to "worek na resztę", trzymaj puste/małe
 --                                                                    --
+require("keymaps.core")
 require("keymaps.dir_navi")
 require("keymaps.extra")
 require("keymaps.help_search")
