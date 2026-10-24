@@ -2,13 +2,6 @@ local ls = require("luasnip")
 local s, t, i, f = ls.snippet, ls.text_node, ls.insert_node, ls.function_node
 
 return {
-	s("sepl", {
-		t({
-			"═══════════════════════════════════════════════════════════════════════════",
-			"",
-		}),
-	}),
-
 	s("req", { t("local "), i(1, "mod"), t(' = require("'), i(2, "module"), t('")') }),
 	s("timeHMS*", { f(function()
 		return os.date("%H:%M:%S")
