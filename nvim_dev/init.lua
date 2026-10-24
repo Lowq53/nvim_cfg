@@ -17,7 +17,22 @@ require("config.lazy")
 --require("config.terminal")
 
 require("config.pwsh")
-require("config.ui")
+require("config.settings")
+require("config.ui").setup()
+
+-- Pobierz ścieżkę do folderu 'tmp' w Twojej konfiguracji Neovima
+local tmp_dir = vim.fn.stdpath("config") .. "/lua/tmp"
+
+-- Sprawdź, czy folder istnieje, i przejdź przez wszystkie pliki
+if vim.fn.isdirectory(tmp_dir) == 1 then
+	for _, file in ipairs(vim.fn.readdir(tmp_dir)) do
+		-- Ładuj tylko pliki z rozszerzeniem .lua
+		if file:match("%.lua$") then
+			local module_name = file:gsub("%.lua$", "")
+			require("tmp." .. module_name)
+		end
+	end
+end
 -- vim.g.clipboard = {
 --   name = "windows-clipboard",
 --   copy = {
@@ -29,6 +44,3 @@ require("config.ui")
 --     ["*"] = "powershell.exe -NoProfile -Command Get-Clipboard -Raw",
 --   },
 --   cache_enabled = 0,
--- }
---
-

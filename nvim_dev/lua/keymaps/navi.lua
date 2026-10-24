@@ -1,6 +1,31 @@
 -- AppData\Local\nvim_cfg\nvim_dev\lua\keymaps\navi.lua
---
+
+-- ═══════════════════════════════════════════════════════════════════════
+-- ► SMART BUFFER/WINDOW CLOSING
+-- ═══════════════════════════════════════════════════════════════════════
+
 local vks = vim.keymap.set
+
+-- terminal
+-- Smart quit: handles terminal, lazy, help, normal buffers differently
+vim.keymap.set("n", "<A-q>", function()
+	local buftype = vim.bo.buftype
+	local filetype = vim.bo.filetype
+
+	if buftype == "terminal" then
+		vim.cmd("bd!") -- Close terminal
+	elseif buftype == "nofile" then
+		vim.cmd("q") -- Close Lazy.nvim
+	elseif filetype == "help" then
+		vim.cmd("q") -- Close help window
+	else
+		vim.cmd("q") -- Close normal buffer
+	end
+end, { noremap = true, silent = true })
+
+vim.keymap.set("n", "<C-A-c>", ":q", { desc = "Force quit" })
+
+-- ═══════════════════════════════════════════════════════════════════════
 --lsp diagnostic
 --────────────────────────────────────────────────────────────────────────
 vks("n", "[d", vim.diagnostic.goto_prev, { desc = "Poprzednia diagnoza" })
@@ -21,7 +46,7 @@ vks({ "i", "v" }, "kj", "<Esc>", { desc = "Exit mode" })
 -- Pro Tip: Visual Wrap (Nawigacja)
 -- ────────────────────────────────────────────────────────────────────────
 -- Standardowo 'j' i 'k' skaczą po liniach logicznych (numerach).
--- Poniższe mapowania sprawiają, że poruszasz się po liniach widocznych (zawiniętych).
+-- Poniższe mapowania sprawiają, że poruszasz się po liniach widocznych (zawiniętych).source
 vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
@@ -41,8 +66,6 @@ vks("n", "<C-l>", "<C-w>l", { desc = "Przejdź do okna prawego" })
 --────────────────────────────────────────────────────────────────────────
 vks("n", "<C-d>", "<C-d>zz", { desc = "Pół strony w dół z wyśrodkowaniem" })
 vks("n", "<C-u>", "<C-u>zz", { desc = "Pół strony w górę z wyśrodkowaniem" })
-
-
 
 -- console navi
 -- ────────────────────────────────────────────────────────────────────────
@@ -65,7 +88,7 @@ vks("c", "<C-l>", "<Right>")
 -- ────────────────────────────────────────────────────────────────────────
 vks("n", "<A-p>", ":tabprevious<CR>", { desc = "Poprzedni tab", silent = true })
 vks("n", "<leader>tw", ":tabclose<CR>", { desc = "Closing tab", silent = true })
-vks('n', '<leader>td', ':tabedit % | vsplit #<CR>', { desc = 'Duplikuj 2 bufory do nowej karty' })
+vks("n", "<leader>td", ":tabedit % | vsplit #<CR>", { desc = "Duplikuj 2 bufory do nowej karty" })
 vks("n", "<A-n>", ":tabnext<CR>", { desc = "Następny tab", silent = true })
 
 -- Opcjonalnie: szybkie tworzenie i zamykanie tabów
@@ -77,7 +100,7 @@ vks("n", "<leader>0", ":tablast<CR>", { desc = "Skocz do ostatniego taba", silen
 -- for i = 1, 9 do
 --     -- Ustawia fizyczny skrót: Space + cyfra
 --     vim.keymap.set("n", "<leader>" .. i, i .. "gt", { silent = true })
---     
+--
 --     -- Mówi Which-Key, żeby nie wyświetlał 9 osobnych linii
 --     wk.add({
 --         { "<leader>" .. i, hidden = true }

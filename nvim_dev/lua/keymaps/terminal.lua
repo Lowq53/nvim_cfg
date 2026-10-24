@@ -70,4 +70,3 @@ vim.api.nvim_create_autocmd("TermOpen", {
 vim.api.nvim_set_keymap("t", "<Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
 -- tedfds
 --
-

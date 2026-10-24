@@ -51,14 +51,13 @@ require("lazy").setup({
 	install = { colorscheme = { "habamax" } },
 	-- automatically check for plugin updates -- false --
 	-- sprawdza aktualizacje w tle
-	checker = { enabled = true,
-	notify = true },
+	checker = { enabled = true, notify = false },
 	ui = {
-    show_startup = false, -- nie pokazuj g¿ównego okna przy ka¿dym starcie
-  },
+		show_startup = false, -- nie pokazuj g¿ównego okna przy ka¿dym starcie
+	},
 })
 
--- Pro Tip dla Seniora: Jak wymusiÄ‡ UI przy pierwszym starcie?
+-- Pro Tip dla Seniora: Jak wymusi¿a UI przy pierwszym starcie?
 -- JeÅ›li chcesz dokÅ‚adnie zachowanie z kickstart (otwarcie okna po instalacji):
 
 -- TO DO

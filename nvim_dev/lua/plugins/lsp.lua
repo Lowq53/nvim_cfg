@@ -49,8 +49,8 @@ return {
 					map("<c-i>", vim.lsp.buf.signature_help, "Signature Help")
 					map("]d", vim.diagnostic.goto_next, "Next Diagnostic")
 					map("[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
-					map("<leader>e", vim.diagnostic.open_float, "Show Diagnostic")
-					map("<leader>q", vim.diagnostic.setloclist, "Diagnostic List")
+					map("<leader>le", vim.diagnostic.open_float, "Show Diagnostic")
+					map("<leader>lq", vim.diagnostic.setloclist, "Diagnostic List")
 
 					vim.keymap.set("n", "q", function()
 						for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -134,7 +134,6 @@ return {
 						Lua = {
 							runtime = { version = "LuaJIT" },
 							diagnostics = { globals = { "vim" } }, -- rozpoznaje 'vim' jako globaln¿
-							workspace = { checkThirdParty = false },
 							workspace = {
 								checkThirdParty = false,
 								-- TO JEST KLUCZOWE: nie skanuj zb¿dnych rzeczy

@@ -1,0 +1,27 @@
+local M = {}
+
+function M.setup()
+	local ok, dap = pcall(require, "dap")
+	if not ok then
+		return
+	end
+
+	dap.adapters.local_lua = {
+		type = "executable",
+		command = "node",
+		args = { vim.fn.stdpath("data") .. "/mason/packages/local-lua-debugger-vscode/extension/debugAdapter.js" },
+	}
+
+	dap.configurations.lua = {
+		{
+			type = "local_lua",
+			request = "debug",
+			name = "Debug current Lua file",
+			cwd = "${workspaceFolder}",
+			program = "${file}",
+			args = {},
+		},
+	}
+end
+
+return M
