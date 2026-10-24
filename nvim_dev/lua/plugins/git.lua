@@ -40,4 +40,9 @@ return {
 			{ "<space>gc", "<cmd>Neogit commit<cr>", desc = "Neogit Commit" },
 		},
 	},
+
+	{
+		"tpope/vim-fugitive",
+		cmd = { "Git", "G", "Gdiffsplit", "Gvdiffsplit" },
+	},
 }

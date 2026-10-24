@@ -6,7 +6,6 @@
 -- ================================================================
 local M = {}
 
-
 --- Ścieżka do folderu przechowującego pliki scratch
 --- vim.fn.stdpath("data") zwraca ~/.local/share/nvim (Linux)
 --- lub ~/AppData/Local/nvim-data (Windows)
