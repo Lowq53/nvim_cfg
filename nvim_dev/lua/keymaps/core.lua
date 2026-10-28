@@ -187,8 +187,13 @@ vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Find references" })
 
 -- Diagnostics
 vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Show diagnostics" })
-vim.diagnostic.jump({ count = 1, float = true })
-vim.diagnostic.jump({ count = -1, float = true })
+vim.keymap.set("n", "]d", function()
+	vim.diagnostic.jump({ count = 1, float = true })
+end, { desc = "Next Diagnostic" })
+vim.keymap.set("n", "[d", function()
+	vim.diagnostic.jump({ count = -1, float = true })
+end, { desc = "Previous Diagnostic" })
+
 -- LSP Toggle
 local lsp_enabled = true
 function ToggleLSP()
@@ -202,9 +207,11 @@ function ToggleLSP()
 	lsp_enabled = not lsp_enabled
 end
 
-vim.keymap.set("n", "<leader>ls", ":ToggleLSP<CR>", { desc = "LSP: Toggle" })
+-- ":ToggleLSP" nie istnieje jako komenda (to funkcja Lua), więc wołamy ją wprost:
+vim.keymap.set("n", "<leader>ls", ToggleLSP, { desc = "LSP: Toggle" })
 
--- ═══════════════════════════════════════════════════════════════════════
+-- Opcjonalnie, jeśli chcesz też komendę :ToggleLSP:
+-- vim.api.nvim_create_user_command("ToggleLSP", ToggleLSP, {})-- ═══════════════════════════════════════════════════════════════════════
 -- ► LAZY.NVIM PLUGIN MANAGER
 -- ═══════════════════════════════════════════════════════════════════════
 
@@ -234,7 +241,7 @@ vim.keymap.set("n", "dg", ":diffget<CR>", { desc = "Diff get" })
 
 -- ═══════════════════════════════════════════════════════════════════════
 -- ► DIRECTORY NAVIGATION
--- ═══════════════════════════════════════════════════════════════════════
+-- ═══════════════════════════ ═══════════════════════════════════════════
 
 vim.keymap.set("n", "<F5>", ":pwd<CR>", { desc = "Show current directory" })
 vim.keymap.set("n", "<F6>", ":!ls<CR>", { desc = "List files in directory" })

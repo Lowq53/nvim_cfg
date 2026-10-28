@@ -67,7 +67,7 @@ return {
 					map("<leader>wa", vim.lsp.buf.add_workspace_folder, "Add Workspace")
 					map("<leader>wr", vim.lsp.buf.remove_workspace_folder, "Remove Workspac")
 					map("<leader>wl", function()
-						print(vim.inspect(vim.lspe.buf.list_workspace_folders()))
+						print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 					end, "List Workspace")
 
 					-- format & type
@@ -227,6 +227,15 @@ return {
 					bundle_path = vim.fn.stdpath("data") .. "/mason/packages/powershell-editor-services",
 					filetypes = { "ps1", "psm1", "psd1" },
 					shell = "pwsh", -- u¿ywa PowerShell 7+
+					settings = {
+						powershell = {
+							codeFormatting = {
+								preset = "Allman", -- Allman | OTBS | Stroustrup | Custom
+								ignoreOneLineBlock = true, -- { kod } zostaje w 1 linii
+								newLineAfterCloseBrace = true,
+							},
+						},
+					},
 				},
 				biome = {}, -- dodany je¿li u¿ywasz jako linter/formatter
 				ast_grep = {}, -- wymaga zainstalowanego ast-grep
