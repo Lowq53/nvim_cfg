@@ -15,7 +15,7 @@ return {
 	-- Ctrl-e     - zamknij
 	{
 		"neovim/nvim-lspconfig",
-		event = "BufReadPre",
+		lazy = false,
 		dependencies = {
 			"williamboman/mason.nvim", -- instalator narz¿dzi
 			"williamboman/mason-lspconfig.nvim", -- bridge mi¿dzy mason a lspconfig
