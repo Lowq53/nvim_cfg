@@ -65,6 +65,7 @@ return {
 			-- ==================== INSTALACJA PARSERÓW ====================
 			-- Lista języków do zainstalowania
 			local ts = require("nvim-treesitter")
+			local tree_sitter_cli_available = vim.fn.executable("tree-sitter") == 1
 			-- 1. Lista parserów, które CHCESZ mieć zainstalowane
 			local parsers = {
 				"lua", "vim", "vimdoc", "query",
@@ -94,7 +95,7 @@ return {
     -- Sprawdzamy, czy plik parsera istnieje w ścieżkach Neovima
     local has_parser = #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".so", false) > 0
 
-    if not has_parser then
+    if not has_parser and tree_sitter_cli_available then
         pcall(ts.install, lang)
     end
 end
@@ -118,7 +119,7 @@ end
 					-- NOWE (poprawne):
           if vim.tbl_contains(parsers, ft) then
               local has = #vim.api.nvim_get_runtime_file("parser/" .. ft .. ".so", false) > 0
-              if not has then
+              if not has and tree_sitter_cli_available then
                   pcall(ts.install, ft)
               end
           end

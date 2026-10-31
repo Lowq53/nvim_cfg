@@ -1,11 +1,17 @@
 -- C:/Users/LOWq_53/AppData/Local/nvim_cfg/nvim_dev/lua/plugins/session_manager_dev.lua
+local local_session_manager_dir = vim.fn.has("win32") == 1
+	and "C:/dev/nvimdev/nvim-session-manager"
+	or (vim.fn.stdpath("config") .. "/plugins/nvim-session-manager")
+local local_session_manager_available = vim.fn.isdirectory(local_session_manager_dir) == 1
+
 return {
 	{
 		"Lowq53/nvim-session-manager",
 		enabled = true, -- 🔴 WYŁĄCZONY
 	},
 	{
-		dir = "C://dev//nvimdev//nvim-session-manager",
+		dir = local_session_manager_dir,
+		enabled = local_session_manager_available,
 		name = "local-session-manager",
 		lazy = false,
 		enable = false,
