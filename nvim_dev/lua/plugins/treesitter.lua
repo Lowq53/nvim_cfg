@@ -66,6 +66,28 @@ return {
 			-- Lista języków do zainstalowania
 			local ts = require("nvim-treesitter")
 			local tree_sitter_cli_available = vim.fn.executable("tree-sitter") == 1
+			local install_requested = {}
+
+			local function has_parser(lang)
+				for _, extension in ipairs({ "so", "dll", "dylib" }) do
+					if #vim.api.nvim_get_runtime_file("parser/" .. lang .. "." .. extension, false) > 0 then
+						return true
+					end
+				end
+				return false
+			end
+
+			local function install_parser_once(lang)
+				if not tree_sitter_cli_available or install_requested[lang] or has_parser(lang) then
+					return
+				end
+				install_requested[lang] = true
+				local ok, err = pcall(ts.install, lang)
+				if not ok then
+					install_requested[lang] = nil
+					vim.notify("Treesitter install failed for " .. lang .. ": " .. tostring(err), vim.log.levels.WARN)
+				end
+			end
 			-- 1. Lista parserów, które CHCESZ mieć zainstalowane
 			local parsers = {
 				"lua", "vim", "vimdoc", "query",
@@ -91,14 +113,9 @@ return {
 
 			-- 2. Instalacja brakujących parserów z powyższej listy (nowe API)
 			-- Używamy pcall, aby błędy sieciowe lub brak kompilatora nie wywaliły całego edytora
-		for _, lang in ipairs(parsers) do
-    -- Sprawdzamy, czy plik parsera istnieje w ścieżkach Neovima
-    local has_parser = #vim.api.nvim_get_runtime_file("parser/" .. lang .. ".so", false) > 0
-
-    if not has_parser and tree_sitter_cli_available then
-        pcall(ts.install, lang)
-    end
-end
+			for _, lang in ipairs(parsers) do
+				install_parser_once(lang)
+			end
 
 			-- 3. Automatyczne włączanie podświetlania (Highlighting) oraz Auto-instalacja w tle
 			vim.api.nvim_create_autocmd("FileType", {
@@ -117,12 +134,9 @@ end
 					-- end
 					--
 					-- NOWE (poprawne):
-          if vim.tbl_contains(parsers, ft) then
-              local has = #vim.api.nvim_get_runtime_file("parser/" .. ft .. ".so", false) > 0
-              if not has and tree_sitter_cli_available then
-                  pcall(ts.install, ft)
-              end
-          end
+					if vim.tbl_contains(parsers, ft) then
+						install_parser_once(ft)
+					end
 
 					-- Włącz natywne podświetlanie Treesitter dla bufora
 					pcall(vim.treesitter.start, event.buf, ft)
