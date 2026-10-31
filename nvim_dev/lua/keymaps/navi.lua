@@ -26,6 +26,7 @@ end, { noremap = true, silent = true })
 vim.keymap.set("n", "<C-A-c>", ":q", { desc = "Force quit" })
 
 -- ═══════════════════════════════════════════════════════════════════════
+
 --lsp diagnostic
 --────────────────────────────────────────────────────────────────────────
 vks("n", "[d", vim.diagnostic.goto_prev, { desc = "Poprzednia diagnoza" })

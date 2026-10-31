@@ -2,12 +2,13 @@
 return {
 	{
 		"Lowq53/nvim-session-manager",
-		enabled = false, -- 🔴 WYŁĄCZONY
+		enabled = true, -- 🔴 WYŁĄCZONY
 	},
 	{
 		dir = "C://dev//nvimdev//nvim-session-manager",
 		name = "local-session-manager",
 		lazy = false,
+		enable = false,
 
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -18,7 +19,7 @@ return {
 		config = function()
 			require("session_manager").setup({
 				base_dir = vim.fs.normalize(vim.fn.stdpath("data") .. "/sessions"),
-				help_mode = "float",   -- "notify" | "float" | "preview"
+				help_mode = "float", -- "notify" | "float" | "preview"
 			})
 		end,
 
@@ -63,18 +64,17 @@ return {
 		version = "1.1.1",
 		lazy = false,
 
+		config = function()
+			local save_dir = vim.fn.stdpath("data") .. "//persisted"
 
-    config = function()
-		local save_dir = vim.fn.stdpath("data") .. "//persisted"
-
-    if vim.fn.isdirectory(save_dir) == 0 then
-      vim.fn.mkdir(save_dir, "p") -- gwarancja istnienia
-    end
+			if vim.fn.isdirectory(save_dir) == 0 then
+				vim.fn.mkdir(save_dir, "p") -- gwarancja istnienia
+			end
 			require("persisted").setup({
-				save_dir = save_dir, 
+				save_dir = save_dir,
 				autoload = true,
 				autosave = true,
-				--  niewiem ale fasl einaczej losowe crashe z gitem 
+				--  niewiem ale fasl einaczej losowe crashe z gitem
 				use_git_branch = false,
 
 				allowed_dirs = nil,
@@ -113,14 +113,15 @@ return {
 			{ "<space>st", "<cmd>Persisted toggle<cr>", desc = "Toggle sesji" },
 			{ "<space>sx", "<cmd>Persisted stop<cr>", desc = "Stop nagrywania" },
 			{ "<space>sS", "<cmd>Persisted start<cr>", desc = "Start nagrywania" },
-      { "<space>sc", 
-      function()
-          require("persisted").stop() -- satrymuje śledzienie sesjii
-          vim.cmd("silent! %bd") -- zamknij wszystkie pliki
-          print("crear sesion (recording)")
-        end,
-      desc = "Nowa pusta sesja"
+			{
+				"<space>sc",
+				function()
+					require("persisted").stop() -- satrymuje śledzienie sesjii
+					vim.cmd("silent! %bd") -- zamknij wszystkie pliki
+					print("crear sesion (recording)")
+				end,
+				desc = "Nowa pusta sesja",
+			},
 		},
 	},
-}
 }

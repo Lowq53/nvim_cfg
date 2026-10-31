@@ -258,6 +258,9 @@ vim.keymap.set("n", "<C-F11>", ":reg<CR>", { desc = "Show all registers" })
 vim.keymap.set("n", "<Leader>lm", ":marks<CR>", { desc = "Show all marks" })
 -- find keymap
 vim.keymap.set("n", "<Leader>lr", ":reg<CR>", { desc = "Show all registers" })
+vim.keymap.set("n", "<C-.>", ".", {
+	desc = "Repeat last change",
+})
 
 -- ALTERNATIVE: Simple keymap reload (commented - less comprehensive)
 -- vim.keymap.set("n", "<leader>r", function()
