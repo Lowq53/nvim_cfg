@@ -187,12 +187,19 @@ vim.keymap.set("n", "gr", vim.lsp.buf.references, { desc = "Find references" })
 
 -- Diagnostics
 vim.keymap.set("n", "<leader>ld", vim.diagnostic.open_float, { desc = "Show diagnostics" })
-vim.keymap.set("n", "]d", function()
-	vim.diagnostic.jump({ count = 1, float = true })
-end, { desc = "Next Diagnostic" })
-vim.keymap.set("n", "[d", function()
-	vim.diagnostic.jump({ count = -1, float = true })
-end, { desc = "Previous Diagnostic" })
+
+-- new silent diagnostic to not show no more valid diagnostics
+local function diag_jump(count)
+	return function()
+		if #vim.diagnostic.get(0) == 0 then
+			return
+		end
+		pcall(vim.diagnostic.jump, { count = count, float = true })
+	end
+end
+
+vim.keymap.set("n", "]d", diag_jump(1), { desc = "Następna diagnoza" })
+vim.keymap.set("n", "[d", diag_jump(-1), { desc = "Poprzednia diagnoza" })
 
 -- LSP Toggle
 local lsp_enabled = true
