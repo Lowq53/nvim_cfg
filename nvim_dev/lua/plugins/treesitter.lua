@@ -90,10 +90,19 @@ return {
 			end
 			-- 1. Lista parserów, które CHCESZ mieć zainstalowane
 			local parsers = {
-				"lua", "vim", "vimdoc", "query",
+				"lua",
+				"vim",
+				"vimdoc",
+				"query",
 				-- Web
-				"html", "css", "scss", "javascript",
-				"typescript", "tsx", "json", "yaml",
+				"html",
+				"css",
+				"scss",
+				"javascript",
+				"typescript",
+				"tsx",
+				"json",
+				"yaml",
 
 				-- Backend/System
 				"python",
@@ -109,6 +118,9 @@ return {
 				-- "cpp",
 				-- "java",
 				-- "php",
+
+				-- ssems
+				"powershell",
 			}
 
 			-- 2. Instalacja brakujących parserów z powyższej listy (nowe API)
@@ -126,22 +138,22 @@ return {
 					if not ft or ft == "" or ft == "help" or ft == "qf" then
 						return
 					end
-
-					-- Jeśli pliku nie ma, a jest na naszej liście -> zainstaluj asynchronicznie w tle
-					-- -- (Bez blokowania edytora za pomocą task:wait!)
-					-- if vim.tbl_contains(parsers, ft) and not ts.has_parser(ft) then
-					-- 	pcall(ts.install, ft)
-					-- end
-					--
-					-- NOWE (poprawne):
+					local lang = vim.treesitter.language.get_lang(ft) or ft
 					if vim.tbl_contains(parsers, ft) then
 						install_parser_once(ft)
 					end
-
-					-- Włącz natywne podświetlanie Treesitter dla bufora
-					pcall(vim.treesitter.start, event.buf, ft)
+					local ok = pcall(vim.treesitter.start, event.buf, ft)
+					if ok then
+						vim.wo[0][0].foldmethod = "expr"
+						vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+						vim.wo[0][0].foldtext = ""
+					end
 				end,
 			})
+			vim.o.foldenable = false
+			vim.o.foldlevel = 99
+			vim.o.foldlevelstart = 99
+
 			-- 4. Inteligentna Auto-indentacja (Opcjonalna, bezpieczna)
 			vim.api.nvim_create_autocmd("FileType", {
 				group = vim.api.nvim_create_augroup("ts_indent", { clear = true }),
@@ -151,7 +163,7 @@ return {
 					if vim.tbl_contains(disabled, vim.bo[event.buf].filetype) then
 						return
 					end
-					
+
 					-- Bezpieczne przypisanie indentexpr dla nowego API
 					local ok, _ = pcall(require, "nvim-treesitter")
 					if ok then
@@ -159,29 +171,15 @@ return {
 					end
 				end,
 			})
+		end,
+	},
 
-			-- 5. Składanie kodu (Folding)
-			vim.api.nvim_create_autocmd("FileType", {
-				group = vim.api.nvim_create_augroup("ts_folding", { clear = true }),
-				pattern = "*",
-				callback = function()
-					vim.wo.foldmethod = "expr"
-					vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-					vim.wo.foldenable = false -- Nie zwijaj kodu od razu po otwarciu
-				end,
-			})
-    end,
-  },
-
-
-
-
--- ======================== CONTEXT COMMENTSTRING ========================
+	-- ======================== CONTEXT COMMENTSTRING ========================
 	{
 		"JoosepAlviste/nvim-ts-context-commentstring",
 		branch = "main",
 		-- Zmieniono na true - załaduje się automatycznie kiedy jakikolwiek plugin (np. Comment.nvim) go zażąda
-		lazy = true, 
+		lazy = true,
 		config = function()
 			require("ts_context_commentstring").setup({
 				enable_autocmd = false,
@@ -190,14 +188,14 @@ return {
 	},
 }
 
-			-- -- Instaluj podstawowe parsery synchronicznie przy pierwszym uruchomieniu
-			-- require("nvim-treesitter.configs").setup({
-			-- 	ensure_installed = parsers,
-			-- 	highlight = {
-			-- 		enable = true,
-			-- 	},
-			-- })
-   --  }
+-- -- Instaluj podstawowe parsery synchronicznie przy pierwszym uruchomieniu
+-- require("nvim-treesitter.configs").setup({
+-- 	ensure_installed = parsers,
+-- 	highlight = {
+-- 		enable = true,
+-- 	},
+-- })
+--  }
 -- 			-- ==================== AUTO-INSTALL NA FILETYPE ====================
 -- 			-- Lista języków do auto-instalacji (reszta języków)
 -- 			local auto_install_langs = {
