@@ -7,14 +7,13 @@ local local_session_manager_available = vim.fn.isdirectory(local_session_manager
 return {
 	{
 		"Lowq53/nvim-session-manager",
-		enabled = true, -- 🔴 WYŁĄCZONY
+		enabled = false, -- Wyłącz wersję pobieraną z repozytorium; używaj lokalnej kopii poniżej.
 	},
 	{
 		dir = local_session_manager_dir,
 		enabled = local_session_manager_available,
 		name = "local-session-manager",
 		lazy = false,
-		enable = false,
 
 		dependencies = {
 			"nvim-lua/plenary.nvim",

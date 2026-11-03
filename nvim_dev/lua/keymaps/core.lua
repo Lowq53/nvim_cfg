@@ -76,8 +76,8 @@ local function reload_config()
 	vim.cmd("source $MYVIMRC")
 
 	if pcall(require, "which-key") then
-		require("which-key").register(require("which-key").plugins)
 	end
+	require("which-key").register(require("which-key").plugins)
 	vim.notify("Neovim config reloaded!", vim.log.levels.INFO)
 end
 
@@ -194,7 +194,7 @@ local function diag_jump(count)
 		if #vim.diagnostic.get(0) == 0 then
 			return
 		end
-		pcall(vim.diagnostic.jump, { count = count, float = true })
+		pcall(vim.diagnostic.jump, { count = count, float = true, wrap = true })
 	end
 end
 
