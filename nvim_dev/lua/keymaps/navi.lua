@@ -27,10 +27,7 @@ vim.keymap.set("n", "<C-A-c>", ":q", { desc = "Force quit" })
 
 -- ═══════════════════════════════════════════════════════════════════════
 
---lsp diagnostic
---────────────────────────────────────────────────────────────────────────
-vks("n", "[d", vim.diagnostic.goto_prev, { desc = "Poprzednia diagnoza" })
-vks("n", "]d", vim.diagnostic.goto_next, { desc = "Następna diagnoza" })
+-- Mapowania [d i ]d są zdefiniowane w keymaps.core z obsługą pustych wyników.
 vks("n", "<leader>le", vim.diagnostic.open_float, { desc = "Pokaż diagnozę" })
 
 -- searching navi

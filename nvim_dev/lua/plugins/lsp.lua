@@ -47,8 +47,6 @@ return {
 					map("gi", vim.lsp.buf.implementation, "Goto Implementation")
 					map("gr", vim.lsp.buf.references, "Show References")
 					map("<c-i>", vim.lsp.buf.signature_help, "Signature Help")
-					map("]d", vim.diagnostic.goto_next, "Next Diagnostic")
-					map("[d", vim.diagnostic.goto_prev, "Previous Diagnostic")
 					map("<leader>le", vim.diagnostic.open_float, "Show Diagnostic")
 					map("<leader>lq", vim.diagnostic.setloclist, "Diagnostic List")
 

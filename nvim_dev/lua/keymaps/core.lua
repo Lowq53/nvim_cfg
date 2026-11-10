@@ -63,26 +63,29 @@ vim.keymap.set("n", "<C-e>", "<C-e>zz", { noremap = true, silent = true, desc = 
 -- ═══════════════════════════════════════════════════════════════════════
 
 -- ACTIVE: Comprehensive reload function (better - reloads lazy cache)
+-- https://claude.ai/share/116665d4-1a23-42fd-afa6-83ce2869613c
 local function reload_config()
-	vim.cmd("wall")
+	vim.cmd("silent! wall")
 	require("lazy.core.cache").reset()
 
+	local to_clear = {}
 	for name, _ in pairs(package.loaded) do
 		if name:match("^user%.") or name:match("^core%.") then
-			package.loaded[name] = nil
+			table.insert(to_clear, name)
 		end
 	end
-
-	vim.cmd("source $MYVIMRC")
-
-	if pcall(require, "which-key") then
-		require("which-key").register(require("which-key").plugins)
+	for _, name in ipairs(to_clear) do
+		package.loaded[name] = nil
 	end
-	vim.notify("Neovim config reloaded!", vim.log.levels.INFO)
+
+	vim.cmd("silent source $MYVIMRC")
+
+	vim.schedule(function()
+		vim.notify("Neovim config reloaded!", vim.log.levels.INFO)
+	end)
 end
 
 vim.keymap.set("n", "<F9>", reload_config, { desc = "Reload config (F9)" })
-
 -- ═══════════════════════════════════════════════════════════════════════
 -- ► NAVIGATION - Centered Scrolling (Primeagen style)
 -- ═══════════════════════════════════════════════════════════════════════

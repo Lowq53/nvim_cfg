@@ -13,7 +13,7 @@ return {
 				-- ✅ GEMINI (działa natywnie w avante)
 				gemini = {
 					model = "gemini-3-flash-preview",
-					api_key_name = "MAIN_GEMINI_API_KEY",
+					api_key_name = "API_GEMINI_KEY",
 					extra_request_body = {
 						max_tokens = 4096,
 						temperature = 0,
@@ -26,7 +26,7 @@ return {
 
 					endpoint = "https://openrouter.ai/api/v1",
 					model = "deepseek/deepseek-r1:free",
-					api_key_name = "OPENROUTER_API_KEY",
+					api_key_name = "API_OR_KEY",
 				},
 
 				-- ✅ CLAUDE (MUSI dziedziczyć z anthropic)
@@ -35,8 +35,8 @@ return {
 
 					endpoint = "https://api.anthropic.com",
 					model = "claude-sonnet-4-20250514",
-					api_key_name = "ANTHROPIC_API_KEY",
 
+					api_key_name = "API_ANTHROPIC_KEY",
 					extra_request_body = {
 						max_tokens = 4096,
 						temperature = 0,
