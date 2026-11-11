@@ -1,18 +1,26 @@
 -- System clipboard support for Linux.
 -- Neovim's + register needs a clipboard provider such as wl-clipboard or xclip.
-
 if vim.fn.has("linux") ~= 1 then
   return
 end
-
 local function executable(name)
   return vim.fn.executable(name) == 1
 end
 
 local provider
-if vim.env.SSH_TTY then
-  provider = "osc52"
-
+if vim.env.SSH_CONNECTION then
+  provider = {
+    name = "osc52",
+    copy = {
+      ["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+    },
+    paste = {
+      ["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+      ["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+    },
+    cache_enabled = 0,
+  }
 elseif vim.env.WAYLAND_DISPLAY and executable("wl-copy") and executable("wl-paste") then
   provider = {
     name = "wl-clipboard",
