@@ -1,5 +1,6 @@
 -- System clipboard support for Linux.
 -- Neovim's + register needs a clipboard provider such as wl-clipboard or xclip.
+
 if vim.fn.has("linux") ~= 1 then
   return
 end
@@ -9,7 +10,10 @@ local function executable(name)
 end
 
 local provider
-if vim.env.WAYLAND_DISPLAY and executable("wl-copy") and executable("wl-paste") then
+if vim.env.SSH_TTY then
+  provider = "osc52"
+
+elseif vim.env.WAYLAND_DISPLAY and executable("wl-copy") and executable("wl-paste") then
   provider = {
     name = "wl-clipboard",
     copy = {
